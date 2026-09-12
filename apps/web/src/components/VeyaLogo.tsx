@@ -8,15 +8,11 @@ export function VeyaLogo({
   className?: string;
 }) {
   return (
-    <span
-      className={clsx(
-        "veya-logo-wrap",
-        size === "sm" && "veya-logo-wrap-sm",
-        size === "lg" && "veya-logo-wrap-lg",
-        className,
-      )}
-    >
-      <img src="/veya-logo.png" alt="Veya" className="veya-logo" decoding="async" />
-    </span>
+    <img
+      src="/veya-logo.png"
+      alt="Veya"
+      className={clsx("veya-logo", size === "sm" && "veya-logo-sm", size === "lg" && "veya-logo-lg", className)}
+      decoding="async"
+    />
   );
 }

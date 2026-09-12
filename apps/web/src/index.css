@@ -318,25 +318,6 @@
   text-decoration: none;
 }
 
-.veya-logo-wrap {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 0.5rem;
-  background: #000;
-  line-height: 0;
-}
-
-.veya-logo-wrap-sm {
-  border-radius: 0.4375rem;
-}
-
-.veya-logo-wrap-lg {
-  border-radius: 0.5625rem;
-}
-
 .veya-logo {
   display: block;
   height: 2.25rem;
@@ -344,11 +325,11 @@
   object-fit: contain;
 }
 
-.veya-logo-wrap-sm .veya-logo {
+.veya-logo-sm {
   height: 2rem;
 }
 
-.veya-logo-wrap-lg .veya-logo {
+.veya-logo-lg {
   height: 2.75rem;
 }
 
