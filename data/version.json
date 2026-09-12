@@ -1,6 +1,0 @@
-{
-  "datasetVersion": "0.1.0",
-  "updatedAt": "2026-09-12",
-  "status": "ready",
-  "note": "Baseline curated dataset: nine routes, three gateway hero images and the scorer fixtures. Bump on any change under data/routes or data/assets, and regenerate data/fixtures/expectedTop3.json in the same commit."
-}
