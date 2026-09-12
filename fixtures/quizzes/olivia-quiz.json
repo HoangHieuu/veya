@@ -1,0 +1,35 @@
+{
+  "request": {
+    "mode": "quiz",
+    "locale": "en",
+    "quiz": {
+      "travelStyle": "beach_relaxation",
+      "dateFlexibility": "flexible_±3",
+      "budgetBand": "standard",
+      "travellers": 2,
+      "priority": "lowest_hassle",
+      "originCity": "SYD"
+    }
+  },
+  "expectedIntent": {
+    "originCity": "SYD",
+    "travelStyles": ["beach_relaxation", "food_culture"],
+    "budgetBand": "standard",
+    "travellers": 2,
+    "priority": "lowest_hassle",
+    "dateWindow": {
+      "start": "2026-09-11",
+      "end": "2026-09-18",
+      "flexibility": "flexible_±3"
+    },
+    "tripDurationDays": 7,
+    "goal": "discover_destination",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "beach_relaxation trip from SYD; 2 travellers; budget standard; priority lowest_hassle; dates flexible_±3",
+    "parseConfidence": 1,
+    "missingFields": ["departAfter", "departBefore"]
+  },
+  "notes": "Deterministic with now=2026-09-11T00:00:00.000Z"
+}

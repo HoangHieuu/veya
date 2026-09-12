@@ -1,6 +1,6 @@
 # Intent fixtures (Person C)
 
-Sample briefs and quizzes for unit tests and Postman. Pair each input with an expected `TripIntent` JSON.
+Sample briefs and quizzes paired with expected `TripIntent` outputs.
 
 ## Layout
 
@@ -11,9 +11,23 @@ fixtures/
 │   ├── vfr.json
 │   └── student.json
 └── quizzes/
-    └── *.json
+    ├── olivia-quiz.json
+    ├── vfr-quiz.json
+    └── student-quiz.json
 ```
 
-Target: ≥90% parse accuracy on 5–8 briefs (see docs/WORK_SPLIT.md §6.3).
+Each file shape:
 
-Do not put route data here — that lives in [`data/`](../data/).
+```json
+{
+  "request": { "mode": "brief|quiz", "...": "..." },
+  "expectedIntent": { "...TripIntent...": "..." },
+  "notes": "optional"
+}
+```
+
+Quiz date windows assume fixed `now = 2026-09-11T00:00:00.000Z`.
+
+Target: ≥90% parse on 5–8 briefs (see `apps/api/src/intent/briefHeuristic.test.ts`).
+
+Do not put route data here — that lives in `data/`.
