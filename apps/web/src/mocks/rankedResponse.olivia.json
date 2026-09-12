@@ -1,0 +1,236 @@
+{
+  "requestId": "mock-olivia-001",
+  "intent": {
+    "originCity": "SYD",
+    "travelStyles": ["beach_relaxation", "food_culture"],
+    "budgetBand": "standard",
+    "travellers": 2,
+    "priority": "lowest_hassle",
+    "dateWindow": {
+      "start": "2026-11-10",
+      "end": "2026-11-19",
+      "flexibility": "flexible_±3"
+    },
+    "tripDurationDays": 9,
+    "goal": "discover_destination",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "Beach-and-food trip from Sydney for two friends in mid-November, preferring few connections.",
+    "parseConfidence": 0.92,
+    "missingFields": []
+  },
+  "cards": [
+    {
+      "rank": 1,
+      "routeId": "SYD-DAD-one_stop",
+      "route": {
+        "id": "SYD-DAD-one_stop",
+        "originCity": "SYD",
+        "originAirport": "SYD",
+        "destinationCity": "DAD",
+        "destinationAirport": "DAD",
+        "destinationName": "Da Nang",
+        "connectionType": "one_stop",
+        "viaHub": "SGN",
+        "typicalDurationHours": 12.5,
+        "seasonalityNotes": "November sits in the shoulder season — warm seas, fewer crowds than peak summer.",
+        "gettingAround": "Taxi or Grab from DAD to My Khe Beach is typically 20–30 minutes.",
+        "tripArchetypes": ["beach_relaxation", "food_culture"],
+        "indicativeFareBand": "standard",
+        "bestMonths": [3, 4, 5, 9, 10, 11],
+        "backgroundImage": {
+          "url": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=1200&q=80",
+          "archetype": "beach_relaxation",
+          "source": "Unsplash",
+          "owner": "Ophelia Rajasa",
+          "licenseNote": "Unsplash License — prototype placeholder; swap for VNA/tourism-board approved asset."
+        },
+        "promotion": {
+          "id": "promo-danang-shoulder",
+          "title": "Central Vietnam discovery",
+          "summary": "Illustrative shoulder-season offer for Australia-origin leisure travellers."
+        },
+        "lotusmilesIndicative": {
+          "earnBand": "mid",
+          "note": "Indicative mid-tier earn on this long-haul sector; not a live quote."
+        },
+        "dataConfidence": "illustrative",
+        "sourceDocument": "Vietnam Airlines Oceania route network (team review)",
+        "sourceOwner": "Vietnam Airlines / team curated"
+      },
+      "score": {
+        "intentMatch": 94,
+        "dateFit": 88,
+        "routeConvenience": 72,
+        "budgetFit": 90,
+        "loyaltyValue": 55,
+        "promotionBoost": 70,
+        "weightedTotal": 86,
+        "weightsUsed": {
+          "intentMatch": 0.25,
+          "dateFit": 0.15,
+          "routeConvenience": 0.35,
+          "budgetFit": 0.15,
+          "loyaltyValue": 0.05,
+          "promotionBoost": 0.05
+        },
+        "reasons": [
+          "Matches your beach-and-food brief with My Khe and Han Market within easy reach.",
+          "November aligns with Da Nang’s listed best months in the curated dataset.",
+          "One stop via Ho Chi Minh City — within your max one-connection preference.",
+          "Illustrative promotion ‘Central Vietnam discovery’ is on file for this route."
+        ]
+      },
+      "tripOutline": "Fly Sydney → Ho Chi Minh City → Da Nang. Settle near the beach, spend days between coastline and local food halls, keep transfers short. Schedule shown is illustrative for prototype purposes.",
+      "handoff": {
+        "origin": "SYD",
+        "destination": "DAD",
+        "departDate": "2026-11-10",
+        "returnDate": "2026-11-19",
+        "adults": 2,
+        "searchUrl": "/handoff-mock?origin=SYD&destination=DAD&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
+      }
+    },
+    {
+      "rank": 2,
+      "routeId": "SYD-SGN-direct",
+      "route": {
+        "id": "SYD-SGN-direct",
+        "originCity": "SYD",
+        "originAirport": "SYD",
+        "destinationCity": "SGN",
+        "destinationAirport": "SGN",
+        "destinationName": "Ho Chi Minh City",
+        "connectionType": "direct",
+        "viaHub": null,
+        "typicalDurationHours": 8.5,
+        "seasonalityNotes": "Year-round city break; November is typically dry in the south.",
+        "gettingAround": "Airport bus or taxi to District 1 is typically 30–45 minutes depending on traffic.",
+        "tripArchetypes": ["food_culture", "family"],
+        "indicativeFareBand": "standard",
+        "bestMonths": [1, 2, 11, 12],
+        "backgroundImage": {
+          "url": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=1200&q=80",
+          "archetype": "food_culture",
+          "source": "Unsplash",
+          "owner": "Clay Banks",
+          "licenseNote": "Unsplash License — prototype placeholder."
+        },
+        "promotion": null,
+        "lotusmilesIndicative": {
+          "earnBand": "high",
+          "note": "Indicative higher earn on direct long-haul; not a live quote."
+        },
+        "dataConfidence": "confirmed",
+        "sourceDocument": "vietnamairlines.com Oceania gateway confirmation",
+        "sourceOwner": "Vietnam Airlines"
+      },
+      "score": {
+        "intentMatch": 82,
+        "dateFit": 85,
+        "routeConvenience": 96,
+        "budgetFit": 88,
+        "loyaltyValue": 78,
+        "promotionBoost": 0,
+        "weightedTotal": 82,
+        "weightsUsed": {
+          "intentMatch": 0.25,
+          "dateFit": 0.15,
+          "routeConvenience": 0.35,
+          "budgetFit": 0.15,
+          "loyaltyValue": 0.05,
+          "promotionBoost": 0.05
+        },
+        "reasons": [
+          "Direct SYD–SGN maximises convenience for a low-hassle trip.",
+          "Strong food-and-culture fit for street food and neighbourhood exploring.",
+          "Confirmed Australia-gateway route in the curated network set.",
+          "No active promotion on file — promotion factor scored as zero."
+        ]
+      },
+      "tripOutline": "Non-stop into Ho Chi Minh City. Base in District 1 or Thao Dien, focus on food walks and short day trips. Outline is illustrative.",
+      "handoff": {
+        "origin": "SYD",
+        "destination": "SGN",
+        "departDate": "2026-11-10",
+        "returnDate": "2026-11-19",
+        "adults": 2,
+        "searchUrl": "/handoff-mock?origin=SYD&destination=SGN&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
+      }
+    },
+    {
+      "rank": 3,
+      "routeId": "SYD-HAN-direct",
+      "route": {
+        "id": "SYD-HAN-direct",
+        "originCity": "SYD",
+        "originAirport": "SYD",
+        "destinationCity": "HAN",
+        "destinationAirport": "HAN",
+        "destinationName": "Hanoi",
+        "connectionType": "direct",
+        "viaHub": null,
+        "typicalDurationHours": 9,
+        "seasonalityNotes": "November is cool and clear — good for Old Quarter walking, less beach weather.",
+        "gettingAround": "Taxi or airport bus to the Old Quarter is typically 35–50 minutes.",
+        "tripArchetypes": ["food_culture", "family"],
+        "indicativeFareBand": "standard",
+        "bestMonths": [10, 11, 12, 3, 4],
+        "backgroundImage": {
+          "url": "https://images.unsplash.com/photo-1509030450996-bdd17d7e1e9f?w=1200&q=80",
+          "archetype": "food_culture",
+          "source": "Unsplash",
+          "owner": "Quang Nguyen Vinh",
+          "licenseNote": "Unsplash License — prototype placeholder."
+        },
+        "promotion": null,
+        "lotusmilesIndicative": {
+          "earnBand": "high",
+          "note": "Indicative higher earn on direct long-haul; not a live quote."
+        },
+        "dataConfidence": "confirmed",
+        "sourceDocument": "vietnamairlines.com Oceania gateway confirmation",
+        "sourceOwner": "Vietnam Airlines"
+      },
+      "score": {
+        "intentMatch": 70,
+        "dateFit": 90,
+        "routeConvenience": 94,
+        "budgetFit": 88,
+        "loyaltyValue": 78,
+        "promotionBoost": 0,
+        "weightedTotal": 78,
+        "weightsUsed": {
+          "intentMatch": 0.25,
+          "dateFit": 0.15,
+          "routeConvenience": 0.35,
+          "budgetFit": 0.15,
+          "loyaltyValue": 0.05,
+          "promotionBoost": 0.05
+        },
+        "reasons": [
+          "Direct service keeps connections low, matching your hassle preference.",
+          "November is listed among Hanoi’s best months for clear walking weather.",
+          "Food-and-culture archetype is strong; beach fit is weaker than Da Nang.",
+          "Confirmed route data — no illustrative schedule caveats on this card."
+        ]
+      },
+      "tripOutline": "Direct into Hanoi. Old Quarter base, day trip north if time allows. Better for food and culture than beach — shown for transparent ranking contrast.",
+      "handoff": {
+        "origin": "SYD",
+        "destination": "HAN",
+        "departDate": "2026-11-10",
+        "returnDate": "2026-11-19",
+        "adults": 2,
+        "searchUrl": "/handoff-mock?origin=SYD&destination=HAN&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
+      }
+    }
+  ],
+  "meta": {
+    "datasetVersion": "0.1.0-mock",
+    "scoringVersion": "0.1.0-mock",
+    "usedIllustrativeData": true,
+    "disclaimer": "Mock response for UI development. Rank #1 uses illustrative route availability; final recommendations require Vietnam Airlines-approved schedule data."
+  }
+}
