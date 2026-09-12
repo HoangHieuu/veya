@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import type { OriginCity, PriorityPreset, RankedCard, RecommendRequest } from "@shared/types";
-import { ApiClientError, isMockMode, recommend, saveTrip } from "./api/client";
+import type { PriorityPreset, RankedCard, RecommendRequest } from "@shared/types";
+import { ApiClientError, recommend, saveTrip } from "./api/client";
 import { GlobeTuningPanel } from "./components/GlobeTuningPanel";
 import { Header, type AppStep } from "./components/layout/Header";
 import { Toast } from "./components/ui/Toast";
 import { GlobeTuningProvider } from "./context/GlobeTuningContext";
 import {
   buildRecommendRequest,
+  demoWizardState,
   initialWizardState,
-  oliviaWizardState,
   WIZARD_STEPS,
+  type DemoPersona,
   type TripWizardState,
 } from "./lib/wizard";
 import { HandoffScreen } from "./screens/HandoffScreen";
@@ -66,25 +67,39 @@ export default function App() {
     }));
   }
 
-  function tryExample(_payload: { originCity: OriginCity }) {
+  function tryExample(persona: DemoPersona) {
+    const wizard = demoWizardState(persona);
     setState((s) => ({
       ...s,
-      step: "brief",
-      wizard: oliviaWizardState(),
-      errorMessage: undefined,
-      status: "idle",
-    }));
-  }
-
-  async function runRecommend(extra?: Partial<RecommendRequest>) {
-    setState((s) => ({
-      ...s,
+      wizard,
+      step: "results",
       status: "loading",
       errorMessage: undefined,
-      step: s.step === "brief" ? "results" : s.step,
+      response: undefined,
+      priorityOverride: undefined,
     }));
+    void runRecommend(wizard);
+  }
 
-    const base = buildRecommendRequest(state.wizard);
+  async function runRecommend(
+    wizardOverride?: TripWizardState,
+    extra?: Partial<RecommendRequest>,
+  ) {
+    const isRerank = Boolean(extra?.cachedIntent);
+    let wizardSnapshot = wizardOverride ?? state.wizard;
+
+    setState((s) => {
+      if (wizardOverride) wizardSnapshot = wizardOverride;
+      else wizardSnapshot = s.wizard;
+      return {
+        ...s,
+        status: "loading",
+        errorMessage: undefined,
+        step: isRerank ? s.step : s.step === "brief" ? "results" : s.step,
+      };
+    });
+
+    const base = buildRecommendRequest(wizardSnapshot);
 
     try {
       const response = await recommend({
@@ -98,21 +113,29 @@ export default function App() {
         status: "success",
         response,
         step: "results",
+        errorMessage: undefined,
       }));
     } catch (err) {
+      const message =
+        err instanceof ApiClientError
+          ? err.message
+          : "Something went wrong. Please try again.";
       setState((s) => ({
         ...s,
         status: "error",
-        errorMessage:
-          err instanceof ApiClientError
-            ? err.message
-            : "Something went wrong. Please try again.",
-        step: "brief",
-        wizard: {
-          ...s.wizard,
-          stepIndex: WIZARD_STEPS.length - 1,
-        },
+        errorMessage: message,
+        step: isRerank ? "results" : wizardOverride ? "results" : "brief",
+        wizard: isRerank
+          ? s.wizard
+          : {
+              ...s.wizard,
+              stepIndex: WIZARD_STEPS.length - 1,
+              furthestStep: WIZARD_STEPS.length - 1,
+            },
       }));
+      if (isRerank) {
+        setToast(message);
+      }
     }
   }
 
@@ -137,14 +160,14 @@ export default function App() {
   }
 
   function openSearchUrl(url: string) {
-    if (url.startsWith("/handoff-mock")) {
-      window.open(`${window.location.origin}${url}`, "_blank", "noopener,noreferrer");
-      return;
-    }
-    window.open(url, "_blank", "noopener,noreferrer");
+    const target =
+      url.startsWith("/handoff-mock") || url.startsWith("/handoff-mock.html")
+        ? `${window.location.origin}${url}`
+        : url;
+    window.open(target, "_blank", "noopener,noreferrer");
   }
 
-  const showGlobeTuner = import.meta.env.DEV || isMockMode();
+  const showGlobeTuner = import.meta.env.DEV;
 
   return (
     <GlobeTuningProvider>
@@ -173,12 +196,13 @@ export default function App() {
           <ResultsScreen
             response={state.response}
             status={state.status}
+            errorMessage={state.errorMessage}
             priorityOverride={state.priorityOverride}
             showScores={showScores}
             savingRouteId={savingRouteId}
             onPriorityChange={(p) => {
               setState((s) => ({ ...s, priorityOverride: p }));
-              void runRecommend({
+              void runRecommend(undefined, {
                 priorityOverride: p,
                 cachedIntent: state.response!.intent,
               });
@@ -191,7 +215,8 @@ export default function App() {
                 errorMessage: undefined,
                 wizard: {
                   ...s.wizard,
-                  stepIndex: WIZARD_STEPS.length - 1,
+                  stepIndex: 0,
+                  furthestStep: WIZARD_STEPS.length - 1,
                 },
               }))
             }

@@ -15,14 +15,6 @@ export function HandoffScreen({
   onBack: () => void;
   onOpenSearch: () => void;
 }) {
-  const fields = [
-    { label: "From", value: `${cityLabel(handoff.origin)} (${handoff.origin})` },
-    { label: "To", value: `${cityLabel(handoff.destination)} (${handoff.destination})` },
-    { label: "Depart", value: formatShortDate(handoff.departDate) },
-    { label: "Return", value: formatShortDate(handoff.returnDate) },
-    { label: "Adults", value: String(handoff.adults) },
-  ];
-
   const steps = [
     "We open Vietnam Airlines flight search in a new tab",
     "Your origin, destination, dates & travellers are pre-filled",
@@ -30,82 +22,104 @@ export function HandoffScreen({
   ];
 
   return (
-    <div className="grid h-full min-h-0 lg:grid-cols-[1.1fr_1fr]">
-      <div className="relative min-h-[220px] lg:min-h-0">
-        <img src={imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-ink/40 to-ink/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent lg:hidden" />
-        <div className="relative flex h-full flex-col justify-end p-5 md:p-8">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-white/70">
-            Off to Vietnam Airlines
+    <div className="handoff-shell anim-rise">
+      <div className="handoff-visual">
+        <img src={imageUrl} alt="" />
+        <div className="handoff-visual-overlay" />
+        <div className="handoff-visual-content">
+          <p className="handoff-eyebrow">Step 3 · Search</p>
+          <h1 className="handoff-title">{destinationName}</h1>
+          <p className="handoff-lead">
+            Ready to search on Vietnam Airlines with your trip details already filled in.
           </p>
-          <h1 className="mt-1 text-2xl font-bold text-white md:text-3xl">{destinationName}</h1>
-          <p className="mt-2 max-w-md text-sm text-white/85">
-            Ready to search flights on Vietnam Airlines with your trip details already filled in.
-          </p>
-          <div className="mt-4 hidden max-w-sm space-y-2 lg:block">
-            {steps.map((s, i) => (
-              <div key={s} className="flex items-start gap-2">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 text-[10px] font-bold text-white">
-                  {i + 1}
-                </span>
-                <span className="text-xs text-white/80">{s}</span>
-              </div>
-            ))}
+
+          <div className="handoff-route-ticket">
+            <div className="handoff-route-leg">
+              <span className="handoff-route-code">{handoff.origin}</span>
+              <span className="handoff-route-city">{cityLabel(handoff.origin)}</span>
+            </div>
+            <div className="handoff-route-arrow" aria-hidden>
+              <span />
+            </div>
+            <div className="handoff-route-leg handoff-route-leg-end">
+              <span className="handoff-route-code">{handoff.destination}</span>
+              <span className="handoff-route-city">{cityLabel(handoff.destination)}</span>
+            </div>
           </div>
+
+          <ol className="handoff-steps-desktop">
+            {steps.map((s, i) => (
+              <li key={s}>
+                <span>{i + 1}</span>
+                {s}
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-col bg-surface/90">
-        <div className="border-b border-line/60 px-5 py-4">
-          <h2 className="text-lg font-bold text-ink">Confirm search details</h2>
-          <p className="mt-0.5 text-xs text-muted">
-            Review before opening the official Vietnam Airlines booking search.
+      <div className="handoff-panel">
+        <header className="handoff-panel-head">
+          <p className="handoff-eyebrow handoff-eyebrow-dark">Off to Vietnam Airlines</p>
+          <h2 className="handoff-panel-title">Confirm search details</h2>
+          <p className="handoff-panel-lead">
+            Review before opening the official booking search — nothing is charged here.
           </p>
-        </div>
+        </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
-          <dl className="grid gap-2 sm:grid-cols-2">
-            {fields.map((f) => (
-              <div key={f.label} className="rounded-xl accent-teal px-3 py-2.5">
-                <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted">
-                  {f.label}
-                </dt>
-                <dd className="mt-0.5 text-sm font-bold text-teal">{f.value}</dd>
-              </div>
-            ))}
+        <div className="handoff-panel-body">
+          <dl className="handoff-fields">
+            <HandoffField label="From" value={`${cityLabel(handoff.origin)} (${handoff.origin})`} />
+            <HandoffField
+              label="To"
+              value={`${cityLabel(handoff.destination)} (${handoff.destination})`}
+            />
+            <HandoffField label="Depart" value={formatShortDate(handoff.departDate)} />
+            <HandoffField label="Return" value={formatShortDate(handoff.returnDate)} />
+            <HandoffField label="Adults" value={String(handoff.adults)} highlight />
           </dl>
 
-          <div className="mt-4 rounded-xl border border-line bg-surface-2 p-3 lg:hidden">
-            <p className="text-[11px] font-semibold uppercase text-muted">What happens next</p>
-            <ol className="mt-2 space-y-2">
-              {steps.map((s, i) => (
-                <li key={s} className="flex gap-2 text-xs text-muted">
-                  <span className="font-bold text-teal">{i + 1}.</span>
-                  {s}
-                </li>
-              ))}
-            </ol>
-          </div>
+          <ol className="handoff-steps-mobile">
+            {steps.map((s, i) => (
+              <li key={s}>
+                <span>{i + 1}</span>
+                {s}
+              </li>
+            ))}
+          </ol>
 
-          <div className="mt-4 rounded-xl border border-teal/15 bg-teal/[0.04] px-3 py-2.5">
-            <p className="text-xs text-muted">
-              <span className="font-semibold text-ink">Note: </span>
-              Veya is a discovery layer only. Fares, availability, and payment are handled entirely
-              on vietnamairlines.com.
-            </p>
+          <div className="handoff-note">
+            <strong>Note:</strong> Veya is a discovery layer only. Fares, availability, and payment
+            happen entirely on vietnamairlines.com.
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-line/60 px-5 py-4">
-          <Button className="w-full" onClick={onOpenSearch}>
+        <footer className="handoff-panel-foot">
+          <Button className="min-h-12 w-full text-base" onClick={onOpenSearch}>
             Open pre-filled search on VNA →
           </Button>
           <Button variant="secondary" className="mt-2 w-full" onClick={onBack}>
             ← Back to routes
           </Button>
-        </div>
+        </footer>
       </div>
+    </div>
+  );
+}
+
+function HandoffField({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div className={highlight ? "handoff-field handoff-field-wide" : "handoff-field"}>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
     </div>
   );
 }

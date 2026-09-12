@@ -56,6 +56,28 @@ export function budgetLabel(band: string): string {
   return map[band] ?? band;
 }
 
+export function priorityLabel(preset: PriorityPreset | string): string {
+  return (
+    PRIORITY_OPTIONS.find((o) => o.value === preset)?.label ??
+    String(preset).replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase())
+  );
+}
+
+export function dateFlexLabel(
+  flex: "fixed" | "flexible_±3" | "flexible_month" | undefined,
+): string {
+  switch (flex) {
+    case "fixed":
+      return "Fixed dates";
+    case "flexible_±3":
+      return "±3 days flexible";
+    case "flexible_month":
+      return "Flexible within a month";
+    default:
+      return "—";
+  }
+}
+
 export function durationLabel(hours: number): string {
   const h = Math.floor(hours);
   const m = Math.round((hours - h) * 60);

@@ -1,4 +1,4 @@
-import type { OriginCity } from "@shared/types";
+import type { DemoPersona } from "../lib/wizard";
 import { Button } from "../components/ui/Button";
 
 const DESTINATIONS = [
@@ -37,13 +37,13 @@ const GATEWAYS = [
 const STEPS = [
   {
     n: "01",
-    title: "Describe your trip",
-    body: "Pick options or type it out — no need to choose a city first.",
+    title: "Three quick taps",
+    body: "Origin, trip vibe, when & who — about 30 seconds.",
   },
   {
     n: "02",
     title: "See ranked routes",
-    body: "Up to three VNA options with plain-language reasons.",
+    body: "Hanoi, Saigon, or Da Nang — with reasons and a trip sketch.",
   },
   {
     n: "03",
@@ -52,15 +52,25 @@ const STEPS = [
   },
 ] as const;
 
-const PERSONAS = [
+const PERSONAS: {
+  id: DemoPersona;
+  name: string;
+  from: string;
+  trip: string;
+  image: string;
+  featured?: boolean;
+}[] = [
   {
+    id: "olivia",
     name: "Olivia",
     from: "Sydney",
     trip: "Beach-and-food with a friend, November, low hassle",
     image:
       "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400&q=80",
+    featured: true,
   },
   {
+    id: "vfr",
     name: "The Nguyens",
     from: "Melbourne",
     trip: "Family visit with kids, flexible ±3 days, one stop max",
@@ -68,6 +78,7 @@ const PERSONAS = [
       "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80",
   },
   {
+    id: "student",
     name: "James",
     from: "Perth",
     trip: "Food-focused long weekend, budget-conscious, solo",
@@ -86,8 +97,8 @@ const FAQ = [
     a: "Not at all. That's the point — tell us the vibe and constraints, and we'll suggest where to start.",
   },
   {
-    q: "Can I describe my trip instead of picking options?",
-    a: "Yes. Tap an option or type below it — whatever feels easier.",
+    q: "How long does the form take?",
+    a: "Three short steps — or skip straight to demo routes with Olivia, the Nguyens, or James.",
   },
 ];
 
@@ -99,12 +110,19 @@ export function HomeScreen({
   onTryExample,
 }: {
   onStart: () => void;
-  onTryExample: (payload: { originCity: OriginCity }) => void;
+  onTryExample: (persona: DemoPersona) => void;
 }) {
+  const olivia = PERSONAS.find((p) => p.id === "olivia")!;
+  const others = PERSONAS.filter((p) => !p.featured);
+
   return (
     <div className="h-full overflow-y-auto">
-      {/* Hero — full viewport, modern airline landing */}
       <section className="hero-home">
+        <a href="/" className="home-brand" onClick={(e) => e.preventDefault()}>
+          <span className="home-brand-mark" aria-hidden />
+          <span className="home-brand-text">Veya</span>
+        </a>
+
         <div className="hero-home-bg pointer-events-none" aria-hidden />
 
         <div className="hero-home-inner">
@@ -118,10 +136,10 @@ export function HomeScreen({
               </Button>
               <button
                 type="button"
-                onClick={() => onTryExample({ originCity: "SYD" })}
+                onClick={() => onTryExample("olivia")}
                 className="text-sm font-semibold text-teal transition hover:text-teal/80"
               >
-                Try Olivia&apos;s example
+                See Olivia&apos;s routes instantly
               </button>
             </div>
           </div>
@@ -139,7 +157,6 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* Gateways — full-width strip */}
       <section className="home-gateways">
         <div className="home-section-inner home-gateways-grid">
           {GATEWAYS.map((g) => (
@@ -152,7 +169,6 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* How it works */}
       <section className="home-section">
         <div className="home-section-inner">
           <p className="home-eyebrow">How Veya works</p>
@@ -169,7 +185,6 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* Destinations — bento grid */}
       <section className="home-section home-section-muted">
         <div className="home-section-inner">
           <p className="home-eyebrow">Destinations</p>
@@ -196,47 +211,57 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* Real trips + Olivia */}
       <section className="home-section">
         <div className="home-section-inner">
           <p className="home-eyebrow">Real trip ideas</p>
           <h2 className="home-heading">Messy, human, totally fine</h2>
+          <p className="home-personas-lead">
+            Tap a story — ranked routes in one click, no form.
+          </p>
 
           <article className="home-olivia">
             <div className="home-olivia-visual">
-              <img
-                src="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&q=80"
-                alt=""
-              />
+              <img src={olivia.image} alt="" />
             </div>
             <div className="home-olivia-body">
               <p className="home-olivia-label">Try the demo</p>
-              <h3 className="home-olivia-title">Olivia · Sydney</h3>
+              <h3 className="home-olivia-title">
+                {olivia.name} · {olivia.from}
+              </h3>
               <blockquote className="home-olivia-quote">&ldquo;{OLIVIA_EXAMPLE}&rdquo;</blockquote>
               <Button
                 variant="secondary"
                 className="mt-5"
-                onClick={() => onTryExample({ originCity: "SYD" })}
+                onClick={() => onTryExample("olivia")}
               >
-                Walk through her trip →
+                See her routes →
               </Button>
             </div>
           </article>
 
-          <div className="home-quotes">
-            {PERSONAS.filter((p) => p.name !== "Olivia").map((p) => (
-              <figure key={p.name} className="home-quote">
-                <blockquote>&ldquo;{p.trip}&rdquo;</blockquote>
-                <figcaption>
-                  {p.name} · {p.from}
-                </figcaption>
-              </figure>
+          <div className="home-personas-grid">
+            {others.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                className="home-persona-card"
+                onClick={() => onTryExample(p.id)}
+              >
+                <img src={p.image} alt="" className="home-persona-img" />
+                <div className="home-persona-overlay" />
+                <div className="home-persona-body">
+                  <p className="home-persona-name">
+                    {p.name} · {p.from}
+                  </p>
+                  <p className="home-persona-trip">&ldquo;{p.trip}&rdquo;</p>
+                  <span className="home-persona-cta">Try this trip →</span>
+                </div>
+              </button>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="home-section home-section-muted">
         <div className="home-section-inner home-faq-wrap">
           <div>
@@ -254,11 +279,10 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* Bottom CTA */}
       <section className="home-cta">
         <div className="home-section-inner home-cta-inner">
           <h2 className="home-cta-title">Ready to explore?</h2>
-          <p className="home-cta-lead">A few questions. Your ranked routes.</p>
+          <p className="home-cta-lead">Three taps. Your ranked routes.</p>
           <Button className="mt-6 min-h-12 px-10 text-base" onClick={onStart}>
             Start planning →
           </Button>

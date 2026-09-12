@@ -89,7 +89,7 @@
         "departDate": "2026-11-10",
         "returnDate": "2026-11-19",
         "adults": 2,
-        "searchUrl": "/handoff-mock?origin=SYD&destination=DAD&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
+        "searchUrl": "/handoff-mock.html?origin=SYD&destination=DAD&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
       }
     },
     {
@@ -156,7 +156,7 @@
         "departDate": "2026-11-10",
         "returnDate": "2026-11-19",
         "adults": 2,
-        "searchUrl": "/handoff-mock?origin=SYD&destination=SGN&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
+        "searchUrl": "/handoff-mock.html?origin=SYD&destination=SGN&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
       }
     },
     {
@@ -223,7 +223,7 @@
         "departDate": "2026-11-10",
         "returnDate": "2026-11-19",
         "adults": 2,
-        "searchUrl": "/handoff-mock?origin=SYD&destination=HAN&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
+        "searchUrl": "/handoff-mock.html?origin=SYD&destination=HAN&departDate=2026-11-10&returnDate=2026-11-19&adults=2"
       }
     }
   ],

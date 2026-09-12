@@ -60,6 +60,12 @@ export async function recommend(
     if (request.originCity) {
       data.intent.originCity = request.originCity;
     }
+    if (request.mode === "brief" && request.briefText?.includes("Melbourne")) {
+      data.intent.originCity = "MEL";
+    }
+    if (request.mode === "brief" && request.briefText?.includes("Perth")) {
+      data.intent.originCity = "PER";
+    }
     return data;
   }
 

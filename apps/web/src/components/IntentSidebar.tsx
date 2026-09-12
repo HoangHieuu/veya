@@ -4,6 +4,7 @@ import {
   budgetLabel,
   cityLabel,
   formatShortDate,
+  priorityLabel,
   PRIORITY_OPTIONS,
   travelStyleLabel,
 } from "../lib/labels";
@@ -29,30 +30,28 @@ export function IntentSidebar({
   const intent = response?.intent;
 
   return (
-    <aside className="flex min-h-0 flex-col border-b border-line bg-surface/80 lg:w-72 lg:shrink-0 lg:border-b-0 lg:border-r">
-      <div className="shrink-0 border-b border-line/60 px-4 py-3">
-        <h2 className="text-sm font-bold text-ink">Your trip</h2>
+    <aside className="results-sidebar flex min-h-0 flex-col lg:w-80 lg:shrink-0">
+      <div className="results-sidebar-head">
+        <p className="results-eyebrow">Your trip</p>
         {intent ? (
-          <p className="mt-1 text-xs leading-relaxed text-muted">{intent.rawSummary}</p>
+          <p className="results-summary">{intent.rawSummary}</p>
         ) : (
-          <p className="mt-1 text-xs text-muted-2">Loading…</p>
+          <p className="results-summary-muted">Loading your brief…</p>
         )}
-        <Button variant="ghost" onClick={onEditIntent} className="mt-2 h-8 px-2 text-xs">
+        <Button variant="ghost" onClick={onEditIntent} className="mt-3 h-9 px-0 text-xs">
           ← Edit trip idea
         </Button>
       </div>
 
       {intent ? (
-        <div className="shrink-0 border-b border-line/60 px-4 py-3">
-          <IntentChips intent={intent} />
+        <div className="results-sidebar-chips">
+          <IntentChips intent={intent} activePriority={activePriority} />
         </div>
       ) : null}
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">
-          Re-rank by priority
-        </p>
-        <div className="mt-2 flex flex-col gap-1.5">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5">
+        <p className="results-eyebrow">Re-rank by priority</p>
+        <div className="mt-3 flex flex-col gap-2">
           {PRIORITY_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -60,10 +59,8 @@ export function IntentSidebar({
               disabled={status === "loading" || !response}
               onClick={() => onPriorityChange(opt.value)}
               className={clsx(
-                "rounded-lg px-3 py-2 text-left text-xs font-semibold transition",
-                activePriority === opt.value
-                  ? "accent-gold text-[#8a6d1a]"
-                  : "border border-line bg-surface text-muted hover:border-teal/20 hover:text-ink",
+                "results-priority-btn",
+                activePriority === opt.value && "results-priority-btn-active",
               )}
             >
               {opt.label}
@@ -72,7 +69,7 @@ export function IntentSidebar({
         </div>
       </div>
 
-      <div className="shrink-0 border-t border-line/60 px-4 py-2">
+      <div className="results-sidebar-foot">
         <label className="flex cursor-pointer items-center gap-2 text-[11px] text-muted">
           <input
             type="checkbox"
@@ -87,7 +84,13 @@ export function IntentSidebar({
   );
 }
 
-function IntentChips({ intent }: { intent: TripIntent }) {
+function IntentChips({
+  intent,
+  activePriority,
+}: {
+  intent: TripIntent;
+  activePriority?: PriorityPreset;
+}) {
   const chips = [
     `${cityLabel(intent.originCity)} · ${intent.originCity}`,
     `${formatShortDate(intent.dateWindow.start)} – ${formatShortDate(intent.dateWindow.end)}`,
@@ -95,18 +98,13 @@ function IntentChips({ intent }: { intent: TripIntent }) {
     `${intent.travellers} traveller${intent.travellers > 1 ? "s" : ""}`,
     budgetLabel(intent.budgetBand),
     ...intent.travelStyles.map(travelStyleLabel),
-    intent.constraints.maxStops === 0
-      ? "Direct only"
-      : `Max ${intent.constraints.maxStops} stop`,
+    priorityLabel(activePriority ?? intent.priority),
   ];
 
   return (
     <div className="flex flex-wrap gap-1.5">
       {chips.map((c) => (
-        <span
-          key={c}
-          className="rounded-md accent-teal px-2 py-1 text-[11px] font-medium text-teal"
-        >
+        <span key={c} className="results-chip">
           {c}
         </span>
       ))}
