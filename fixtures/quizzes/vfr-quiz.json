@@ -1,0 +1,36 @@
+{
+  "request": {
+    "mode": "quiz",
+    "locale": "en",
+    "quiz": {
+      "travelStyle": "vfr",
+      "dateFlexibility": "flexible_±3",
+      "budgetBand": "standard",
+      "travellers": 4,
+      "priority": "best_for_family",
+      "originCity": "MEL",
+      "departAfter": "2026-10-01",
+      "departBefore": "2026-10-08"
+    }
+  },
+  "expectedIntent": {
+    "originCity": "MEL",
+    "travelStyles": ["vfr", "family"],
+    "budgetBand": "standard",
+    "travellers": 4,
+    "priority": "best_for_family",
+    "dateWindow": {
+      "start": "2026-10-01",
+      "end": "2026-10-08",
+      "flexibility": "flexible_±3"
+    },
+    "tripDurationDays": 7,
+    "goal": "discover_destination",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "vfr trip from MEL; 4 travellers; budget standard; priority best_for_family; dates flexible_±3",
+    "parseConfidence": 1,
+    "missingFields": []
+  }
+}

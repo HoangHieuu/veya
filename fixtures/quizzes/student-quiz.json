@@ -1,0 +1,35 @@
+{
+  "request": {
+    "mode": "quiz",
+    "locale": "en",
+    "quiz": {
+      "travelStyle": "food_culture",
+      "dateFlexibility": "flexible_month",
+      "budgetBand": "budget",
+      "travellers": 1,
+      "priority": "food_and_culture",
+      "originCity": "PER"
+    }
+  },
+  "expectedIntent": {
+    "originCity": "PER",
+    "travelStyles": ["food_culture"],
+    "budgetBand": "budget",
+    "travellers": 1,
+    "priority": "food_and_culture",
+    "dateWindow": {
+      "start": "2026-09-11",
+      "end": "2026-09-18",
+      "flexibility": "flexible_month"
+    },
+    "tripDurationDays": 7,
+    "goal": "discover_destination",
+    "constraints": {
+      "maxStops": 2
+    },
+    "rawSummary": "food_culture trip from PER; 1 traveller; budget budget; priority food_and_culture; dates flexible_month",
+    "parseConfidence": 1,
+    "missingFields": ["departAfter", "departBefore"]
+  },
+  "notes": "Deterministic with now=2026-09-11T00:00:00.000Z"
+}
