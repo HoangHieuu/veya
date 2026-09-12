@@ -1,0 +1,29 @@
+{
+  "request": {
+    "mode": "brief",
+    "locale": "en",
+    "originCity": "SYD",
+    "briefText": "Trip from Sydney (SYD). 2 adults. Dates: 8–10 days in mid-November. Trip vibe: Beach-and-food trip with a friend — low hassle, few connections. Budget band: Standard. Priority: Lowest hassle."
+  },
+  "expectedIntent": {
+    "originCity": "SYD",
+    "travelStyles": ["beach_relaxation", "food_culture"],
+    "budgetBand": "standard",
+    "travellers": 2,
+    "priority": "lowest_hassle",
+    "dateWindow": {
+      "start": "2026-11-15",
+      "end": "2026-11-24",
+      "flexibility": "flexible_±3"
+    },
+    "tripDurationDays": 9,
+    "goal": "discover_destination",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "Trip from Sydney (SYD). 2 adults. Dates: 8–10 days in mid-November. Trip vibe: Beach-and-food trip with a friend — low hassle, few connections. Budget band: Standard. Priority: Lowest hassle.",
+    "parseConfidence": 0.89,
+    "missingFields": []
+  },
+  "notes": "Fixed now assumed 2026-09-11 UTC for mid-November resolution. parseConfidence is approximate floor."
+}

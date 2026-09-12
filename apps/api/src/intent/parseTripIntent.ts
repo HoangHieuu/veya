@@ -2,6 +2,8 @@ import type {
   IntentParseResult,
   RecommendRequest,
 } from "../../../../shared/types.js";
+import { parseBriefHeuristic } from "./briefHeuristic.js";
+import { maybeFillWithLlm, shouldUseLlm } from "./llmAdapter.js";
 import { mapQuizToTripIntent } from "./quizMapper.js";
 import {
   quizAnswersSchema,
@@ -14,10 +16,6 @@ export interface ParseTripIntentOptions {
   now?: Date;
 }
 
-/**
- * Person C — commit 06: deterministic quiz path.
- * Brief / LLM arrives in feat(intent) brief parser commit.
- */
 export async function parseTripIntent(
   input: RecommendRequest,
   options: ParseTripIntentOptions = {},
@@ -80,11 +78,50 @@ async function parseTripIntentUnsafe(
   }
 
   if (req.mode === "brief") {
-    return {
-      ok: false,
-      errorCode: "UNPARSEABLE",
-      message: "Brief parser not implemented yet (Person C follow-up commit)",
-    };
+    const briefText = req.briefText?.trim() ?? "";
+    if (!briefText) {
+      return {
+        ok: false,
+        errorCode: "EMPTY_INPUT",
+        message: "mode=brief requires briefText",
+      };
+    }
+
+    const { intent, fieldHits } = parseBriefHeuristic(briefText, {
+      now,
+      originCity: req.originCity,
+      priorityOverride: req.priorityOverride,
+    });
+
+    const coreHitCount = [
+      fieldHits.originCity,
+      fieldHits.travelStyles,
+      fieldHits.travellers,
+      fieldHits.priority,
+      fieldHits.budgetBand,
+    ].filter(Boolean).length;
+
+    if (coreHitCount < 3) {
+      return {
+        ok: false,
+        errorCode: "UNPARSEABLE",
+        message: "Could not extract enough trip fields from briefText",
+      };
+    }
+
+    const withLlm = await maybeFillWithLlm(intent, briefText, {
+      enabled: shouldUseLlm(),
+    });
+
+    const validated = validateTripIntent(withLlm);
+    if (!validated.ok) {
+      return {
+        ok: false,
+        errorCode: "VALIDATION_FAILED",
+        message: validated.issues,
+      };
+    }
+    return { ok: true, intent: validated.intent };
   }
 
   return {
