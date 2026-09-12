@@ -1,0 +1,52 @@
+{
+  "id": "MEL-DAD-one_stop",
+  "originCity": "MEL",
+  "originAirport": "MEL",
+  "destinationCity": "DAD",
+  "destinationAirport": "DAD",
+  "destinationName": "Da Nang",
+  "connectionType": "one_stop",
+  "viaHub": "SGN",
+  "typicalDurationHours": 12.5,
+  "seasonalityNotes": "Central Vietnam is driest and sunniest from February to August; September to December is the wet season, with October and November carrying the highest rain and storm risk.",
+  "gettingAround": "Da Nang (DAD) is about 3 km from the riverfront; taxis and Grab reach My Khe Beach in 15–25 minutes, and Hoi An is roughly 45 minutes by road.",
+  "tripArchetypes": [
+    "beach_relaxation",
+    "family",
+    "food_culture"
+  ],
+  "indicativeFareBand": "standard",
+  "bestMonths": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "shoulderMonths": [
+    1,
+    9
+  ],
+  "backgroundImage": {
+    "url": "/assets/da-nang-beach.jpg",
+    "archetype": "beach_relaxation",
+    "source": "Wikimedia Commons — https://commons.wikimedia.org/wiki/File:My_Khe_Beach,_Da_Nang,_Vietnam.jpg",
+    "owner": ". Ray in Manila",
+    "licenseNote": "CC BY 2.0 — attribution required. Credit \". Ray in Manila / Wikimedia Commons / CC BY 2.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 1920px."
+  },
+  "promotion": {
+    "id": "lotustudents-connecting-vietnam-10",
+    "title": "LotuStudents — up to 10% off connecting itineraries",
+    "summary": "Verified students aged 15–31 can receive up to 10% off Premium Economy Classic, Economy Classic and Economy Lite fares on international itineraries connecting in Vietnam. Registration, document verification and peak-period exclusions apply.",
+    "validUntil": "2026-12-31"
+  },
+  "lotusmilesIndicative": {
+    "earnBand": "high",
+    "note": "Veya indicative distance proxy: ~4,543 miles (MEL–SGN 4,166 + SGN–DAD 377). Actual Lotusmiles accrual depends on eligible booking class and qualifying segments. low/mid/high is a Veya internal signal, not a Lotusmiles tier."
+  },
+  "dataConfidence": "illustrative",
+  "sourceDocument": "Connection: Lotusmiles sector table lists no Australia-to-Da Nang sector; vietnamairlines.com/en-au/flights-from-melbourne-to-da-nang states nonstop flights are not available and VNA operates connecting options via Hanoi or Ho Chi Minh City. Routed via SGN. Duration: vietnamairlines.com/en-au route page, published: 12 hours 30 minutes – 33 hours 55 minutes including transit (low end used). Fare band: Relative fare band: tercile of a nine-route AUD snapshot captured 2026-09-12 from the vietnamairlines.com/en-au route pages (site notes fares are collected within 48hrs and may change). Not a live price. Miles: Lotusmiles published sector distances — vietnamairlines.com/au/en/lotusmiles/earn-miles/earn-miles-after-flights/eligible-flight-and-miles-scheme. Promotion: vietnamairlines.com/au/en/plan-book/LotuSociety/lotustudents-offers. Captured 2026-09-12.",
+  "sourceOwner": "Vietnam Airlines published web content; curated by Veya Person B"
+}
