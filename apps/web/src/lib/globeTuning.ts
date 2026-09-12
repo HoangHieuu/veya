@@ -17,14 +17,14 @@ export type GlobeTuning = {
 };
 
 export const DEFAULT_GLOBE_TUNING: GlobeTuning = {
-  auPhi: 1.52,
+  auPhi: 1.82,
   auTheta: -0.6,
-  scale: 1.12,
+  scale: 1.38,
   offsetX: 40,
   offsetY: -40,
   latFactor: 0.35,
   manual: false,
-  manualPhi: 1.52,
+  manualPhi: 1.82,
   manualTheta: -0.6,
   usePreviewOrigin: false,
   previewOrigin: "SYD",

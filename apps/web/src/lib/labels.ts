@@ -1,5 +1,6 @@
 import type {
   ConnectionType,
+  DestinationCity,
   PriorityPreset,
   TravelStyle,
 } from "@shared/types";
@@ -96,4 +97,38 @@ export function routePathLabel(
 ): string {
   if (via) return `${origin} → ${via} → ${destination}`;
   return `${origin} → ${destination}`;
+}
+
+const GATEWAY_INFO: Record<
+  DestinationCity,
+  { title: string; subtitle: string; vibe: string }
+> = {
+  DAD: {
+    title: "Da Nang",
+    subtitle: "Central coast gateway",
+    vibe: "Beach, Hoi An day trips, easy coast pace",
+  },
+  SGN: {
+    title: "Ho Chi Minh City",
+    subtitle: "Southern city gateway",
+    vibe: "Street food, city life, beaches via road",
+  },
+  HAN: {
+    title: "Hanoi",
+    subtitle: "Northern culture gateway",
+    vibe: "Old Quarter, history, family visits north",
+  },
+};
+
+export function gatewayInfo(city: DestinationCity) {
+  return GATEWAY_INFO[city];
+}
+
+export function fareBandLabel(band: string): string {
+  const map: Record<string, string> = {
+    budget: "Budget band",
+    standard: "Standard band",
+    premium: "Premium band",
+  };
+  return map[band] ?? band;
 }

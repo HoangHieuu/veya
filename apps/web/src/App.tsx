@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import type { PriorityPreset, RankedCard, RecommendRequest } from "@shared/types";
 import { ApiClientError, recommend, saveTrip } from "./api/client";
-import { GlobeTuningPanel } from "./components/GlobeTuningPanel";
 import { Header, type AppStep } from "./components/layout/Header";
 import { Toast } from "./components/ui/Toast";
-import { GlobeTuningProvider } from "./context/GlobeTuningContext";
 import {
   buildRecommendRequest,
   demoWizardState,
@@ -167,10 +165,7 @@ export default function App() {
     window.open(target, "_blank", "noopener,noreferrer");
   }
 
-  const showGlobeTuner = import.meta.env.DEV;
-
   return (
-    <GlobeTuningProvider>
       <div className="page-bg flex h-dvh flex-col overflow-hidden text-ink">
         {state.step !== "home" ? (
           <Header step={state.step} onHome={goHome} />
@@ -237,6 +232,11 @@ export default function App() {
             destinationName={selectedCard.route.destinationName}
             imageUrl={selectedCard.route.backgroundImage.url}
             handoff={selectedCard.handoff}
+            viaHub={selectedCard.route.viaHub}
+            tripOutline={selectedCard.tripOutline}
+            highlightReason={selectedCard.score.reasons[0]}
+            connectionType={selectedCard.route.connectionType}
+            typicalDurationHours={selectedCard.route.typicalDurationHours}
             onBack={() => setState((s) => ({ ...s, step: "results" }))}
             onOpenSearch={() => openSearchUrl(selectedCard.handoff.searchUrl)}
           />
@@ -244,8 +244,6 @@ export default function App() {
       </main>
 
         {toast ? <Toast message={toast} onDismiss={() => setToast(null)} /> : null}
-        {showGlobeTuner ? <GlobeTuningPanel /> : null}
       </div>
-    </GlobeTuningProvider>
   );
 }
