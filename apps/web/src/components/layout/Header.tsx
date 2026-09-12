@@ -1,3 +1,4 @@
+import { VeyaLogo } from "../VeyaLogo";
 import { StepIndicator, type FlowStep } from "./StepIndicator";
 
 export type AppStep = "home" | FlowStep;
@@ -15,23 +16,9 @@ export function Header({
         <button
           type="button"
           onClick={onHome}
-          className="flex min-w-0 items-center gap-2 justify-self-start rounded-lg transition hover:opacity-80"
+          className="flex min-w-0 items-center justify-self-start rounded-lg transition hover:brightness-105"
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-teal/20 to-gold/15">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path
-                d="M12 3c1.5 3 2 5.5 2 8 0 2-.5 3.5-2 5.5-1.5-2-2-3.5-2-5.5 0-2.5.5-5 2-8Z"
-                fill="url(#lotus)"
-              />
-              <defs>
-                <linearGradient id="lotus" x1="12" y1="3" x2="12" y2="16">
-                  <stop stopColor="#c9a227" />
-                  <stop offset="1" stopColor="#006885" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <span className="truncate text-sm font-bold text-ink">Veya</span>
+          <VeyaLogo size="sm" />
         </button>
 
         <StepIndicator current={step} />

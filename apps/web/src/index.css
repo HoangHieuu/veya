@@ -315,23 +315,41 @@
   left: clamp(1.25rem, 4vw, 4rem);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   text-decoration: none;
-  color: var(--color-ink);
 }
 
-.home-brand-mark {
-  width: 2rem;
+.veya-logo-wrap {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #000;
+  line-height: 0;
+}
+
+.veya-logo-wrap-sm {
+  border-radius: 0.4375rem;
+}
+
+.veya-logo-wrap-lg {
+  border-radius: 0.5625rem;
+}
+
+.veya-logo {
+  display: block;
+  height: 2.25rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.veya-logo-wrap-sm .veya-logo {
   height: 2rem;
-  border-radius: 0.625rem;
-  background: linear-gradient(135deg, rgb(0 104 133 / 0.18), rgb(201 162 39 / 0.15));
-  box-shadow: 0 2px 10px rgb(0 104 133 / 0.08);
 }
 
-.home-brand-text {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.veya-logo-wrap-lg .veya-logo {
+  height: 2.75rem;
 }
 
 .hero-home {

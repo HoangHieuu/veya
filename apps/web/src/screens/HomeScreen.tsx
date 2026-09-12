@@ -1,4 +1,5 @@
 import type { DemoPersona } from "../lib/wizard";
+import { VeyaLogo } from "../components/VeyaLogo";
 import { Button } from "../components/ui/Button";
 
 const DESTINATIONS = [
@@ -119,8 +120,7 @@ export function HomeScreen({
     <div className="h-full overflow-y-auto">
       <section className="hero-home">
         <a href="/" className="home-brand" onClick={(e) => e.preventDefault()}>
-          <span className="home-brand-mark" aria-hidden />
-          <span className="home-brand-text">Veya</span>
+          <VeyaLogo size="md" />
         </a>
 
         <div className="hero-home-bg pointer-events-none" aria-hidden />
