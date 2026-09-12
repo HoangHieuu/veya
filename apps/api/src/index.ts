@@ -1,18 +1,11 @@
-import cors from "cors";
-import express from "express";
-import { registerRecommendRoutes } from "./routes/recommend.js";
+import { loadLocalEnv } from "./loadEnv.js";
 
-const app = express();
+loadLocalEnv();
+
+import { createApp } from "./app.js";
+
 const port = Number(process.env.PORT) || 3001;
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/health", (_req, res) => {
-  res.json({ ok: true, service: "veya-api", status: "stub" });
-});
-
-registerRecommendRoutes(app);
+const app = createApp();
 
 app.listen(port, () => {
   console.log(`Veya API listening on http://localhost:${port}`);
