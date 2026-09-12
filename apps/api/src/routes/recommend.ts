@@ -7,13 +7,6 @@ import type {
 } from "../../../../shared/types.js";
 import { buildHandoffParams } from "../handoff.js";
 import type { DatasetSnapshot } from "../dataset/loader.js";
-import { loadExperienceHighlights } from "../dataset/experiences.js";
-import {
-  buildNeedProfile,
-  loadNeedPlaceMap,
-  rankExperienceHighlights,
-} from "../dataset/needPlaceMap.js";
-import { tripOutlineConnectionPhrase } from "../../../../shared/routeLabels.js";
 import { httpError } from "../errors.js";
 import {
   SCORE_WEIGHTS,
@@ -45,8 +38,6 @@ export function registerRecommendRoutes(
     }
     const candidates = filterCandidates(effectiveIntent, snapshot.routes);
     const ranked = rankRoutes(effectiveIntent, candidates, requestNow);
-    const needMap = loadNeedPlaceMap();
-    const needProfile = buildNeedProfile(effectiveIntent, needMap);
     const requestId = dependencies.idGenerator();
     const cards = ranked.slice(0, 3).map((scored, index) => ({
       rank: (index + 1) as 1 | 2 | 3,
@@ -55,10 +46,6 @@ export function registerRecommendRoutes(
       score: structuredClone(scored.score),
       tripOutline: buildTripOutline(effectiveIntent, scored.route),
       handoff: buildHandoffParams(effectiveIntent, scored.route),
-      experienceHighlights: rankExperienceHighlights(
-        loadExperienceHighlights(scored.route.destinationCity),
-        needProfile,
-      ),
     }));
 
     if (dependencies.enableDevScoring) {
@@ -239,10 +226,7 @@ function stopCount(route: RouteRecord): number {
 }
 
 function buildTripOutline(intent: TripIntent, route: RouteRecord): string {
-  const connection = tripOutlineConnectionPhrase(
-    route.connectionType,
-    route.viaHub,
-  );
+  const connection = buildConnectionPhrase(route.connectionType, route.viaHub);
   const confidenceClause =
     route.dataConfidence === "illustrative"
       ? "route and fare details are illustrative for this prototype"
@@ -253,6 +237,20 @@ function buildTripOutline(intent: TripIntent, route: RouteRecord): string {
     `The curated option is ${connection}, with a typical journey of ${route.typicalDurationHours} hours.`,
     `Getting around: ${gettingAroundClause}; ${confidenceClause}.`,
   ].join(" ");
+}
+
+function buildConnectionPhrase(
+  connectionType: RouteRecord["connectionType"],
+  viaHub: RouteRecord["viaHub"],
+): string {
+  switch (connectionType) {
+    case "direct":
+      return "a direct flight";
+    case "one_stop":
+      return `a one-stop itinerary via ${viaHub ?? "a connecting hub"}`;
+    case "two_stop":
+      return `a two-stop itinerary via ${viaHub ?? "connecting hubs"}`;
+  }
 }
 
 function firstGroundedClause(value: string): string {

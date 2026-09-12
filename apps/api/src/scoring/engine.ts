@@ -6,7 +6,6 @@ import type {
   TravelStyle,
   TripIntent,
 } from "../../../../shared/types.js";
-import { connectionReasonText } from "../../../../shared/routeLabels.js";
 
 export const SCORING_VERSION = "0.1.0";
 
@@ -203,7 +202,7 @@ function buildReasonTraces(
   );
   const styleText = buildStyleReason(intent.travelStyles, matchedStyles, factors.intentMatch);
 
-  const connectionText = connectionReasonText(route.connectionType, route.viaHub);
+  const connectionText = buildConnectionReason(route.connectionType, route.viaHub);
 
   const dateText =
     factors.dateFit === 100
@@ -239,6 +238,20 @@ function buildReasonTraces(
     },
     fourth,
   ];
+}
+
+function buildConnectionReason(
+  connectionType: RouteRecord["connectionType"],
+  viaHub: RouteRecord["viaHub"],
+): string {
+  switch (connectionType) {
+    case "direct":
+      return "The route is direct, which reduces connection complexity.";
+    case "one_stop":
+      return `The route uses one connection via ${viaHub ?? "a connecting hub"}.`;
+    case "two_stop":
+      return `The route uses two connections via ${viaHub ?? "connecting hubs"}.`;
+  }
 }
 
 function buildStyleReason(
