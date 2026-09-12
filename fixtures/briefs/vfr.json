@@ -1,0 +1,30 @@
+{
+  "request": {
+    "mode": "brief",
+    "locale": "en",
+    "originCity": "MEL",
+    "briefText": "Trip from Melbourne (MEL). 4 adults. Dates: Visiting family in Hanoi, ±3 days flexible. Trip vibe: Family visit with kids — one stop max, prefer direct if possible. Budget band: Standard. Priority: Best for family. Need stroller-friendly airports where possible."
+  },
+  "expectedIntent": {
+    "originCity": "MEL",
+    "travelStyles": ["family", "vfr"],
+    "budgetBand": "standard",
+    "travellers": 4,
+    "priority": "best_for_family",
+    "dateWindow": {
+      "start": "2026-09-11",
+      "end": "2026-09-18",
+      "flexibility": "flexible_±3"
+    },
+    "tripDurationDays": 7,
+    "goal": "choose_route",
+    "preferredDestination": "HAN",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "Trip from Melbourne (MEL). 4 adults. Dates: Visiting family in Hanoi, ±3 days flexible. Trip vibe: Family visit with kids — one stop max, prefer direct if possible. Budget band: Standard. Priority: Best for family. Need stroller-friendly airports where possible.",
+    "parseConfidence": 0.89,
+    "missingFields": ["tripDurationDays", "dateWindow.start"]
+  },
+  "notes": "Fixed now 2026-09-11 UTC when no absolute start date is present."
+}

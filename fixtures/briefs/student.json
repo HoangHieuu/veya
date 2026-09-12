@@ -1,0 +1,29 @@
+{
+  "request": {
+    "mode": "brief",
+    "locale": "en",
+    "originCity": "PER",
+    "briefText": "Trip from Perth (PER). 1 adult. Dates: Long weekend in the next month. Trip vibe: Food-focused solo trip, budget-conscious, happy with one stop. Budget band: Budget. Priority: Food and culture."
+  },
+  "expectedIntent": {
+    "originCity": "PER",
+    "travelStyles": ["food_culture"],
+    "budgetBand": "budget",
+    "travellers": 1,
+    "priority": "food_and_culture",
+    "dateWindow": {
+      "start": "2026-10-01",
+      "end": "2026-10-04",
+      "flexibility": "flexible_month"
+    },
+    "tripDurationDays": 3,
+    "goal": "discover_destination",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "Trip from Perth (PER). 1 adult. Dates: Long weekend in the next month. Trip vibe: Food-focused solo trip, budget-conscious, happy with one stop. Budget band: Budget. Priority: Food and culture.",
+    "parseConfidence": 0.89,
+    "missingFields": []
+  },
+  "notes": "next month from 2026-09-11 → 2026-10-01; one stop from brief → maxStops 1."
+}
