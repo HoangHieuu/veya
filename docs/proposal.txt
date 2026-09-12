@@ -1,0 +1,288 @@
+UAVS Hackathon 2026
+Round 1 - Idea Proposal
+1. Product/project name
+- Product name: Veya
+Veya is an AI-powered travel discovery and route-personalisation layer for Vietnam Airlines’ Australian website. It
+helps individual travellers turn a vague trip idea into a curated, Vietnam Airlines-compatible route
+recommendation, then hands them into the existing official flight-search flow with their preferences pre-filled.
+2. Team Information
+- Team name: dalatmiu
+- Team leader's phone number: 0366184250
+No. Full Name University Contact email
+1 Nguyễn Thiện Nhân HCMUT work.nhantnguyen@gmail.com
+2 Đặng Võ Minh Nhựt HCMUT work.dangvominhnhut@gmail.com
+3 Trần Chí Đại HCMUT dagk0120@gmail.com
+4 Nguyễn Trần Hoàng Hiếu HCMUT hoang.hieu.0726@gmail.com
+3. Chosen Problem Statement and Reason for the Choice
+- Problem Setter: Vietnam Airlines
+- Official problem statement: How might we make vietnamairlines.com and our mobile app the smartest,
+most personalised and most rewarding place to book — so travellers choose us directly instead of through
+third-party online travel agents (OTAs)?
+- Our focus within this challenge: Vietnam Airlines has clarified that OTAs win largely because they let
+undecided travellers compare multiple airlines and destinations in one place, while vietnamairlines.com
+currently offers a single-airline, From/To/Date search form. We focus on that earlier, pre-booking discovery
+moment: turning a vague trip idea into a Vietnam Airlines-compatible route recommendation, then
+handing the traveller into Vietnam Airlines’ existing search and booking flow with their choice already
+pre-filled. We do not redesign booking, payment or checkout, which are operated by third-party systems
+outside Vietnam Airlines’ direct control, and we target individual leisure/VFR/student travellers in
+Australia rather than corporate travellers, who are served through a separate channel.
+- Why we chose this problem:
+- Root-cause fit: Vietnam Airlines has confirmed travellers often turn to OTAs before they have
+chosen a destination or airline, a discovery problem that natural-language AI and explainable
+recommendation are well suited to solve, rather than one that needs backend booking or pricing
+access we do not have.
+- Explicitly in-scope: the clarification notes name search experience, content, promotion,
+engagement and loyalty as areas Vietnam Airlines can change; Veya operates entirely within that
+scope and does not touch booking, payment or checkout.
+- Team fit: our members combine backgrounds in machine learning, product/UX design, and
+business analytics, suited to a problem that is as much about discovery and trust as it is about AI.
+- Depth over breadth: we scope to a small, curated set of Australian departure cities and Vietnam
+Airlines-served destinations so the team can build an explainable, working demo rather than
+attempting broad, shallow coverage.
+4. Problem Framing
+- The specific pain point: On vietnamairlines.com and the Vietnam Airlines app, a traveller without a fixed
+destination or airline in mind is met with a bare From/To/Date search form. This works well for someone
+who already knows what they want, but offers no help to someone still deciding where, when or how to
+travel, so they turn to an OTA, which lets them compare airlines and destinations side by side. Vietnam
+Airlines has confirmed that many visitors check flight schedules on its site but do not complete a direct
+booking, which points to a discovery gap rather than only a pricing gap.
+- Primary, secondary and pilot users:
+- Primary users: individual leisure, VFR (visiting friends and relatives) and student travellers based
+in Australia who have a trip in mind but have not yet chosen a destination, route or airline.
+Corporate travellers are out of scope, as they are served through a separate booking channel.
+- Secondary users: Vietnam Airlines’ Australia-market commercial and e-commerce team, who
+want more visitors to complete a direct search and booking rather than leaving for an OTA to find
+inspiration.
+- Pilot persona: Olivia, based in Sydney, has 8–10 days free in November and wants a
+beach-and-food trip in Asia with a friend, low-hassle and few connections, but has not yet decided
+on a country or airline.
+- Pilot scenario:
+- Pilot coverage: Australian departure cities (Sydney, Melbourne, Perth) matched to a curated set
+of Vietnam Airlines-served destinations (e.g. Ho Chi Minh City, Hanoi, Da Nang).
+- Pilot experience: one guided session from a natural-language trip brief to 3 ranked
+destination/route cards to a pre-filled hand-off into Vietnam Airlines’ existing search flow.
+- Market context and research plan:
+- Market context: Vietnam Airlines has confirmed that OTAs’ core advantage is letting travellers
+compare multiple airlines and destinations in one place, while a single airline’s own website can
+only show that airline’s own fares and routes - a structural discovery gap rather than a pricing gap,
+most acute for visitors who check schedules on vietnamairlines.com without completing a
+booking.
+- Observed user gap: A traveller who has not yet chosen a destination or airline has little reason to
+start on a single-airline site; they need help deciding where and how to travel before they can
+meaningfully compare fares.
+- Research plan: The team will review Vietnam Airlines’ confirmed Australia-origin route network
+and any available destination or promotional content to build a curated dataset, and will test the
+prototype with 5–8 Australia-based travellers to check whether the recommended routes and
+“why this fits” explanations make sense and would make them consider starting their search on
+vietnamairlines.com.
+-
+- Alternative-channel landscape:
+Channel type What it does well Gap addressed by Veya
+Third-party OTAs Let travellers compare multiple airlines,
+routes and destinations in one place
+Gives an undecided traveller a reason to
+start on vietnamairlines.com by helping
+them decide where and how to travel,
+before they need to compare elsewhere
+Vietnam Airlines’ current
+search (From / To / Date
+form)
+Authoritative, direct fares and schedules
+once a route is already chosen
+Offers no help to a traveller who has
+not yet chosen a destination, date or
+route
+Generic airline
+promotional content pages
+Showcase destinations and offers Static and not matched to an individual
+traveller’s stated trip intent
+Veya Turns a vague trip idea into an
+explainable, Vietnam Airlines-specific
+route recommendation
+Combines natural-language intent
+extraction, transparent ranking and a
+direct hand-off into the existing search
+flow
+5. Assumptions & Open Questions
+- Assumptions:
+- Vietnam Airlines has confirmed it does not yet have a deep, verified individual preference database.
+Veya therefore relies only on self-declared, session-based preferences (a short quiz or
+natural-language trip brief), not historical personalisation; deeper personalisation is treated as a
+future possibility, not a Round 2 dependency.
+- We assume the MVP can use a curated, static dataset of confirmed and illustrative
+Australia-to-Vietnam routes, destination content and promotions, with any unconfirmed route or
+schedule information explicitly labelled illustrative.
+- We assume the solution sits entirely before the existing booking flow and only pre-fills the existing
+Vietnam Airlines search (origin, destination, dates); we do not redesign search-results ranking,
+payment or checkout, which remain outside Vietnam Airlines’ direct control.
+- We assume the primary platform is Vietnam Airlines’ main website and app; Lotusmiles may be
+referenced as an optional loyalty/engagement signal but is not redesigned.
+- We assume trip-archetype background images (beach, education, food & culture, family, etc.) can
+be sourced from licensed stock libraries or imagery approved by Vietnam Airlines or its
+tourism-board partners; no scraped or unlicensed imagery will be used, even in the prototype.
+- Open Questions:
+- Which Australia-origin routes and connections (from Sydney, Melbourne, Perth) can Vietnam
+Airlines confirm for the destinations we plan to feature, so our route cards rely on confirmed data
+rather than illustrative placeholders?
+- What destination, seasonal or promotional content can Vietnam Airlines provide or approve for
+our curated knowledge base, versus content we should treat as illustrative only?
+- Should the prototype assume any session-level signal beyond a self-declared quiz (e.g. a logged-in
+Lotusmiles tier), or should personalisation rely solely on what the traveller tells us in the moment?
+- Is there a preferred way to demonstrate the hand-off into the existing search flow (e.g. a mock deep
+link with pre-filled parameters), given we should not touch the real booking or payment system?
+6. Proposed Solution
+- Veya has four components that sit entirely within the search, content, personalisation and engagement
+layer Vietnam Airlines can control, before a traveller reaches the existing booking and payment flow, which
+we do not modify:
+- AI Trip Brief: The traveller types a natural-language trip idea or answers a short quiz (travel style,
+date flexibility, budget band, number of travellers, priority). A large language model extracts this
+into a structured, validated intent record.
+- Veya engine: A small set of curated, Vietnam Airlines-compatible destinations and routes is
+ranked against the traveller's intent using a transparent, weighted-scoring approach: each candidate
+route is scored on how well it matches the traveller's stated intent, how well the dates fit, how
+convenient the route is (direct vs. connecting), how well it fits the traveller's budget band, how
+much loyalty value it carries, and whether a relevant promotion applies, then combined into one
+overall ranking. The traveller can choose a priority preset ("Lowest hassle", "Best for family",
+"Maximise miles", "Food & culture") that adjusts how much each factor counts, automatically; the
+underlying weighting stays hidden from the traveller-facing screen and is only auditable in a
+separate judge/dev view, keeping the recommendation explainable without exposing controls the
+traveller doesn't need. If a field is missing for a given destination (for example, no promotion or
+Lotusmiles value on file), it is simply scored as zero rather than causing an error. Because the MVP
+does not integrate real-time fare data, the budget-fit factor is based on an illustrative, self-declared
+band (e.g. traveller-selected budget / standard / premium) rather than a live price signal, clearly
+noted as such. Each destination/route record includes departure city, destination, indicated
+connections (direct, or connecting and via which hub), typical flight duration, seasonality notes, a
+short "getting around" summary (typical airport-to-city transport options and approximate
+duration), a trip-archetype tag (e.g. beach/relaxation, education, food & culture, family) with an
+associated licensed background image, source document and owner, and a flag for whether the
+route or schedule data is confirmed or illustrative. Veya only recommends a destination or route
+present in the curated dataset. Any illustrative route is labelled clearly, for example: "Illustrative
+route availability for prototype purposes; final recommendations require Vietnam
+Airlines-approved schedule and inventory data." For instance, Da Nang is labelled a one-stop
+connection via Hanoi or Ho Chi Minh City rather than a direct flight, consistent with Vietnam
+Airlines' current network, so the route-convenience factor never overstates its convenience.
+- Destination story cards, promotion and rewards preview: For each recommended route, a
+context-grounded card explains "why this fits", shows a suggested Vietnam Airlines route from the
+traveller's city, an illustrative trip outline, a short "getting around" note (for example, typical taxi or
+airport-bus time from the destination airport into the city centre), and, only when present in the
+curated dataset, a relevant promotion or an indicative Lotusmiles value. Each card also carries a
+background image matched to the traveller's trip archetype, for example a beach scene for a leisure
+trip, a university campus for an education-focused trip, or a street-food scene for a
+food-and-culture trip, using only licensed or tourism-board-approved imagery, to make the
+destination feel tangible and encourage the traveller to keep going. Nothing shown on a card is left
+unbacked by a curated, source-linked record.
+- Existing-booking hand-off and optional save-and-return: A single call-to-action hands the
+traveller into Vietnam Airlines' existing search flow with origin, destination and dates pre-filled; we
+do not touch search-results ranking, payment or checkout. If a traveller saves a route but does not
+proceed, an optional, consent-based reminder (for example, after 24 hours) restates their saved trip
+and invites them back, with no false urgency or fare-hold claims.
+7. Overview Design
+- The diagram below shows how a traveller’s trip brief is parsed into structured intent, ranked against a
+curated knowledge base by the explainable Veya engine, presented as source-grounded destination cards
+with archetype imagery, and handed off into Vietnam Airlines’ existing, unmodified search and booking
+flow. An optional save-and-return loop brings the traveller back to their saved trip if they do not proceed
+immediately.
+- At MVP stage the parser and destination cards call an existing language-model API rather than training a
+custom model from scratch, so hackathon time is spent on the curated route/destination dataset, the
+explainable ranking logic, and the hand-off design - the parts that are specific to this problem.
+8. Preliminary Implementation Direction (Roadmap)
+- Final MVP scope: The scope below is fixed to keep the 16-hour build achievable:
+Item Final scope
+Pilot scenario Three representative scenarios covering Australia-based leisure, VFR and student
+travellers: destination discovery for undecided travellers, and route selection for
+travellers with a known destination, using a shared recommendation engine.
+Pilot coverage Three Australian departure cities—Sydney, Melbourne and Perth—and three
+curated Vietnam Airlines-served destinations—Hanoi, Ho Chi Minh City and Da
+Nang.
+User session Trip brief / quick quiz → 3 ranked Veya destination cards → existing-search
+hand-off (mocked pre-fill)
+Demo dataset Curated route, seasonality, trip-archetype imagery and “getting around” notes, and
+(where available) promotion/loyalty details, each explicitly labelled confirmed or
+illustrative
+Input Free-text trip brief or a 5-question quick quiz (travel style, date flexibility, budget
+band, travellers, priority)
+Language English primary; Vietnamese toggle if time permits
+AI LLM-based intent extraction (structured JSON) + explainable weighted Veya
+ranking + RAG-grounded destination cards
+Output 3 ranked destination/route cards with a “why this fits” explanation, archetype
+imagery and a getting-around note, plus a CTA that pre-fills Vietnam Airlines’
+existing search flow
+Out of MVP scope Booking, payment and checkout redesign; live production schedule/inventory
+integration; corporate-traveller flows; Lotusmiles app redesign; personalisation
+based on historical user data
+- Stage-by-stage plan:
+Stage Key activities and deliverables
+Now – pre Round 2 Confirm our interpretation of the official brief and clarification Q&A with the
+Organising Committee; assemble a curated Australia-origin route and destination
+dataset, explicitly flagging confirmed versus illustrative entries; draft wireframes for
+the trip-brief input and destination cards; select the AI/ML stack.
+Round 2 – Day 1 (8h)
+Build the MVP
+Build the AI Trip Brief parser and the explainable Veya scoring engine over the
+curated dataset; ship a first working set of 3 destination cards (with placeholder
+archetype imagery and getting-around notes) for the pilot persona.
+Round 2 – Day 2 (8h)
+Refine & document
+Add the promotion/rewards preview (shown only where present in the dataset),
+swap in final licensed archetype images and getting-around notes, and the
+existing-search hand-off mock-up and optional save-and-return reminder; polish the
+UI and basic error handling; write the README and clean the repository; draft the
+Round 3 pitch deck.
+Round 3 – Gala Rehearse a live, end-to-end demo of one traveller’s journey (trip brief → Veya cards
+→ existing-search hand-off); prepare answers on data governance, the route-data
+verification process, and the integration path with Vietnam Airlines’ real content and
+promotion systems.
+Beyond the hackathon
+(illustrative)
+Expand curated route and destination coverage using Vietnam Airlines-approved
+schedule and content data; connect the save-and-return loop to real notification
+infrastructure; evaluate incorporating verified Lotusmiles tier data once available.
+- Indicative operating cost (pilot scale):
+Component Pilot approach Indicative cost / month
+Hosting and database Serverless API + managed database A$20–50
+LLM and RAG Short cached responses; capped usage A$30–100
+Notification / email service Low-volume transactional tier A$0–30
+Analytics / event tracking Free tier or capped API use A$0–50
+Storage and monitoring Lightweight logging / storage A$10–30
+These are indicative planning estimates. Costs will be controlled through caching, a small curated dataset, short
+generated outputs, and daily API quotas.
+- Validation metrics:
+Validation metric Target for MVP / pilot
+Recommendation traceability 100% of destination/route claims, images and getting-around
+notes shown are drawn from the curated dataset with a
+confirmed-or-illustrative label
+Trip-brief parsing accuracy Correctly extracts structured intent from at least 90% of 5–8
+test trip briefs
+End-to-end demo One user completes Trip brief → Veya cards →
+existing-search hand-off
+Recommendation relevance feedback Average ≥ 4/5 from 5–8 usability testers
+Hand-off accuracy Pre-filled search parameters match the selected card’s route
+and dates in 100% of demo runs
+- Stakeholder value, including Vietnam Airlines:
+Stakeholder Proposed value
+Vietnam Airlines (commercial /
+e-commerce, Australia market)
+Gives undecided visitors a reason to start and stay on vietnamairlines.com
+instead of leaving for an OTA to find inspiration
+Traveller Gets a fast, explainable answer to “where should I go” without needing to
+compare multiple airline sites
+Content / promotions team A structured, source-linked channel to surface curated destination content
+and promotions to the right traveller
+Customer engagement / loyalty An optional, low-risk way to reference Lotusmiles value without redesigning
+the loyalty programme or app
+Product / e-commerce team First-party, consented signal on what Australia-based travellers are looking for,
+without needing a pre-existing preference database
+This is a proposed future deployment model. The MVP does not claim an existing integration, endorsement, or
+access to Vietnam Airlines’ proprietary data or systems, and any route or schedule information not confirmed by
+Vietnam Airlines is explicitly labelled illustrative.
+Sources
+- Official brief: Vietnam Airlines / UAVS-NSW, “Winning Back the Click: Driving Travellers to Our Direct
+Channels”, UAVS Hackathon 2026 Round 1 Challenge Brief.
+- Clarification notes: Organising Committee / Vietnam Airlines Q&A clarification correspondence on
+scope, target users and data constraints (received by the team; not independently published).
+- Route confirmation: Vietnam Airlines destination/route search tool (vietnamairlines.com, Oceania
+region), accessed by the team, confirming Sydney (SYD), Melbourne (MEL) and Perth (PER) among the
+Australian gateway cities in Vietnam Airlines’ bookable network, alongside Adelaide, Brisbane, Canberra,
+Cairns, Darwin, Gold Coast, Hobart, Launceston and Newcastle.
+- Loyalty programme terms: Vietnam Airlines, “Lotusmiles – Member Benefits: Terms and Conditions”,
+vietnamairlines.com/fr/en/lotusmiles/member-benefits/terms-and-conditions

@@ -1,0 +1,12 @@
+---
+description: Veya UAVS scope and folder ownership — prevents off-scope AI suggestions
+alwaysApply: true
+---
+
+Before coding, follow `docs/TDD.md`, `docs/STRUCTURE.md`, and `docs/WORK_SPLIT.md`.
+
+- Edit only the folder for the active role (A: apps/web, B: data, C: apps/api/src/intent + fixtures, D: apps/api + shared).
+- Do not implement features in TDD §4 Out of scope.
+- Do not change `shared/types.ts` without explicit contract-change approval.
+- Do not duplicate types outside `shared/types.ts`.
+- One PR per role folder when possible.
