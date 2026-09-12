@@ -1,0 +1,20 @@
+# Update @handles when the team is confirmed.
+# Default: repo owner reviews everything until roles are assigned.
+
+# Person A — UI
+/apps/web/                    @meomeolucifr
+
+# Person B — Dataset
+/data/                        @meomeolucifr
+
+# Person C — Intent AI
+/apps/api/src/intent/         @meomeolucifr
+/fixtures/                    @meomeolucifr
+
+# Person D — API engine + shared contract
+/apps/api/                    @meomeolucifr
+/shared/                       @meomeolucifr
+
+# Docs & repo meta
+/docs/                        @meomeolucifr
+/.github/                     @meomeolucifr
