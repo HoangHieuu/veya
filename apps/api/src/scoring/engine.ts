@@ -246,11 +246,15 @@ function buildConnectionReason(
 ): string {
   switch (connectionType) {
     case "direct":
-      return "The route is direct, which reduces connection complexity.";
+      return "Direct service — no transfer, one flight to your gateway.";
     case "one_stop":
-      return `The route uses one connection via ${viaHub ?? "a connecting hub"}.`;
+      return viaHub
+        ? `One stop with a transfer in ${viaHub} — you land there, change planes, then continue.`
+        : "Connecting itinerary — confirm transfer airport on Vietnam Airlines.";
     case "two_stop":
-      return `The route uses two connections via ${viaHub ?? "connecting hubs"}.`;
+      return viaHub
+        ? `Two stops with a transfer in ${viaHub} — you land there, change planes, then continue.`
+        : "Connecting itinerary — confirm transfer airport on Vietnam Airlines.";
   }
 }
 
