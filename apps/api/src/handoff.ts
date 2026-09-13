@@ -12,7 +12,16 @@ export function buildHandoffParams(
     departDate,
     returnDate,
     adults: String(intent.travellers),
+    destinationName: route.destinationName,
+    connection: route.connectionType,
+    duration: String(route.typicalDurationHours),
   });
+  if (route.viaHub) {
+    params.set("via", route.viaHub);
+  }
+  if (route.promotion?.title) {
+    params.set("promo", route.promotion.title);
+  }
 
   return {
     origin: route.originAirport,

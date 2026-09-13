@@ -7,6 +7,10 @@ import type {
 } from "../../../../shared/types.js";
 import { buildHandoffParams } from "../handoff.js";
 import type { DatasetSnapshot } from "../dataset/loader.js";
+import {
+  extractMentionedLocalities,
+  loadLocalityGateway,
+} from "../dataset/localityGateway.js";
 import { httpError } from "../errors.js";
 import {
   SCORE_WEIGHTS,
@@ -231,6 +235,29 @@ function buildTripOutline(intent: TripIntent, route: RouteRecord): string {
     route.dataConfidence === "illustrative"
       ? "route and fare details are illustrative for this prototype"
       : "check final availability and fares on Vietnam Airlines";
+
+  const localities = extractMentionedLocalities(
+    intent.rawSummary,
+    loadLocalityGateway(),
+  );
+  const vfrTrip =
+    intent.travelStyles.includes("vfr") || localities.length > 0;
+
+  if (vfrTrip) {
+    const place = localities[0];
+    const visitTarget = place
+      ? `visiting family in ${place}`
+      : "visiting family in Vietnam";
+    const gatewayNote = place
+      ? `${route.destinationName} (${route.destinationAirport}) is the nearest VNA gateway to ${place} — plan an onward leg after your international flight.`
+      : `${route.destinationName} (${route.destinationAirport}) is your VNA gateway — plan onward travel to where your relatives live.`;
+    return [
+      `Fly ${route.originAirport} → ${route.destinationAirport} on ${intent.dateWindow.start} for about ${intent.tripDurationDays} days, ${visitTarget}.`,
+      gatewayNote,
+      `This route is ${connection}, typically ${route.typicalDurationHours} hours; ${confidenceClause}.`,
+    ].join(" ");
+  }
+
   const gettingAroundClause = firstGroundedClause(route.gettingAround);
   return [
     `Start with ${route.destinationName} from ${route.originAirport} on ${intent.dateWindow.start} for about ${intent.tripDurationDays} days.`,
