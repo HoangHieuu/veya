@@ -1,5 +1,6 @@
-import type { ConnectionType } from "@shared/types";
+import type { ConnectionType, DestinationCity } from "@shared/types";
 import { RouteTicket } from "./RouteTicket";
+import { transferSummary } from "@shared/routeLabels";
 import { connectionLabel, durationLabel, formatShortDate } from "../lib/labels";
 
 export function HandoffPrefillBoard({
@@ -21,7 +22,7 @@ export function HandoffPrefillBoard({
 }) {
   return (
     <section className="handoff-prefill-board" aria-label="Pre-filled search parameters">
-      <h3 className="handoff-section-label">What VNA receives</h3>
+      <h3 className="handoff-section-label">Your search details</h3>
 
       <RouteTicket
         variant="light"
@@ -29,6 +30,7 @@ export function HandoffPrefillBoard({
         origin={handoff.origin}
         destination={handoff.destination}
         via={viaHub}
+        connectionType={connectionType}
       />
 
       <ul className="handoff-prefill-meta">
@@ -48,7 +50,12 @@ export function HandoffPrefillBoard({
           <li>
             <span className="handoff-prefill-meta-label">Route</span>
             <span>
-              {connectionLabel(connectionType)} · {durationLabel(typicalDurationHours)}
+              {transferSummary(
+                connectionType,
+                (viaHub ?? undefined) as DestinationCity | undefined,
+              ) ??
+                connectionLabel(connectionType)}{" "}
+              · {durationLabel(typicalDurationHours)}
             </span>
           </li>
         ) : null}

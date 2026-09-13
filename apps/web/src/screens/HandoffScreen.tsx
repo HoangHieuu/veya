@@ -1,12 +1,16 @@
-import type { HandOffParams } from "@shared/types";
+import type { HandOffParams, PriorityPreset, RouteRecord } from "@shared/types";
+import { DirectBookingValueCard } from "../components/DirectBookingValueCard";
 import { HandoffPrefillBoard } from "../components/HandoffPrefillBoard";
 import { RouteTicket } from "../components/RouteTicket";
 import { Button } from "../components/ui/Button";
+import { resolveRouteImageUrl } from "../lib/routeMedia";
 
 export function HandoffScreen({
   destinationName,
   imageUrl,
   handoff,
+  route,
+  priority,
   viaHub,
   tripOutline,
   highlightReason,
@@ -18,6 +22,8 @@ export function HandoffScreen({
   destinationName: string;
   imageUrl: string;
   handoff: HandOffParams;
+  route: RouteRecord;
+  priority?: PriorityPreset;
   viaHub?: string | null;
   tripOutline?: string;
   highlightReason?: string;
@@ -26,18 +32,19 @@ export function HandoffScreen({
   onBack: () => void;
   onOpenSearch: () => void;
 }) {
+  const resolvedImage = resolveRouteImageUrl(imageUrl);
   const steps = [
     {
-      title: "Open VNA search",
-      detail: "We launch vietnamairlines.com in a new tab with your trip already filled in.",
+      title: "Open airline search",
+      detail: "We open Vietnam Airlines in a new tab with your destination and dates already filled in.",
     },
     {
-      title: "Choose your flights",
-      detail: "Compare live fares, cabin classes, and schedules on the official airline site.",
+      title: "Pick your flights",
+      detail: "Compare live fares, times, and cabins on the airline site.",
     },
     {
-      title: "Book & pay on VNA",
-      detail: "Confirm passengers and payment directly with Vietnam Airlines — not through Veya.",
+      title: "Book and pay there",
+      detail: "Complete booking with Vietnam Airlines — we never take payment.",
     },
   ];
 
@@ -45,10 +52,10 @@ export function HandoffScreen({
     <div className="handoff-shell anim-rise">
       <div className="handoff-split">
         <div className="handoff-split-visual">
-          <img src={imageUrl} alt="" />
+          <img src={resolvedImage} alt="" />
           <div className="handoff-split-visual-overlay" />
           <div className="handoff-split-visual-content">
-            <p className="handoff-visual-eyebrow">Step 3 · Search</p>
+            <p className="handoff-visual-eyebrow">Step 3 · Continue booking</p>
             <h1 className="handoff-visual-title">{destinationName}</h1>
             {highlightReason ? (
               <p className="handoff-visual-reason">{highlightReason}</p>
@@ -58,6 +65,7 @@ export function HandoffScreen({
               origin={handoff.origin}
               destination={handoff.destination}
               via={viaHub}
+              connectionType={connectionType}
               className="handoff-visual-ticket"
             />
           </div>
@@ -65,12 +73,14 @@ export function HandoffScreen({
 
         <div className="handoff-split-panel">
           <header className="handoff-panel-head">
-            <p className="results-eyebrow">Off to Vietnam Airlines</p>
-            <h2 className="handoff-panel-title">Confirm your handoff</h2>
+            <p className="results-eyebrow">Step 3 · Continue booking</p>
+            <h2 className="handoff-panel-title">Continue on Vietnam Airlines</h2>
             <p className="handoff-panel-lead">
-              Review what we send to VNA — nothing is charged until you book on their site.
+              Your route and dates go into the airline search — check live prices before you pay.
             </p>
           </header>
+
+          <DirectBookingValueCard route={route} priority={priority} handoff />
 
           <HandoffPrefillBoard
             handoff={handoff}
@@ -99,14 +109,14 @@ export function HandoffScreen({
               ✓
             </div>
             <p>
-              <strong>Veya is a discovery layer.</strong> Live prices, seat maps, and payment all
-              happen on the official Vietnam Airlines website.
+              <strong>Prices and payment are on the airline site.</strong> Times and fares shown here
+              are guides only — always confirm on Vietnam Airlines before you book.
             </p>
           </div>
 
           <footer className="handoff-panel-foot">
             <Button className="min-h-12 w-full text-base" onClick={onOpenSearch}>
-              Open pre-filled search on VNA →
+              Continue on Vietnam Airlines →
             </Button>
             <button type="button" className="handoff-panel-back" onClick={onBack}>
               ← Back to routes

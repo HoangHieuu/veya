@@ -5,7 +5,7 @@ export type FlowStep = "brief" | "results" | "handoff";
 const STEPS = [
   { id: "brief", label: "Your trip" },
   { id: "results", label: "Routes" },
-  { id: "handoff", label: "Search" },
+  { id: "handoff", label: "Book" },
 ] as const;
 
 export function StepIndicator({ current }: { current: FlowStep }) {

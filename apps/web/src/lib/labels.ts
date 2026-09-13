@@ -1,9 +1,15 @@
+import {
+  cityLabel,
+  routePathLabel as formatRoutePath,
+} from "@shared/routeLabels";
 import type {
   ConnectionType,
   DestinationCity,
   PriorityPreset,
   TravelStyle,
 } from "@shared/types";
+
+export { cityLabel };
 
 export const PRIORITY_OPTIONS: { value: PriorityPreset; label: string }[] = [
   { value: "lowest_hassle", label: "Lowest hassle" },
@@ -30,18 +36,6 @@ export function connectionLabel(type: ConnectionType): string {
     case "two_stop":
       return "2 stops";
   }
-}
-
-export function cityLabel(code: string): string {
-  const map: Record<string, string> = {
-    SYD: "Sydney",
-    MEL: "Melbourne",
-    PER: "Perth",
-    HAN: "Hanoi",
-    SGN: "Ho Chi Minh City",
-    DAD: "Da Nang",
-  };
-  return map[code] ?? code;
 }
 
 export function travelStyleLabel(style: TravelStyle): string {
@@ -95,8 +89,7 @@ export function routePathLabel(
   destination: string,
   via?: string | null,
 ): string {
-  if (via) return `${origin} → ${via} → ${destination}`;
-  return `${origin} → ${destination}`;
+  return formatRoutePath(origin, destination, (via ?? undefined) as DestinationCity | undefined);
 }
 
 const GATEWAY_INFO: Record<
@@ -105,17 +98,17 @@ const GATEWAY_INFO: Record<
 > = {
   DAD: {
     title: "Da Nang",
-    subtitle: "Central coast gateway",
+    subtitle: "Central coast",
     vibe: "Beach, Hoi An day trips, easy coast pace",
   },
   SGN: {
     title: "Ho Chi Minh City",
-    subtitle: "Southern city gateway",
+    subtitle: "Southern Vietnam",
     vibe: "Street food, city life, beaches via road",
   },
   HAN: {
     title: "Hanoi",
-    subtitle: "Northern culture gateway",
+    subtitle: "Northern Vietnam",
     vibe: "Old Quarter, history, family visits north",
   },
 };

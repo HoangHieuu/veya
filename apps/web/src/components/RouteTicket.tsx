@@ -1,37 +1,52 @@
+import type { ConnectionType, DestinationCity } from "@shared/types";
+import { cityLabel, transferSummary } from "@shared/routeLabels";
 import clsx from "clsx";
-import { cityLabel } from "../lib/labels";
+
+function TicketLeg({
+  code,
+  end = false,
+}: {
+  code: string;
+  end?: boolean;
+}) {
+  return (
+    <div className={clsx("route-ticket-leg", end && "route-ticket-leg-end")}>
+      <span className="route-ticket-code">{code}</span>
+      <span className="route-ticket-city">{cityLabel(code)}</span>
+    </div>
+  );
+}
 
 export function RouteTicket({
   origin,
   destination,
   via,
+  connectionType = via ? "one_stop" : "direct",
   variant = "glass",
   className,
 }: {
   origin: string;
   destination: string;
   via?: string | null;
+  connectionType?: ConnectionType;
   variant?: "glass" | "light";
   className?: string;
 }) {
+  const viaCity = (via ?? undefined) as DestinationCity | undefined;
+  const note = transferSummary(connectionType, viaCity);
+
   return (
     <div className={clsx("route-ticket", variant === "light" && "route-ticket-light", className)}>
       <div className="route-ticket-row">
-        <div className="route-ticket-leg">
-          <span className="route-ticket-code">{origin}</span>
-          <span className="route-ticket-city">{cityLabel(origin)}</span>
-        </div>
+        <TicketLeg code={origin} />
         <div className="route-ticket-arrow" aria-hidden>
           <span />
         </div>
-        <div className="route-ticket-leg route-ticket-leg-end">
-          <span className="route-ticket-code">{destination}</span>
-          <span className="route-ticket-city">{cityLabel(destination)}</span>
-        </div>
+        <TicketLeg code={destination} end />
       </div>
-      {via ? (
-        <p className="route-ticket-via" aria-label={`Connection via ${cityLabel(via)}`}>
-          via {via}
+      {note ? (
+        <p className="route-ticket-via" aria-label={note}>
+          {note}
         </p>
       ) : null}
     </div>
