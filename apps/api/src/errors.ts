@@ -18,8 +18,13 @@ export function httpError(
   statusCode: number,
   errorCode: string,
   message: string,
+  details?: Record<string, unknown>,
 ): HttpApiError {
-  return new HttpApiError(statusCode, { errorCode, message });
+  return new HttpApiError(statusCode, {
+    errorCode,
+    message,
+    ...(details ? { details } : {}),
+  });
 }
 
 export const apiErrorHandler: ErrorRequestHandler = (

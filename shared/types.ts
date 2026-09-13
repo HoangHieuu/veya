@@ -69,6 +69,7 @@ export interface RecommendRequest {
 export interface ApiError {
   errorCode: string;
   message: string;
+  details?: Record<string, unknown>;
 }
 
 export type IntentParseResult =
@@ -189,4 +190,213 @@ export interface SaveTripResponse {
   saveId: string;
   remindAfterHours: number;
   status: "saved";
+}
+
+/** Round 2 Agent Workspace contracts. Keep Phase 1 fields backward compatible. */
+export type MemberDemoProfile =
+  | "guest"
+  | "lotusmiles_member"
+  | "lotustudents_verified";
+
+export type DiscoveryMode = "discovery" | "route_known";
+
+export type DiscoveryStage =
+  | "pick_origin"
+  | "suggested_destinations"
+  | "destination_detail"
+  | "hotels"
+  | "season"
+  | "booking";
+
+export type NextTripField =
+  | "originCity"
+  | "travelStyle"
+  | "destinationLocalityId"
+  | "travellers"
+  | "departDate"
+  | "returnDate"
+  | "departMonth"
+  | null;
+
+export type MonthName =
+  | "January"
+  | "February"
+  | "March"
+  | "April"
+  | "May"
+  | "June"
+  | "July"
+  | "August"
+  | "September"
+  | "October"
+  | "November"
+  | "December";
+
+export type PolicyOverlayId =
+  | "direct-decision-offer"
+  | "lotusmiles"
+  | "lotustudents"
+  | (string & {});
+
+export interface TripSummary {
+  originCity?: OriginCity;
+  travelStyle?: TravelStyle;
+  destinationLocalityId?: string;
+  destinationTitle?: string;
+  gateway?: DestinationCity;
+  travellers?: number;
+  departMonth?: MonthName;
+  departDate?: string;
+  returnDate?: string;
+  hotelInterest?: boolean;
+  memberProfile: MemberDemoProfile;
+}
+
+export type AgentInputEvent =
+  | { type: "select_origin"; originCity: OriginCity }
+  | { type: "select_vibe"; travelStyle: TravelStyle }
+  | {
+      type: "select_destination";
+      destinationLocalityId: string;
+      destinationTitle: string;
+    }
+  | { type: "set_travellers"; travellers: number }
+  | { type: "set_dates"; departDate: string; returnDate: string }
+  | { type: "continue_booking" }
+  | { type: "view_policy"; policyId: PolicyOverlayId }
+  | { type: "close_policy" }
+  | { type: "reset_journey" };
+
+export interface AgentTurnRequest {
+  sessionId?: string;
+  trip: TripSummary;
+  message?: string;
+  event?: AgentInputEvent;
+}
+
+/** A null value explicitly clears an optional trip field in the client reducer. */
+export type TripSummaryPatch = Partial<{
+  [K in keyof TripSummary]: TripSummary[K] | null;
+}>;
+
+export interface DestinationSuggestion {
+  localityId: string;
+  title: string;
+  gateway: DestinationCity;
+  summary: string;
+  tags: string[];
+  onwardNote?: string;
+  promoted?: boolean;
+  image?: {
+    url: string;
+    source: string;
+    owner: string;
+    licenseNote: string;
+  };
+  sourceFields: string[];
+}
+
+export interface RuledOutGateway {
+  gateway: DestinationCity;
+  reason: string;
+}
+
+export interface LocalityResolution {
+  localityId: string;
+  localityTitle: string;
+  gateway: DestinationCity;
+  ruledOut: RuledOutGateway[];
+  onwardNote?: string;
+  sourceFields: string[];
+}
+
+export interface SeasonNote {
+  localityId: string;
+  month: MonthName;
+  headline: string;
+  summary: string;
+  bestMonths: number[];
+  caveats: string[];
+  sourceFields: string[];
+}
+
+export interface PolicySnippet {
+  id: PolicyOverlayId;
+  title: string;
+  summary: string;
+  bullets: string[];
+  sourceDocument: string;
+  sourceFields: string[];
+}
+
+export interface OfferQuote {
+  eligible: boolean;
+  ineligibleReason?: string;
+  publicFareAud: number;
+  offerFareAud: number;
+  discountPct: number;
+  expiresAt: string;
+  termsId: string;
+  illustrative: true;
+  sourceDocument: string;
+  sourceFields: string[];
+}
+
+export interface AgentAckVars {
+  localityTitle?: string;
+  gateway?: string;
+}
+
+export type AgentAction =
+  | { type: "showIntent"; summary: string }
+  | { type: "showLocality"; resolution: LocalityResolution }
+  | { type: "showRoute"; cardIndex: number }
+  | { type: "showExperiences"; cardIndex: number }
+  | { type: "showOffer"; offer: OfferQuote }
+  | { type: "showDirectValue"; cardIndex: number }
+  | { type: "showEnrollment"; policyId: string }
+  | { type: "showHandoff"; cardIndex: number };
+
+export interface AgentCanvasState {
+  discoveryMode: DiscoveryMode;
+  agentMessage: string;
+  actions: AgentAction[];
+  offer?: OfferQuote;
+  locality?: LocalityResolution;
+}
+
+export type AgentCenterContent =
+  | { kind: "empty" }
+  | { kind: "destination_grid"; suggestions: DestinationSuggestion[] }
+  | {
+      kind: "destination_detail";
+      suggestion: DestinationSuggestion;
+      locality: LocalityResolution;
+    }
+  | { kind: "hotels"; localityId: string }
+  | { kind: "season"; note: SeasonNote }
+  | {
+      kind: "booking";
+      recommendation: RankedResponse;
+      canvas: AgentCanvasState;
+    };
+
+export interface AgentTurnResponse {
+  sessionId: string;
+  discoveryMode: DiscoveryMode;
+  tripPatch: TripSummaryPatch;
+  resetTrip: boolean;
+  nextField: NextTripField;
+  agentMessage: string;
+  stage: DiscoveryStage;
+  centerContent: AgentCenterContent;
+  canvas?: AgentCanvasState;
+  policyOverlay?: PolicyOverlayId | null;
+  policySnippet?: PolicySnippet;
+  meta: {
+    generatedAt: string;
+    datasetVersion: string;
+    usedIllustrativeData: boolean;
+    sourceFields: string[];
+  };
 }

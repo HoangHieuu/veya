@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type {
+  AgentTurnRequest,
   IntentParseResult,
   RecommendRequest,
   RouteRecord,
@@ -16,7 +17,7 @@ export { tripIntentSchema } from "./intent/schema.js";
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const nonBlankString = z.string().trim().min(1);
 
-function isIsoDate(value: string): boolean {
+export function isIsoDate(value: string): boolean {
   if (!ISO_DATE_PATTERN.test(value)) return false;
   const date = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value;
@@ -34,6 +35,25 @@ const travelStyle = z.enum([
   "mixed",
 ]);
 const budgetBand = z.enum(["budget", "standard", "premium"]);
+const memberDemoProfile = z.enum([
+  "guest",
+  "lotusmiles_member",
+  "lotustudents_verified",
+]);
+const monthName = z.enum([
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+]);
 
 const backgroundImage = z.object({
   url: nonBlankString,
@@ -172,6 +192,102 @@ export const saveTripRequestSchema = z.object({
   intent: intentSchema,
   consentReminder: z.boolean(),
 });
+
+export const tripSummarySchema = z
+  .object({
+    originCity,
+    travelStyle,
+    destinationLocalityId: nonBlankString.optional(),
+    destinationTitle: nonBlankString.optional(),
+    gateway: destinationCity,
+    travellers: z.number().int().min(1).max(20),
+    departMonth: monthName,
+    departDate: isoDate,
+    returnDate: isoDate,
+    hotelInterest: z.boolean(),
+    memberProfile: memberDemoProfile,
+  })
+  .partial({
+    originCity: true,
+    travelStyle: true,
+    destinationLocalityId: true,
+    destinationTitle: true,
+    gateway: true,
+    travellers: true,
+    departMonth: true,
+    departDate: true,
+    returnDate: true,
+    hotelInterest: true,
+  })
+  .strict()
+  .superRefine((trip, context) => {
+    if (trip.returnDate && trip.departDate && trip.returnDate < trip.departDate) {
+      context.addIssue({
+        code: "custom",
+        path: ["returnDate"],
+        message: "must be on or after departDate",
+      });
+    }
+  });
+
+export const agentInputEventSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("select_origin"), originCity }).strict(),
+  z.object({ type: z.literal("select_vibe"), travelStyle }).strict(),
+  z
+    .object({
+      type: z.literal("select_destination"),
+      destinationLocalityId: nonBlankString,
+      destinationTitle: nonBlankString,
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("set_travellers"),
+      travellers: z.number().int().min(1).max(20),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("set_dates"),
+      departDate: isoDate,
+      returnDate: isoDate,
+    })
+    .strict()
+    .superRefine((event, context) => {
+      if (event.returnDate < event.departDate) {
+        context.addIssue({
+          code: "custom",
+          path: ["returnDate"],
+          message: "must be on or after departDate",
+        });
+      }
+    }),
+  z.object({ type: z.literal("continue_booking") }).strict(),
+  z.object({ type: z.literal("view_policy"), policyId: nonBlankString }).strict(),
+  z.object({ type: z.literal("close_policy") }).strict(),
+  z.object({ type: z.literal("reset_journey") }).strict(),
+]);
+
+export const agentTurnRequestSchema: z.ZodType<AgentTurnRequest> = z
+  .object({
+    sessionId: nonBlankString.optional(),
+    trip: tripSummarySchema,
+    message: z.string().optional(),
+    event: agentInputEventSchema.optional(),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const hasMessage = typeof value.message === "string" && value.message.trim().length > 0;
+    const hasEvent = value.event !== undefined;
+    const hasMessageField = value.message !== undefined;
+    if ((hasEvent && hasMessageField) || (!hasEvent && !hasMessage)) {
+      context.addIssue({
+        code: "custom",
+        path: ["message"],
+        message: "exactly one non-empty message or event is required",
+      });
+    }
+  }) as z.ZodType<AgentTurnRequest>;
 
 export type ValidatedRecommendRequest = RecommendRequest;
 
