@@ -1,7 +1,11 @@
 import type { Express, Request } from "express";
 
 import type {
+  PriorityPreset,
+  DestinationCity,
+  ExperienceHighlight,
   RecommendRequest,
+  RankedResponse,
   RouteRecord,
   TripIntent,
 } from "../../../../shared/types.js";
@@ -24,6 +28,7 @@ import {
   saveTripRequestSchema,
 } from "../validation.js";
 import type { AppDependencies } from "../app.js";
+import type { ScoringAuditStore } from "../scoring/audit.js";
 
 const VALID_ORIGINS = new Set(["SYD", "MEL", "PER"]);
 
@@ -36,62 +41,17 @@ export function registerRecommendRoutes(
     const snapshot = requireDataset(dependencies);
     const requestNow = dependencies.clock();
     const intent = await resolveIntent(input, dependencies, requestNow);
-    const effectiveIntent = structuredClone(intent);
-    if (input.priorityOverride) {
-      effectiveIntent.priority = input.priorityOverride;
-    }
-    const candidates = filterCandidates(effectiveIntent, snapshot.routes);
-    const ranked = rankRoutes(effectiveIntent, candidates, requestNow);
     const requestId = dependencies.idGenerator();
-    const cards = ranked.slice(0, 3).map((scored, index) => ({
-      rank: (index + 1) as 1 | 2 | 3,
-      routeId: scored.route.id,
-      route: structuredClone(scored.route),
-      score: structuredClone(scored.score),
-      tripOutline: buildTripOutline(effectiveIntent, scored.route),
-      handoff: buildHandoffParams(effectiveIntent, scored.route),
-    }));
-
-    if (dependencies.enableDevScoring) {
-      dependencies.auditStore.add({
+    response.status(200).json(
+      recommendFromIntent(intent, {
+        dataset: snapshot,
+        now: requestNow,
         requestId,
-        createdAt: requestNow.toISOString(),
-        intent: structuredClone(effectiveIntent),
-        weights: ranked[0]
-          ? structuredClone(ranked[0].score.weightsUsed)
-          : { ...SCORE_WEIGHTS[effectiveIntent.priority] },
-        tieBreak: ["routeConvenience", "intentMatch", "routeId"],
-        candidateCount: ranked.length,
-        candidates: ranked.map((item, index) => ({
-          routeId: item.route.id,
-          weightedTotal: item.score.weightedTotal,
-          rank: index + 1,
-          factors: structuredClone(item.score),
-          reasonTraces: structuredClone(item.reasonTraces),
-        })),
-      });
-    }
-
-    const usedIllustrativeData = cards.some(
-      (card) => card.route.dataConfidence === "illustrative",
+        priorityOverride: input.priorityOverride,
+        auditStore: dependencies.enableDevScoring ? dependencies.auditStore : undefined,
+        experienceHighlightsFor: dependencies.experienceHighlightsFor,
+      }),
     );
-    response.status(200).json({
-      requestId,
-      intent: effectiveIntent,
-      cards,
-      meta: {
-        datasetVersion: snapshot.version,
-        scoringVersion: SCORING_VERSION,
-        usedIllustrativeData,
-        disclaimer: buildDisclaimer(
-          cards.length,
-          ranked.length,
-          usedIllustrativeData,
-          snapshot,
-          effectiveIntent.originCity,
-        ),
-      },
-    });
   });
 
   app.get("/api/routes", (request, response) => {
@@ -161,6 +121,81 @@ export function registerRecommendRoutes(
   });
 }
 
+export interface RecommendFromIntentOptions {
+  dataset: DatasetSnapshot;
+  now: Date;
+  requestId: string;
+  priorityOverride?: PriorityPreset;
+  auditStore?: ScoringAuditStore;
+  experienceHighlightsFor: (gateway: DestinationCity) => ExperienceHighlight[];
+}
+
+/** Shared Phase 1 recommendation service used by both legacy and Agent routes. */
+export function recommendFromIntent(
+  intent: TripIntent,
+  options: RecommendFromIntentOptions,
+): RankedResponse {
+  const effectiveIntent = structuredClone(intent);
+  if (options.priorityOverride) {
+    effectiveIntent.priority = options.priorityOverride;
+  }
+
+  const candidates = filterCandidates(effectiveIntent, options.dataset.routes);
+  const ranked = rankRoutes(effectiveIntent, candidates, options.now);
+  const cards = ranked.slice(0, 3).map((scored, index) => ({
+    rank: (index + 1) as 1 | 2 | 3,
+    routeId: scored.route.id,
+    route: structuredClone(scored.route),
+    score: structuredClone(scored.score),
+    tripOutline: buildTripOutline(effectiveIntent, scored.route),
+    handoff: buildHandoffParams(effectiveIntent, scored.route),
+    experienceHighlights: structuredClone(
+      options.experienceHighlightsFor(scored.route.destinationCity),
+    ),
+  }));
+
+  if (options.auditStore) {
+    options.auditStore.add({
+      requestId: options.requestId,
+      createdAt: options.now.toISOString(),
+      intent: structuredClone(effectiveIntent),
+      weights: ranked[0]
+        ? structuredClone(ranked[0].score.weightsUsed)
+        : { ...SCORE_WEIGHTS[effectiveIntent.priority] },
+      tieBreak: ["routeConvenience", "intentMatch", "routeId"],
+      candidateCount: ranked.length,
+      candidates: ranked.map((item, index) => ({
+        routeId: item.route.id,
+        weightedTotal: item.score.weightedTotal,
+        rank: index + 1,
+        factors: structuredClone(item.score),
+        reasonTraces: structuredClone(item.reasonTraces),
+      })),
+    });
+  }
+
+  const usedIllustrativeData = cards.some(
+    (card) => card.route.dataConfidence === "illustrative",
+  );
+  return {
+    requestId: options.requestId,
+    intent: effectiveIntent,
+    cards,
+    meta: {
+      datasetVersion: options.dataset.version,
+      scoringVersion: SCORING_VERSION,
+      usedIllustrativeData,
+      disclaimer: buildDisclaimer(
+        cards.length,
+        ranked.length,
+        usedIllustrativeData,
+        options.dataset,
+        effectiveIntent.originCity,
+      ),
+    },
+  };
+}
+
 async function resolveIntent(
   input: RecommendRequest,
   dependencies: AppDependencies,
@@ -185,7 +220,7 @@ async function resolveIntent(
   return structuredClone(parsed.intent);
 }
 
-function requireDataset(dependencies: AppDependencies): DatasetSnapshot {
+export function requireDataset(dependencies: AppDependencies): DatasetSnapshot {
   const snapshot = dependencies.dataset.getSnapshot();
   if (snapshot.version === "unavailable" || snapshot.routes.length === 0) {
     throw httpError(
@@ -335,7 +370,7 @@ function buildDisclaimer(
   return messages.join(" ");
 }
 
-function parseBody<T>(
+export function parseBody<T>(
   schema: { safeParse: (value: unknown) => { success: true; data: T } | { success: false; error: { issues: { path: PropertyKey[]; message: string }[] } } },
   body: unknown,
   name: string,

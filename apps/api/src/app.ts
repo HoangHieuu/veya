@@ -11,15 +11,31 @@ const DATA_ASSETS_DIR = path.resolve(
 );
 
 import { loadDataset, type DatasetInput, type DatasetProvider, createDatasetProvider } from "./dataset/loader.js";
+import { loadExperienceHighlights } from "./dataset/experiences.js";
+import { loadAgentData, type AgentDataSnapshot } from "./agent/data.js";
 import { apiErrorHandler } from "./errors.js";
 import {
   parseTripIntent,
   type ParseTripIntentOptions,
 } from "./intent/parseTripIntent.js";
 import { registerRecommendRoutes } from "./routes/recommend.js";
+import { registerAgentRoutes } from "./routes/agent.js";
 import { InMemoryTripStore } from "./trips.js";
-import { type IntentParseResult, type RecommendRequest } from "../../../shared/types.js";
+import {
+  type DestinationCity,
+  type ExperienceHighlight,
+  type IntentParseResult,
+  type RecommendRequest,
+} from "../../../shared/types.js";
 import { ScoringAuditStore } from "./scoring/audit.js";
+import {
+  createDefaultAgentIntentDependencies,
+  type AgentIntentDependencies,
+} from "./agent/intentAdapter.js";
+import {
+  InMemoryAgentSessionStore,
+  type AgentSessionStore,
+} from "./agent/sessionStore.js";
 
 export interface AppDependencies {
   parseTripIntent: (
@@ -32,6 +48,12 @@ export interface AppDependencies {
   tripStore: InMemoryTripStore;
   auditStore: ScoringAuditStore;
   enableDevScoring: boolean;
+  agentIntent: AgentIntentDependencies;
+  agentData: AgentDataSnapshot;
+  agentSessionStore: AgentSessionStore;
+  experienceHighlightsFor: (
+    gateway: DestinationCity,
+  ) => ExperienceHighlight[];
 }
 
 export type AppDependencyOverrides = Partial<Omit<AppDependencies, "dataset">> & {
@@ -64,6 +86,10 @@ export function createApp(
     idGenerator: randomUUID,
     tripStore: new InMemoryTripStore(),
     auditStore: new ScoringAuditStore(20),
+    agentIntent: createDefaultAgentIntentDependencies(),
+    agentData: loadAgentData(),
+    agentSessionStore: new InMemoryAgentSessionStore(),
+    experienceHighlightsFor: loadExperienceHighlights,
     enableDevScoring:
       process.env.NODE_ENV !== "production" || process.env.ENABLE_DEV_SCORING === "true",
     ...dependencyOverrides,
@@ -83,10 +109,12 @@ export function createApp(
       routeCount: snapshot.routes.length,
       datasetVersion: snapshot.version,
       errors: snapshot.errors,
+      agentCapabilities: dependencies.agentData.capabilities,
     });
   });
 
   registerRecommendRoutes(app, dependencies);
+  registerAgentRoutes(app, dependencies);
 
   app.use((_request, response) => {
     response.status(404).json({
