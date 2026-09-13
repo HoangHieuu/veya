@@ -5,6 +5,8 @@ import type {
   SaveTripRequest,
   SaveTripResponse,
 } from "@shared/types";
+import { attachMockExperienceHighlights } from "../lib/experienceHighlights";
+import { applyMockBriefLocality } from "../lib/mockRecommend";
 import mockOlivia from "../mocks/rankedResponse.olivia.json";
 
 const useMock = import.meta.env.VITE_USE_MOCK !== "false";
@@ -46,7 +48,6 @@ export async function recommend(
         priority: request.priorityOverride,
       };
       // Stable mock: lightly reshuffle labels only — real re-rank is Person D.
-      data.meta.disclaimer = `${data.meta.disclaimer} Mock re-rank for preset “${request.priorityOverride}”.`;
     }
     if (request.mode === "quiz" && request.quiz) {
       data.intent.originCity = request.quiz.originCity;
@@ -66,6 +67,10 @@ export async function recommend(
     if (request.mode === "brief" && request.briefText?.includes("Perth")) {
       data.intent.originCity = "PER";
     }
+    if (request.mode === "brief" && request.briefText) {
+      applyMockBriefLocality(data, request.briefText);
+    }
+    attachMockExperienceHighlights(data);
     return data;
   }
 
