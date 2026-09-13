@@ -18,8 +18,8 @@ Open http://localhost:5173 — mock mode is on by default (`VITE_USE_MOCK=true`)
 ### Demo script (~3 min)
 
 1. **Problem (15s):** OTAs win before the traveller picks Hanoi vs Saigon vs Da Nang.
-2. **Olivia (45s):** Talk to Veya → beach → Da Nang → direct offer + handoff.
-3. **Nguyens (30s):** VFR Cà Mau → SGN gateway + locality map.
+2. **Minh (45s):** Talk to Veya → Gold member → VFR Cà Mau → SGN gateway + offer + handoff.
+3. **Alex (30s):** LotuStudents → food & culture → direct value vs OTA.
 4. **Direct value (30s):** member profile → miles offer; why book direct vs OTA.
 5. **Tech (30s):** intent + scoring API; RAG-lite reasons grounded in route dataset.
 

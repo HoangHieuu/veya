@@ -5,10 +5,8 @@ import { Header, type AppStep } from "./components/layout/Header";
 import { Toast } from "./components/ui/Toast";
 import {
   buildRecommendRequest,
-  demoWizardState,
   initialWizardState,
   WIZARD_STEPS,
-  type DemoPersona,
   type TripWizardState,
 } from "./lib/wizard";
 import type { AgentCanvasState } from "./lib/agentTypes";
@@ -101,20 +99,6 @@ export default function App() {
       status: "success",
       errorMessage: undefined,
     }));
-  }
-
-  function tryExample(persona: DemoPersona) {
-    const wizard = demoWizardState(persona);
-    setState((s) => ({
-      ...s,
-      wizard,
-      step: "results",
-      status: "loading",
-      errorMessage: undefined,
-      response: undefined,
-      priorityOverride: undefined,
-    }));
-    void runRecommend(wizard);
   }
 
   async function runRecommend(
@@ -213,8 +197,10 @@ export default function App() {
         {state.step === "home" ? (
           <HomeScreen
             onStart={startPlanning}
-            onTryExample={tryExample}
             onTalkToVeya={agentCanvasEnabled ? startAgent : undefined}
+            onPlanAsProfile={
+              agentCanvasEnabled ? (profile) => enterAgent(profile, true) : undefined
+            }
           />
         ) : null}
 
