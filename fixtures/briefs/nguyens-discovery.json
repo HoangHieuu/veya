@@ -1,0 +1,31 @@
+{
+  "request": {
+    "mode": "brief",
+    "locale": "en",
+    "originCity": "MEL",
+    "briefText": "Trip from Melbourne (MEL). 4 adults. Visiting family in Cà Mau, flexible within a month. Trip vibe: Family visit with grandparents. Budget band: Standard. Priority: Best for family."
+  },
+  "expectedIntent": {
+    "originCity": "MEL",
+    "travelStyles": ["family", "vfr"],
+    "budgetBand": "standard",
+    "travellers": 4,
+    "priority": "best_for_family",
+    "dateWindow": {
+      "start": "2026-09-11",
+      "end": "2026-09-18",
+      "flexibility": "flexible_month"
+    },
+    "tripDurationDays": 7,
+    "goal": "choose_route",
+    "preferredDestination": "SGN",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "Trip from Melbourne (MEL). 4 adults. Visiting family in Cà Mau, flexible within a month. Trip vibe: Family visit with grandparents. Budget band: Standard. Priority: Best for family.",
+    "parseConfidence": 0.89,
+    "missingFields": ["tripDurationDays", "dateWindow.start"]
+  },
+  "expectedDiscoveryMode": "discovery",
+  "notes": "Nguyens VFR/locality path. Cà Mau infers SGN (choose_route) but discoveryMode stays discovery — no airport IATA named. Fixed now 2026-09-11 UTC."
+}

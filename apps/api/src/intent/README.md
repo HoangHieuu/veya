@@ -75,6 +75,19 @@ cd apps/api
 npm test
 ```
 
+## Discovery mode (TDD-v2 §VIII)
+
+```ts
+import { classifyDiscoveryMode } from "./discoveryMode.js";
+
+const mode = classifyDiscoveryMode(intent, briefText);
+// "discovery" | "route_known" — derived classifier (optional on TripIntent later)
+```
+
+- Locality without airport IATA (Cà Mau → SGN) still sets `preferredDestination` for scoring, but `classifyDiscoveryMode` returns `"discovery"`.
+- Gateway compare (`Hanoi or Saigon`) leaves `preferredDestination` unset so ranking can return 3 cards.
+- Explicit SYD→SGN + ISO/`fixed dates` or price ask → `"route_known"` (no Direct Decision Offer).
+
 ## Layout
 
 ```
@@ -84,5 +97,26 @@ intent/
 ├── schema.ts / constants.ts
 ├── quizMapper.ts / dateWindow.ts
 ├── briefHeuristic.ts / lexicon.ts
+├── discoveryMode.ts       # classifyDiscoveryMode
+├── agentAckTemplates.ts   # short canvas ack lines
+├── tripOrchestration.ts   # 3-panel field/policy helpers
 └── llmAdapter.ts          # optional, AbortController, json_schema gaps
 ```
+
+### 3-panel helpers (TDD-v2-3panel §XI C)
+
+```ts
+import {
+  suggestNextField,
+  patchTripSummary,
+  classifyPolicyIntent,
+} from "./tripOrchestration.js";
+import { buildAgentAck } from "./agentAckTemplates.js";
+
+suggestNextField({}); // → "originCity"
+patchTripSummary("Melbourne, beach, Da Nang, April, 2 adults");
+classifyPolicyIntent("offer terms"); // → "direct-decision-offer"
+buildAgentAck("showLocality", { localityTitle: "Cà Mau", gateway: "SGN" });
+```
+
+`LocalTripSummary` / `PolicyOverlayId` live in intent until mirrored in `shared/types.ts`.

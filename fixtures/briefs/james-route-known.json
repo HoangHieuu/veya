@@ -1,0 +1,31 @@
+{
+  "request": {
+    "mode": "brief",
+    "locale": "en",
+    "originCity": "SYD",
+    "briefText": "Trip from Sydney (SYD). 1 adult. SYD to SGN on 2026-11-15, fixed dates. Budget band: Budget. Priority: Lowest hassle. Just want the cheapest fare."
+  },
+  "expectedIntent": {
+    "originCity": "SYD",
+    "travelStyles": ["mixed"],
+    "budgetBand": "budget",
+    "travellers": 1,
+    "priority": "lowest_hassle",
+    "dateWindow": {
+      "start": "2026-11-15",
+      "end": "2026-11-22",
+      "flexibility": "fixed"
+    },
+    "tripDurationDays": 7,
+    "goal": "choose_route",
+    "preferredDestination": "SGN",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "Trip from Sydney (SYD). 1 adult. SYD to SGN on 2026-11-15, fixed dates. Budget band: Budget. Priority: Lowest hassle. Just want the cheapest fare.",
+    "parseConfidence": 0.84,
+    "missingFields": ["travelStyles", "tripDurationDays"]
+  },
+  "expectedDiscoveryMode": "route_known",
+  "notes": "James route_known path. Explicit SYD→SGN + ISO date + fare ask. No Direct Decision Offer eligibility."
+}

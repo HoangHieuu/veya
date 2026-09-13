@@ -7,9 +7,12 @@ Sample briefs and quizzes paired with expected `TripIntent` outputs.
 ```
 fixtures/
 ├── briefs/
-│   ├── olivia.json
-│   ├── vfr.json
-│   └── student.json
+│   ├── olivia.json              # Phase 1 leisure
+│   ├── vfr.json                 # Phase 1 VFR / Hanoi
+│   ├── student.json             # Phase 1 budget (James)
+│   ├── nguyens-discovery.json   # Cà Mau → discovery
+│   ├── olivia-discovery.json    # Hanoi or Saigon → discovery
+│   └── james-route-known.json   # SYD→SGN fixed → route_known
 └── quizzes/
     ├── olivia-quiz.json
     ├── vfr-quiz.json
@@ -22,9 +25,12 @@ Each file shape:
 {
   "request": { "mode": "brief|quiz", "...": "..." },
   "expectedIntent": { "...TripIntent...": "..." },
+  "expectedDiscoveryMode": "discovery|route_known",
   "notes": "optional"
 }
 ```
+
+`expectedDiscoveryMode` is optional — golden `fixtures.test.ts` ignores unknown keys; `discoveryMode.test.ts` asserts it.
 
 Quiz date windows assume fixed `now = 2026-09-11T00:00:00.000Z`.
 

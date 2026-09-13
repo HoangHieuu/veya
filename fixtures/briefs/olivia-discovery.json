@@ -1,0 +1,30 @@
+{
+  "request": {
+    "mode": "brief",
+    "locale": "en",
+    "originCity": "SYD",
+    "briefText": "Trip from Sydney (SYD). 2 adults. 9 days in mid-November. Hanoi or Saigon? Beach and food trip, low hassle. Budget band: Standard. Priority: Lowest hassle."
+  },
+  "expectedIntent": {
+    "originCity": "SYD",
+    "travelStyles": ["beach_relaxation", "food_culture"],
+    "budgetBand": "standard",
+    "travellers": 2,
+    "priority": "lowest_hassle",
+    "dateWindow": {
+      "start": "2026-11-15",
+      "end": "2026-11-24",
+      "flexibility": "flexible_±3"
+    },
+    "tripDurationDays": 9,
+    "goal": "discover_destination",
+    "constraints": {
+      "maxStops": 1
+    },
+    "rawSummary": "Trip from Sydney (SYD). 2 adults. 9 days in mid-November. Hanoi or Saigon? Beach and food trip, low hassle. Budget band: Standard. Priority: Lowest hassle.",
+    "parseConfidence": 0.89,
+    "missingFields": []
+  },
+  "expectedDiscoveryMode": "discovery",
+  "notes": "Olivia compare path. Gateway comparison leaves preferredDestination unset so ranking can return 3 gateways. Fixed now 2026-09-11 UTC for mid-November."
+}
