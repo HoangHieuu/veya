@@ -368,10 +368,10 @@
 
 @media (min-width: 1024px) {
   .hero-home-inner {
-    grid-template-columns: minmax(0, 26rem) 1fr;
+    grid-template-columns: minmax(0, 40rem) minmax(0, 1fr);
     grid-template-rows: 1fr;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem 2.5rem;
     padding-inline: clamp(2rem, 5vw, 5rem);
   }
 }
@@ -380,7 +380,13 @@
   position: relative;
   z-index: 3;
   align-self: center;
-  max-width: 22rem;
+  max-width: min(100%, 28rem);
+}
+
+@media (min-width: 1024px) {
+  .hero-home-copy {
+    max-width: 40rem;
+  }
 }
 
 .hero-home-eyebrow {
@@ -450,23 +456,25 @@
 
 @media (min-width: 1024px) {
   .hero-home-plane-wrap {
-    justify-self: stretch;
-    width: 100%;
+    justify-self: end;
+    width: min(100%, 52rem);
     max-height: min(78vh, 44rem);
-    margin-left: 0;
+    margin-left: auto;
+    margin-right: clamp(-1rem, -2vw, 0rem);
   }
 
   .hero-home-plane {
-    object-position: left center;
+    object-position: right center;
     max-height: min(78vh, 44rem);
   }
 }
 
 @media (min-width: 1280px) {
   .hero-home-plane-wrap {
+    width: min(100%, 56rem);
     max-height: min(84vh, 50rem);
-    transform: translateX(-6%) scale(1.08);
-    transform-origin: left center;
+    transform: translateX(4%) scale(1.04);
+    transform-origin: right center;
   }
 
   .hero-home-plane {
