@@ -232,6 +232,8 @@ export default function App() {
             destinationName={selectedCard.route.destinationName}
             imageUrl={selectedCard.route.backgroundImage.url}
             handoff={selectedCard.handoff}
+            route={selectedCard.route}
+            priority={state.priorityOverride ?? state.response?.intent.priority}
             viaHub={selectedCard.route.viaHub}
             tripOutline={selectedCard.tripOutline}
             highlightReason={selectedCard.score.reasons[0]}
