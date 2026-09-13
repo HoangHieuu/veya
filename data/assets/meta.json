@@ -136,5 +136,47 @@
       "attributionLine": "Photo: Dragfyre / Wikimedia Commons / CC BY-SA 3.0",
       "width": 800
     }
+  },
+  "destinationFiles": {
+    "ca-mau.jpg": {
+      "file": "destinations/ca-mau.jpg",
+      "destinationId": "ca-mau",
+      "servedAs": "/assets/destinations/ca-mau.jpg",
+      "description": "Cà Mau city centre — Mekong delta gateway via SGN",
+      "source": "Team curated (UAVS 2026)",
+      "licenseNote": "Team-provided destination spotlight image for demo."
+    },
+    "ho-chi-minh-city.jpg": {
+      "file": "destinations/ho-chi-minh-city.jpg",
+      "destinationId": "ho-chi-minh-city",
+      "servedAs": "/assets/destinations/ho-chi-minh-city.jpg",
+      "description": "Ho Chi Minh City skyline at dusk",
+      "source": "Team curated (UAVS 2026)",
+      "licenseNote": "Team-provided destination spotlight image for demo."
+    },
+    "hanoi.png": {
+      "file": "destinations/hanoi.png",
+      "destinationId": "hanoi",
+      "servedAs": "/assets/destinations/hanoi.png",
+      "description": "Turtle Tower, Hoàn Kiếm Lake, Hanoi",
+      "source": "Team curated (UAVS 2026)",
+      "licenseNote": "Team-provided destination spotlight image for demo."
+    },
+    "nha-trang.jpg": {
+      "file": "destinations/nha-trang.jpg",
+      "destinationId": "nha-trang",
+      "servedAs": "/assets/destinations/nha-trang.jpg",
+      "description": "Nha Trang bay aerial",
+      "source": "Team curated (UAVS 2026)",
+      "licenseNote": "Team-provided destination spotlight image for demo."
+    },
+    "phu-quoc.jpg": {
+      "file": "destinations/phu-quoc.jpg",
+      "destinationId": "phu-quoc",
+      "servedAs": "/assets/destinations/phu-quoc.jpg",
+      "description": "Phú Quốc Sunset Town coast",
+      "source": "Team curated (UAVS 2026)",
+      "licenseNote": "Team-provided destination spotlight image for demo."
+    }
   }
 }

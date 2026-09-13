@@ -2,6 +2,7 @@ import type { DestinationSuggestion } from "../../../lib/agentWorkspace";
 import type { LocalityResolution } from "../../../lib/agentTypes";
 import type { TripSummary } from "../../../lib/agentWorkspace";
 import { gatewayDisplay } from "../../../lib/agentWorkspace";
+import { resolveRouteImageUrl } from "../../../lib/routeMedia";
 import { Button } from "../../ui/Button";
 import { LocalityMap } from "./LocalityMap";
 
@@ -29,7 +30,9 @@ export function DestinationDetailPanel({
     <div className="disc-detail">
       <div
         className={discHeroClass(gateway, Boolean(imageUrl))}
-        style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
+        style={
+          imageUrl ? { backgroundImage: `url(${resolveRouteImageUrl(imageUrl)})` } : undefined
+        }
       >
         <div className="disc-detail-hero-inner">
           <p className="disc-detail-eyebrow">{preview ? "Preview" : "Destination"}</p>

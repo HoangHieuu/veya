@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { getBentoSuggestions, type BentoDestination } from "../../../lib/agentWorkspace";
+import { resolveRouteImageUrl } from "../../../lib/routeMedia";
 import type { OriginCity, TravelStyle } from "@shared/types";
 
 export function SuggestedDestinations({
@@ -51,10 +52,6 @@ export function SuggestedDestinations({
   );
 }
 
-function heroImage(url: string, shape: BentoDestination["shape"]): string {
-  const w = shape === "landscape" ? 1600 : 900;
-  if (url.includes("unsplash.com")) {
-    return url.replace(/w=\d+/, `w=${w}`);
-  }
-  return url;
+function heroImage(url: string, _shape: BentoDestination["shape"]): string {
+  return resolveRouteImageUrl(url);
 }
