@@ -1,6 +1,13 @@
-import type { DemoPersona } from "../lib/wizard";
+import clsx from "clsx";
 import { VeyaLogo } from "../components/VeyaLogo";
 import { Button } from "../components/ui/Button";
+import {
+  getMemberPersona,
+  getPersonaTripSeed,
+  MEMBER_PROFILE_OPTIONS,
+  memberInitials,
+  type MemberDemoProfile,
+} from "../lib/memberDemo";
 
 const DESTINATIONS = [
   {
@@ -38,55 +45,20 @@ const GATEWAYS = [
 const STEPS = [
   {
     n: "01",
-    title: "Three quick taps",
-    body: "Where you’re flying from, the vibe, dates, and who’s going — about 30 seconds.",
+    title: "Pick a traveller",
+    body: "Guest, Lotusmiles Gold member, or LotuStudents — each opens with a real trip brief.",
   },
   {
     n: "02",
-    title: "See your best matches",
-    body: "Ranked routes into Hanoi, Ho Chi Minh City, or Da Nang — plus ideas for after you land.",
+    title: "Discover your gateway",
+    body: "Chat + canvas suggest where to fly in — beach, family visit, or street-food city break.",
   },
   {
     n: "03",
     title: "Continue to book",
-    body: "Open Vietnam Airlines with your dates and destination already filled in.",
+    body: "Member offers and miles on the direct channel, then hand off to vietnamairlines.com.",
   },
 ] as const;
-
-const PERSONAS: {
-  id: DemoPersona;
-  name: string;
-  from: string;
-  trip: string;
-  image: string;
-  featured?: boolean;
-}[] = [
-  {
-    id: "olivia",
-    name: "Olivia",
-    from: "Sydney",
-    trip: "Beach-and-food with a friend, November, low hassle",
-    image:
-      "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400&q=80",
-    featured: true,
-  },
-  {
-    id: "vfr",
-    name: "The Nguyens",
-    from: "Melbourne",
-    trip: "Visit family in Cà Mau — fly into Saigon, one stop max",
-    image:
-      "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80",
-  },
-  {
-    id: "student",
-    name: "James",
-    from: "Perth",
-    trip: "Food-focused long weekend, budget-conscious, solo",
-    image:
-      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80",
-  },
-];
 
 const FAQ = [
   {
@@ -102,28 +74,26 @@ const FAQ = [
     a: "Comparison sites win the click before you pick the right gateway — and they cannot show member-only miles, bundles, or airline support. Veya helps you decide, then hands off to vietnamairlines.com with your trip context.",
   },
   {
-    q: "How long does it take?",
-    a: "Three short steps — or tap Olivia, the Nguyens, or James to see example routes instantly.",
+    q: "Who are the demo profiles?",
+    a: "Guest traveller (beach escape), Minh Nguyen (Gold · VFR to Cà Mau), and Alex Tran (LotuStudents · food & culture). Each loads a seeded brief so you can demo in one click.",
   },
 ];
 
-const OLIVIA_EXAMPLE =
-  "I have 8–10 days free in November from Sydney. Beach-and-food trip with a friend — low hassle, few connections.";
-
 const agentCanvasEnabled = import.meta.env.VITE_AGENT_CANVAS === "true";
+
+function originLabel(origin: string): string {
+  return origin === "MEL" ? "Melbourne" : origin === "PER" ? "Perth" : "Sydney";
+}
 
 export function HomeScreen({
   onStart,
-  onTryExample,
   onTalkToVeya,
+  onPlanAsProfile,
 }: {
   onStart: () => void;
-  onTryExample: (persona: DemoPersona) => void;
   onTalkToVeya?: () => void;
+  onPlanAsProfile?: (profile: MemberDemoProfile) => void;
 }) {
-  const olivia = PERSONAS.find((p) => p.id === "olivia")!;
-  const others = PERSONAS.filter((p) => !p.featured);
-
   return (
     <div className="h-full overflow-y-auto">
       <section className="hero-home">
@@ -151,13 +121,15 @@ export function HomeScreen({
                   Start planning →
                 </Button>
               )}
-              <button
-                type="button"
-                onClick={() => onTryExample("olivia")}
-                className="text-sm font-semibold text-teal transition hover:text-teal/80"
-              >
-                See Olivia&apos;s routes instantly
-              </button>
+              {onPlanAsProfile ? (
+                <button
+                  type="button"
+                  onClick={() => onPlanAsProfile("lotusmiles_member")}
+                  className="text-sm font-semibold text-teal transition hover:text-teal/80"
+                >
+                  Try as Minh Nguyen →
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -241,53 +213,56 @@ export function HomeScreen({
         </div>
       </section>
 
-      <section className="home-section">
+      <section className="home-section" id="demo-profiles">
         <div className="home-section-inner">
-          <p className="home-eyebrow">Real trip ideas</p>
-          <h2 className="home-heading">Messy, human, totally fine</h2>
+          <p className="home-eyebrow">Demo travellers</p>
+          <h2 className="home-heading">Who are we planning for?</h2>
           <p className="home-personas-lead">
-            Tap a story — ranked routes in one click, no form.
+            Same profiles as Talk to Veya — membership, trip need, and brief are already loaded.
           </p>
 
-          <article className="home-olivia">
-            <div className="home-olivia-visual">
-              <img src={olivia.image} alt="" />
-            </div>
-            <div className="home-olivia-body">
-              <p className="home-olivia-label">Try the demo</p>
-              <h3 className="home-olivia-title">
-                {olivia.name} · {olivia.from}
-              </h3>
-              <blockquote className="home-olivia-quote">&ldquo;{OLIVIA_EXAMPLE}&rdquo;</blockquote>
-              <Button
-                variant="secondary"
-                className="mt-5"
-                onClick={() => onTryExample("olivia")}
-              >
-                See her routes →
-              </Button>
-            </div>
-          </article>
+          <div className="home-demo-profiles">
+            {MEMBER_PROFILE_OPTIONS.map((profile) => {
+              const persona = getMemberPersona(profile);
+              const seed = getPersonaTripSeed(profile);
+              const member = profile !== "guest";
 
-          <div className="home-personas-grid">
-            {others.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className="home-persona-card"
-                onClick={() => onTryExample(p.id)}
-              >
-                <img src={p.image} alt="" className="home-persona-img" />
-                <div className="home-persona-overlay" />
-                <div className="home-persona-body">
-                  <p className="home-persona-name">
-                    {p.name} · {p.from}
+              return (
+                <button
+                  key={profile}
+                  type="button"
+                  className={clsx("home-demo-profile", `home-demo-profile-${persona.tierTone}`)}
+                  onClick={() => onPlanAsProfile?.(profile)}
+                  disabled={!onPlanAsProfile}
+                >
+                  <div className="home-demo-profile-head">
+                    <span className="home-demo-profile-avatar" aria-hidden>
+                      {member ? memberInitials(persona.displayName) : "?"}
+                    </span>
+                    <div>
+                      <p className="home-demo-profile-name">{persona.displayName}</p>
+                      <p className="home-demo-profile-program">{persona.programLabel}</p>
+                    </div>
+                    <span
+                      className={clsx(
+                        "home-demo-profile-tier",
+                        `home-demo-profile-tier-${persona.tierTone}`,
+                      )}
+                    >
+                      {persona.tierLabel}
+                    </span>
+                  </div>
+                  <p className="home-demo-profile-intent">{persona.intentSummary}</p>
+                  <blockquote className="home-demo-profile-quote">
+                    &ldquo;{seed.briefText}&rdquo;
+                  </blockquote>
+                  <p className="home-demo-profile-meta">
+                    {originLabel(seed.origin)} · {seed.monthHint}
                   </p>
-                  <p className="home-persona-trip">&ldquo;{p.trip}&rdquo;</p>
-                  <span className="home-persona-cta">Try this trip →</span>
-                </div>
-              </button>
-            ))}
+                  <span className="home-demo-profile-cta">Plan as {persona.displayName} →</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -312,10 +287,16 @@ export function HomeScreen({
       <section className="home-cta">
         <div className="home-section-inner home-cta-inner">
           <h2 className="home-cta-title">Ready to explore?</h2>
-          <p className="home-cta-lead">Three taps. Your ranked routes.</p>
-          <Button className="mt-6 min-h-12 px-10 text-base" onClick={onStart}>
-            Start planning →
-          </Button>
+          <p className="home-cta-lead">Pick Minh, Alex, or a guest demo — trip context loads instantly.</p>
+          {agentCanvasEnabled && onTalkToVeya ? (
+            <Button className="mt-6 min-h-12 px-10 text-base" onClick={onTalkToVeya}>
+              Talk to Veya
+            </Button>
+          ) : (
+            <Button className="mt-6 min-h-12 px-10 text-base" onClick={onStart}>
+              Start planning →
+            </Button>
+          )}
           <p className="home-cta-foot">We don&apos;t sell tickets — booking and payment on Vietnam Airlines.</p>
         </div>
       </section>

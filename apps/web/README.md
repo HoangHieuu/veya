@@ -48,9 +48,9 @@ Vite proxies `/api` and `/assets` to the API server.
 | Path | Flow |
 |------|------|
 | **Talk to Veya** | Home → profile picker → 3-panel agent (chat · discovery · trip) |
-| **Olivia** | Beach vibe → Da Nang → booking offer → handoff to vietnamairlines.com |
-| **The Nguyens** | VFR → Cà Mau locality → SGN gateway map |
-| **Minh / Alex** | Member profiles → bonus miles offer on direct channel |
+| **Guest** | Beach escape from Sydney → central coast discovery |
+| **Minh Nguyen** | Gold member · VFR Cà Mau → SGN gateway + miles |
+| **Alex Tran** | LotuStudents · food & culture city break |
 | **Wizard fallback** | Start planning → 3-step quiz → results → handoff |
 
 ## Build & lint
