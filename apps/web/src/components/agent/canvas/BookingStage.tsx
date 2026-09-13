@@ -2,6 +2,7 @@ import type { AgentCanvasState } from "../../../lib/agentTypes";
 import type { MemberDemoProfile } from "../../../lib/memberDemo";
 import { isMember } from "../../../lib/memberDemo";
 import { gatewayInfo } from "../../../lib/labels";
+import { DirectBookingValueCard } from "../../DirectBookingValueCard";
 import { CanvasRouteCard } from "./CanvasRouteCard";
 import { EnrollmentCard } from "./EnrollmentCard";
 import { HandoffCTA } from "./HandoffCTA";
@@ -48,6 +49,15 @@ export function BookingStage({
           <section className="agent-canvas-block">
             <h3 className="agent-canvas-label">Flights</h3>
             <CanvasRouteCard card={card} intent={response.intent} />
+          </section>
+
+          <section className="agent-canvas-block">
+            <h3 className="agent-canvas-label">Why book direct</h3>
+            <DirectBookingValueCard
+              route={card.route}
+              priority={response.intent.priority}
+              compact
+            />
           </section>
         </>
       ) : null}

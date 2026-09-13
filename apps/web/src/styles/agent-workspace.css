@@ -2410,3 +2410,22 @@
   justify-content: center;
   margin-top: 1.5rem;
 }
+
+.agent-route-reasons {
+  margin: 0.625rem 0 0;
+  padding-left: 1.125rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+.agent-route-reasons li + li {
+  margin-top: 0.25rem;
+}
+
+.agent-route-source {
+  margin: 0.5rem 0 0;
+  font-size: 0.625rem;
+  line-height: 1.4;
+  color: var(--color-muted-2);
+}

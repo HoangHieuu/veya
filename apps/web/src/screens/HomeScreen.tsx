@@ -98,8 +98,8 @@ const FAQ = [
     a: "Not necessarily. Tell us the vibe and dates; we suggest which city to fly into and why.",
   },
   {
-    q: "Why Vietnam Airlines and not a comparison site?",
-    a: "You still book with the airline. We only narrow down the right place to land and pass your trip details into their search so you don’t re-type everything.",
+    q: "Why not use an OTA?",
+    a: "Comparison sites win the click before you pick the right gateway — and they cannot show member-only miles, bundles, or airline support. Veya helps you decide, then hands off to vietnamairlines.com with your trip context.",
   },
   {
     q: "How long does it take?",
@@ -135,11 +135,11 @@ export function HomeScreen({
 
         <div className="hero-home-inner">
           <div className="hero-home-copy anim-rise">
-            <p className="hero-home-eyebrow">Australia → Vietnam</p>
-            <h1 className="hero-home-title">Where should you fly in?</h1>
+            <p className="hero-home-eyebrow">Vietnam Airlines · Direct channel</p>
+            <h1 className="hero-home-title">Win the click before the OTA does</h1>
             <p className="hero-home-lead">
-              Not sure Hanoi, Ho Chi Minh City, or Da Nang? Tell us your trip — we&apos;ll suggest
-              the best place to land, then help you continue on Vietnam Airlines.
+              Not sure Hanoi, Ho Chi Minh City, or Da Nang? Veya is discovery on vietnamairlines.com —
+              we suggest the right gateway for your trip, surface member value, then hand off to book direct.
             </p>
             <div className="hero-home-actions">
               <Button className="min-h-12 px-8 text-base" onClick={onStart}>
@@ -203,12 +203,13 @@ export function HomeScreen({
 
       <section className="home-section home-ota-loss">
         <div className="home-section-inner">
-          <p className="home-eyebrow">Why the city matters</p>
-          <h2 className="home-heading">Same country, very different trips</h2>
+          <p className="home-eyebrow">The moment we lose you</p>
+          <h2 className="home-heading">Why travellers leave for an OTA</h2>
           <ul className="home-ota-list">
-            <li>Beach time near Da Nang is not the same as street food in Saigon or a week in Hanoi.</li>
-            <li>The cheapest flight isn&apos;t always the right airport for what you want to do.</li>
-            <li>We match your trip to a place you&apos;ll actually enjoy — then you pick flights on the airline site.</li>
+            <li>They don&apos;t know which city to fly into — Hanoi, Saigon, and Da Nang are different trips.</li>
+            <li>Aggregators feel easier before destination is decided, even when the airline has the better relationship.</li>
+            <li>Member miles, bundles, and direct-only offers never show up on a comparison site.</li>
+            <li>Veya intercepts that pre-search moment and keeps the booking path on Vietnam Airlines.</li>
           </ul>
         </div>
       </section>
