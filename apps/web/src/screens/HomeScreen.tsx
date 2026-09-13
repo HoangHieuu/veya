@@ -142,14 +142,15 @@ export function HomeScreen({
               we suggest the right gateway for your trip, surface member value, then hand off to book direct.
             </p>
             <div className="hero-home-actions">
-              <Button className="min-h-12 px-8 text-base" onClick={onStart}>
-                Start planning →
-              </Button>
               {agentCanvasEnabled && onTalkToVeya ? (
-                <Button variant="secondary" className="min-h-12 px-8 text-base" onClick={onTalkToVeya}>
+                <Button className="min-h-12 px-8 text-base" onClick={onTalkToVeya}>
                   Talk to Veya
                 </Button>
-              ) : null}
+              ) : (
+                <Button className="min-h-12 px-8 text-base" onClick={onStart}>
+                  Start planning →
+                </Button>
+              )}
               <button
                 type="button"
                 onClick={() => onTryExample("olivia")}
