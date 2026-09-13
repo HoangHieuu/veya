@@ -1,0 +1,40 @@
+{
+  "gateway": "DAD",
+  "gatewayLabel": "Da Nang",
+  "highlights": [
+    {
+      "id": "dad-mykhe",
+      "title": "My Khe Beach",
+      "subtitle": "Wide sand and gentle surf — stay in Da Nang, not just the airport code.",
+      "transferNote": "25 min from DAD · taxi or Grab",
+      "imageUrl": "/assets/da-nang-beach.jpg",
+      "tags": ["beach", "quiet"],
+      "featured": true
+    },
+    {
+      "id": "dad-hoian",
+      "title": "Hoi An Ancient Town",
+      "subtitle": "Lantern streets, tailors, and riverside cafés — Vietnam's classic side trip.",
+      "transferNote": "45 min south by road · day trip or overnight",
+      "imageUrl": "/assets/experiences/dad-hoi-an.jpg",
+      "tags": ["culture", "food"],
+      "featured": true
+    },
+    {
+      "id": "dad-marble",
+      "title": "Marble Mountains",
+      "subtitle": "Caves, pagodas, and coastal views above the city.",
+      "transferNote": "20 min south · easy half-day",
+      "imageUrl": "/assets/experiences/dad-marble-mountains.jpg",
+      "tags": ["culture", "family"]
+    },
+    {
+      "id": "dad-bana",
+      "title": "Bà Nà Hills",
+      "subtitle": "Cable car, Golden Bridge views, cooler air in the hills.",
+      "transferNote": "45 min west · book a morning slot",
+      "imageUrl": "/assets/da-nang-beach.jpg",
+      "tags": ["family", "city"]
+    }
+  ]
+}

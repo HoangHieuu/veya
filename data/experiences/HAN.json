@@ -1,0 +1,40 @@
+{
+  "gateway": "HAN",
+  "gatewayLabel": "Hanoi",
+  "highlights": [
+    {
+      "id": "han-old-quarter",
+      "title": "Old Quarter walks",
+      "subtitle": "Phở lanes, lake loops, and weekend street life in the capital.",
+      "transferNote": "In-city · walk or cyclo",
+      "imageUrl": "/assets/hanoi-food.jpg",
+      "tags": ["food", "culture"],
+      "featured": true
+    },
+    {
+      "id": "han-hoan-kiem",
+      "title": "Hoàn Kiếm Lake",
+      "subtitle": "Calm paths, Ngoc Son temple, and evening performers.",
+      "transferNote": "Central Hanoi · best at dusk",
+      "imageUrl": "/assets/hanoi-food.jpg",
+      "tags": ["quiet", "culture", "family"],
+      "featured": true
+    },
+    {
+      "id": "han-halong",
+      "title": "Hạ Long Bay cruise",
+      "subtitle": "Karst islands — long day from Hanoi but the north's signature view.",
+      "transferNote": "~3h each way · book ahead",
+      "imageUrl": "/assets/experiences/han-ha-long-bay.jpg",
+      "tags": ["culture", "family"]
+    },
+    {
+      "id": "han-ninh-binh",
+      "title": "Ninh Binh day trip",
+      "subtitle": "Boat rides between limestone cliffs — Halong on land.",
+      "transferNote": "~2h south · Trang An or Tam Coc",
+      "imageUrl": "/assets/experiences/han-ninh-binh.jpg",
+      "tags": ["culture", "quiet"]
+    }
+  ]
+}

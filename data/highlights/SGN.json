@@ -1,0 +1,55 @@
+{
+  "gateway": "SGN",
+  "gatewayName": "Ho Chi Minh City",
+  "note": "TDD Phase 2 item 13. shared/types.ts has no highlights field yet (Appendix D lists it as TBD), so this ships as a standalone file. See data/README.md for the proposed type.",
+  "highlights": [
+    {
+      "id": "sgn-district-1",
+      "title": "District 1 street food",
+      "archetype": "food_culture",
+      "summary": "Pavement kitchens, banh mi carts and night markets packed into a few walkable blocks.",
+      "transfer": "25–40 minutes from Tan Son Nhat depending on traffic; the centre is walkable once you arrive.",
+      "image": {
+        "url": "/assets/saigon-food.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Street_Food_Life_(Unsplash).jpg",
+        "owner": "Hiep Nguyen hiepng",
+        "license": "CC0",
+        "licenseNote": "CC0 1.0 public domain dedication — no attribution required. Photographer Hiep Nguyen hiepng credited voluntarily. Downloaded 2026-09-12 from Wikimedia Commons at 1920px.",
+        "attributionLine": "Photo: Hiep Nguyen hiepng (CC0)"
+      }
+    },
+    {
+      "id": "sgn-cu-chi",
+      "title": "Cu Chi Tunnels",
+      "archetype": "education",
+      "summary": "The wartime tunnel network north-west of the city, seen on a guided walk-through.",
+      "transfer": "About 1.5–2 hours from the centre by road, commonly done as a half-day trip.",
+      "image": {
+        "url": "/assets/highlights/sgn-cu-chi.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:VietnamCuChiTunnels.jpg",
+        "owner": "Kevyn Jacobs",
+        "license": "Public domain",
+        "licenseNote": "Public domain — no attribution required. Kevyn Jacobs credited voluntarily. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+        "attributionLine": "Photo: Kevyn Jacobs (Public domain)"
+      }
+    },
+    {
+      "id": "sgn-vung-tau",
+      "title": "Vung Tau",
+      "archetype": "beach_relaxation",
+      "summary": "The closest stretch of coast to the city, with Back Beach, seafood stalls and a hilltop Christ statue.",
+      "transfer": "About 2 hours from the centre by road.",
+      "image": {
+        "url": "/assets/highlights/sgn-vung-tau.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bai_Truoc,_Vung_Tau.jpg",
+        "owner": "Hữu Sơn at Vietnamese Wikipedia",
+        "license": "Public domain",
+        "licenseNote": "Public domain — no attribution required. Hữu Sơn at Vietnamese Wikipedia credited voluntarily. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+        "attributionLine": "Photo: Hữu Sơn at Vietnamese Wikipedia (Public domain)"
+      }
+    }
+  ]
+}

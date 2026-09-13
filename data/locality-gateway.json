@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "localityBoost": 0.55,
+  "visitContextPatterns": [
+    "\\bvisit(?:ing)?\\s+(?:my\\s+)?(?:famil(?:y|ies)|relatives|parents|grandparents|cousins|aunt|uncle)\\b",
+    "\\bfamily\\s+(?:live|lives|living|in|near|around|back\\s+in)\\b",
+    "\\brelatives\\s+(?:in|near|around|back\\s+in)\\b",
+    "\\bgo(?:ing)?\\s+(?:home|back)\\s+to\\b",
+    "\\bVFR\\b"
+  ],
+  "regions": [
+    {
+      "id": "north",
+      "gateway": "HAN",
+      "boost": 0.42,
+      "patterns": [
+        "\\bnorth(?:ern)?\\s+(?:vietnam|region|part)?\\b",
+        "\\bmien\\s+bac\\b",
+        "\\bthe\\s+north\\b",
+        "\\bred\\s+river\\s+delta\\b"
+      ]
+    },
+    {
+      "id": "south",
+      "gateway": "SGN",
+      "boost": 0.42,
+      "patterns": [
+        "\\bsouth(?:ern)?\\s+(?:vietnam|region|part)?\\b",
+        "\\bmien\\s+nam\\b",
+        "\\bthe\\s+south\\b",
+        "\\bmekong\\s+delta\\b"
+      ]
+    },
+    {
+      "id": "central",
+      "gateway": "DAD",
+      "boost": 0.4,
+      "patterns": [
+        "\\bcentral\\s+(?:vietnam|region|coast)?\\b",
+        "\\bmien\\s+trung\\b",
+        "\\bthe\\s+central\\s+coast\\b"
+      ]
+    }
+  ],
+  "gatewayProvinces": {
+    "HAN": [
+      "Ha Giang", "Cao Bang", "Bac Kan", "Lang Son", "Tuyen Quang", "Lao Cai", "Yen Bai",
+      "Dien Bien", "Lai Chau", "Son La", "Hoa Binh", "Phu Tho", "Vinh Phuc", "Bac Ninh",
+      "Bac Giang", "Bắc Giang", "Quang Ninh", "Hai Duong", "Hai Phong", "Hải Phòng",
+      "Hung Yen", "Thai Binh", "Ha Nam", "Ninh Binh", "Hanoi", "Hà Nội", "Ha Noi",
+      "Thai Nguyen", "Thái Nguyên", "Nam Dinh", "Bắc Ninh", "Bắc Kan", "Điện Biên"
+    ],
+    "DAD": [
+      "Thanh Hoa", "Nghe An", "Nghệ An", "Ha Tinh", "Hà Tỉnh", "Quang Binh", "Quang Tri",
+      "Thua Thien Hue", "Hue", "Huế", "Da Nang", "Đà Nẵng", "Danang", "Quang Nam",
+      "Quang Ngai", "Binh Dinh", "Phu Yen", "Khanh Hoa", "Nha Trang", "Kon Tum",
+      "Gia Lai", "Dak Lak", "Đắk Lắk", "Dak Nong", "Lam Dong", "Da Lat", "Đà Lạt",
+      "Hoi An", "Hội An"
+    ],
+    "SGN": [
+      "Ho Chi Minh City", "Ho Chi Minh", "Hồ Chí Minh", "Saigon", "Sài Gòn", "HCMC",
+      "Binh Duong", "Dong Nai", "Ba Ria-Vung Tau", "Vung Tau", "Vũng Tàu", "Long An",
+      "Tien Giang", "Ben Tre", "Tra Vinh", "Vinh Long", "Dong Thap", "An Giang",
+      "Kien Giang", "Can Tho", "Cần Thơ", "Hau Giang", "Soc Trang", "Bac Lieu", "Ca Mau",
+      "Binh Phuoc", "Tay Ninh", "Binh Thuan", "Phan Thiet", "Mekong", "Chợ Lớn", "Cho Lon"
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "gateway": "HAN",
+  "gatewayName": "Hanoi",
+  "note": "TDD Phase 2 item 13. shared/types.ts has no highlights field yet (Appendix D lists it as TBD), so this ships as a standalone file. See data/README.md for the proposed type.",
+  "highlights": [
+    {
+      "id": "han-old-quarter",
+      "title": "Hoan Kiem Lake and the Old Quarter",
+      "archetype": "food_culture",
+      "summary": "Thirty-six trading streets around the lake, dense with street-food stalls, coffee shops and evening crowds.",
+      "transfer": "In the city centre. Noi Bai is 40–60 minutes away by airport bus, taxi or Grab, and the quarter itself is walkable.",
+      "image": {
+        "url": "/assets/hanoi-food.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Old_Quarter_market,_Hanoi,_20240123_1811_3411.jpg",
+        "owner": "Jakub Hałun",
+        "license": "CC BY 4.0",
+        "licenseNote": "CC BY 4.0 — attribution required. Credit \"Jakub Hałun / Wikimedia Commons / CC BY 4.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 1920px.",
+        "attributionLine": "Photo: Jakub Hałun / Wikimedia Commons / CC BY 4.0"
+      }
+    },
+    {
+      "id": "han-ha-long-bay",
+      "title": "Ha Long Bay",
+      "archetype": "mixed",
+      "summary": "Limestone karsts rising straight out of the Gulf of Tonkin, visited by day cruise or overnight boat.",
+      "transfer": "About 2.5 hours east of Hanoi by road. Usually taken as a full-day trip or a one-night cruise.",
+      "image": {
+        "url": "/assets/highlights/han-ha-long-bay.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Karst_HaLongBay_Vietnam_(pixinn.net).jpg",
+        "owner": "Christophe Meneboeuf",
+        "license": "CC BY 3.0",
+        "licenseNote": "CC BY 3.0 — attribution required. Credit \"Christophe Meneboeuf / Wikimedia Commons / CC BY 3.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+        "attributionLine": "Photo: Christophe Meneboeuf / Wikimedia Commons / CC BY 3.0"
+      }
+    },
+    {
+      "id": "han-ninh-binh",
+      "title": "Trang An, Ninh Binh",
+      "archetype": "mixed",
+      "summary": "A UNESCO-listed karst landscape of rice fields and flooded caves, rowed through by sampan.",
+      "transfer": "Roughly 1.5–2 hours south of Hanoi by road or train.",
+      "image": {
+        "url": "/assets/highlights/han-ninh-binh.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Trang_An_Landscape_Complex,_Ninh_Binh_Province,_Vietnam,_20240202_1433_5283.jpg",
+        "owner": "Jakub Hałun",
+        "license": "CC BY 4.0",
+        "licenseNote": "CC BY 4.0 — attribution required. Credit \"Jakub Hałun / Wikimedia Commons / CC BY 4.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+        "attributionLine": "Photo: Jakub Hałun / Wikimedia Commons / CC BY 4.0"
+      }
+    }
+  ]
+}

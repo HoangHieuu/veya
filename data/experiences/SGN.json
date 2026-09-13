@@ -1,0 +1,40 @@
+{
+  "gateway": "SGN",
+  "gatewayLabel": "Ho Chi Minh City",
+  "highlights": [
+    {
+      "id": "sgn-street-food",
+      "title": "District 1 street food",
+      "subtitle": "Bánh mì, cơm tấm, and night-market stalls in the city core.",
+      "transferNote": "In-city · Districts 1 & 3",
+      "imageUrl": "/assets/saigon-food.jpg",
+      "tags": ["food", "city"],
+      "featured": true
+    },
+    {
+      "id": "sgn-vungtau",
+      "title": "Vũng Tàu beach",
+      "subtitle": "Seaside escape by road — no second flight, still on your SGN gateway.",
+      "transferNote": "~2h by road · day trip or overnight",
+      "imageUrl": "/assets/experiences/sgn-vung-tau.jpg",
+      "tags": ["beach", "quiet", "family"],
+      "featured": true
+    },
+    {
+      "id": "sgn-cholon",
+      "title": "Chợ Lớn heritage",
+      "subtitle": "Temples and markets in the Chinese quarter.",
+      "transferNote": "30 min from central hotels",
+      "imageUrl": "/assets/saigon-food.jpg",
+      "tags": ["culture", "family"]
+    },
+    {
+      "id": "sgn-mekong",
+      "title": "Mekong Delta day",
+      "subtitle": "Canals, coconut candy, and floating markets south of the city.",
+      "transferNote": "~2h drive · organised tour recommended",
+      "imageUrl": "/assets/saigon-food.jpg",
+      "tags": ["culture", "food"]
+    }
+  ]
+}

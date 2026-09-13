@@ -1,0 +1,195 @@
+{
+  "version": "1.0.0",
+  "description": "Curated need → place → gateway map for Veya. Gateways are bookable VNA IATA only (HAN, SGN, DAD).",
+  "experienceTags": {
+    "food": "Street food, markets, and local dining",
+    "beach": "Coast, sand, and seaside pacing",
+    "quiet": "Calmer rhythm, less nightlife",
+    "family": "Easy transfers and kid-friendly pacing",
+    "culture": "Heritage, temples, history, landscapes",
+    "city": "Urban energy, skylines, cafés"
+  },
+  "travelStyleProfiles": {
+    "beach_relaxation": {
+      "experienceTags": { "beach": 1, "quiet": 0.6 }
+    },
+    "food_culture": {
+      "experienceTags": { "food": 1, "culture": 0.7, "city": 0.3 }
+    },
+    "education": {
+      "experienceTags": { "culture": 1, "city": 0.5 }
+    },
+    "family": {
+      "experienceTags": { "family": 1, "quiet": 0.4 }
+    },
+    "vfr": {
+      "experienceTags": { "family": 0.8, "food": 0.4, "city": 0.3 }
+    },
+    "mixed": {
+      "experienceTags": { "culture": 0.5, "food": 0.5, "city": 0.3 }
+    }
+  },
+  "priorityProfiles": {
+    "food_and_culture": {
+      "experienceTags": { "food": 0.4, "culture": 0.4 }
+    },
+    "best_for_family": {
+      "experienceTags": { "family": 0.5 }
+    }
+  },
+  "places": [
+    {
+      "id": "hoi-an",
+      "title": "Hoi An",
+      "patterns": ["\\bHoi\\s*An\\b", "\\bHội\\s*An\\b", "\\bancient\\s+town\\b"],
+      "gateway": "DAD",
+      "experienceId": "dad-hoian",
+      "tags": ["culture", "food", "quiet"],
+      "gatewayBoost": 0.45
+    },
+    {
+      "id": "my-khe",
+      "title": "My Khe",
+      "patterns": ["\\bMy\\s*Khe\\b", "\\bMy\\s*Kh[eê]\\b"],
+      "gateway": "DAD",
+      "experienceId": "dad-mykhe",
+      "tags": ["beach", "quiet"],
+      "gatewayBoost": 0.35
+    },
+    {
+      "id": "marble-mountains",
+      "title": "Marble Mountains",
+      "patterns": ["\\bMarble\\s+Mountains?\\b", "\\bNgũ\\s*Hành\\s*Sơn\\b"],
+      "gateway": "DAD",
+      "experienceId": "dad-marble",
+      "tags": ["culture", "family"],
+      "gatewayBoost": 0.25
+    },
+    {
+      "id": "ba-na",
+      "title": "Bà Nà Hills",
+      "patterns": ["\\bB[aà]\\s*N[aà]\\b", "\\bGolden\\s+Bridge\\b"],
+      "gateway": "DAD",
+      "experienceId": "dad-bana",
+      "tags": ["family", "city"],
+      "gatewayBoost": 0.25
+    },
+    {
+      "id": "hue",
+      "title": "Huế",
+      "patterns": ["\\bHu[eế]\\b", "\\bHue\\b", "\\bimperial\\s+citadel\\b"],
+      "gateway": "DAD",
+      "tags": ["culture", "quiet"],
+      "gatewayBoost": 0.3
+    },
+    {
+      "id": "vung-tau",
+      "title": "Vũng Tàu",
+      "patterns": ["\\bV[uư]ng\\s*T[aà]u\\b", "\\bVung\\s*Tau\\b"],
+      "gateway": "SGN",
+      "experienceId": "sgn-vungtau",
+      "tags": ["beach", "quiet", "family"],
+      "gatewayBoost": 0.35
+    },
+    {
+      "id": "mekong",
+      "title": "Mekong Delta",
+      "patterns": ["\\bMekong\\b", "\\bfloating\\s+market\\b", "\\bC[aầ]n\\s*Th[oơ]\\b"],
+      "gateway": "SGN",
+      "experienceId": "sgn-mekong",
+      "tags": ["culture", "food"],
+      "gatewayBoost": 0.35
+    },
+    {
+      "id": "cho-lon",
+      "title": "Chợ Lớn",
+      "patterns": ["\\bCh[oợ]\\s*L[ớơ]n\\b", "\\bCho\\s*Lon\\b", "\\bChinatown\\b"],
+      "gateway": "SGN",
+      "experienceId": "sgn-cholon",
+      "tags": ["culture", "family"],
+      "gatewayBoost": 0.2
+    },
+    {
+      "id": "saigon-food",
+      "title": "Saigon street food",
+      "patterns": [
+        "\\bSaigon\\s+street\\s+food\\b",
+        "\\bDistrict\\s+1\\b",
+        "\\bb[aá]nh\\s*m[iì]\\b",
+        "\\bc[oơ]m\\s*t[aấ]m\\b"
+      ],
+      "gateway": "SGN",
+      "experienceId": "sgn-street-food",
+      "tags": ["food", "city"],
+      "gatewayBoost": 0.3
+    },
+    {
+      "id": "old-quarter",
+      "title": "Hanoi Old Quarter",
+      "patterns": ["\\bOld\\s+Quarter\\b", "\\bph[oở]\\s*lanes?\\b"],
+      "gateway": "HAN",
+      "experienceId": "han-old-quarter",
+      "tags": ["food", "culture"],
+      "gatewayBoost": 0.35
+    },
+    {
+      "id": "ha-long",
+      "title": "Hạ Long Bay",
+      "patterns": ["\\bH[aạ]\\s*Long\\b", "\\bHa\\s*Long\\b", "\\bHalong\\b"],
+      "gateway": "HAN",
+      "experienceId": "han-halong",
+      "tags": ["culture", "family"],
+      "gatewayBoost": 0.4
+    },
+    {
+      "id": "ninh-binh",
+      "title": "Ninh Binh",
+      "patterns": ["\\bNinh\\s*Binh\\b", "\\bTrang\\s*An\\b", "\\bTam\\s*Coc\\b"],
+      "gateway": "HAN",
+      "experienceId": "han-ninh-binh",
+      "tags": ["culture", "quiet"],
+      "gatewayBoost": 0.3
+    },
+    {
+      "id": "hoan-kiem",
+      "title": "Hoàn Kiếm Lake",
+      "patterns": ["\\bHo[aà]n\\s*Ki[eế]m\\b", "\\bHoan\\s*Kiem\\b", "\\bSword\\s+Lake\\b"],
+      "gateway": "HAN",
+      "experienceId": "han-hoan-kiem",
+      "tags": ["quiet", "culture", "family"],
+      "gatewayBoost": 0.2
+    }
+  ],
+  "avoidPatterns": [
+    {
+      "id": "avoid-hanoi",
+      "patterns": [
+        "\\bavoid\\s+Hanoi\\b",
+        "\\bavoid\\s+Ha\\s*Noi\\b",
+        "\\bnot\\s+Hanoi\\b",
+        "\\bskip\\s+Hanoi\\b",
+        "\\bwithout\\s+Hanoi\\b",
+        "\\bno\\s+Hanoi\\b"
+      ],
+      "gateway": "HAN",
+      "gatewayBoost": -0.5
+    },
+    {
+      "id": "avoid-saigon",
+      "patterns": [
+        "\\bavoid\\s+Saigon\\b",
+        "\\bavoid\\s+Ho\\s*Chi\\s*Minh\\b",
+        "\\bnot\\s+Saigon\\b",
+        "\\bskip\\s+Saigon\\b"
+      ],
+      "gateway": "SGN",
+      "gatewayBoost": -0.5
+    },
+    {
+      "id": "avoid-danang",
+      "patterns": ["\\bavoid\\s+Da\\s*Nang\\b", "\\bnot\\s+Da\\s*Nang\\b"],
+      "gateway": "DAD",
+      "gatewayBoost": -0.5
+    }
+  ]
+}

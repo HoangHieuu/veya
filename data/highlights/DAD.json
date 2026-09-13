@@ -1,0 +1,55 @@
+{
+  "gateway": "DAD",
+  "gatewayName": "Da Nang",
+  "note": "TDD Phase 2 item 13. shared/types.ts has no highlights field yet (Appendix D lists it as TBD), so this ships as a standalone file. See data/README.md for the proposed type.",
+  "highlights": [
+    {
+      "id": "dad-my-khe",
+      "title": "My Khe Beach",
+      "archetype": "beach_relaxation",
+      "summary": "A long open beach right on the city edge, swimmable through the dry months.",
+      "transfer": "15–25 minutes from Da Nang airport by taxi or Grab.",
+      "image": {
+        "url": "/assets/da-nang-beach.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:My_Khe_Beach,_Da_Nang,_Vietnam.jpg",
+        "owner": ". Ray in Manila",
+        "license": "CC BY 2.0",
+        "licenseNote": "CC BY 2.0 — attribution required. Credit \". Ray in Manila / Wikimedia Commons / CC BY 2.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 1920px.",
+        "attributionLine": "Photo: . Ray in Manila / Wikimedia Commons / CC BY 2.0"
+      }
+    },
+    {
+      "id": "dad-hoi-an",
+      "title": "Hoi An Ancient Town",
+      "archetype": "food_culture",
+      "summary": "A UNESCO-listed trading port of lantern-lit lanes, tailors and riverside food stalls.",
+      "transfer": "About 45 minutes south of Da Nang by road.",
+      "image": {
+        "url": "/assets/highlights/dad-hoi-an.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:H%E1%BB%99i_An,_Ancient_Town,_2020-01_CN-05.jpg",
+        "owner": "Steffen Schmitz (more photos)",
+        "license": "CC BY-SA 4.0",
+        "licenseNote": "CC BY-SA 4.0 — attribution required. Credit \"Steffen Schmitz (more photos) / Wikimedia Commons / CC BY-SA 4.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+        "attributionLine": "Photo: Steffen Schmitz (more photos) / Wikimedia Commons / CC BY-SA 4.0"
+      }
+    },
+    {
+      "id": "dad-marble-mountains",
+      "title": "Marble Mountains",
+      "archetype": "mixed",
+      "summary": "Five limestone hills holding cave pagodas and viewpoints back over the coast.",
+      "transfer": "About 20 minutes south of Da Nang, on the road towards Hoi An.",
+      "image": {
+        "url": "/assets/highlights/dad-marble-mountains.jpg",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Marble_Mountains_View_3.JPG",
+        "owner": "Dragfyre",
+        "license": "CC BY-SA 3.0",
+        "licenseNote": "CC BY-SA 3.0 — attribution required. Credit \"Dragfyre / Wikimedia Commons / CC BY-SA 3.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+        "attributionLine": "Photo: Dragfyre / Wikimedia Commons / CC BY-SA 3.0"
+      }
+    }
+  ]
+}
