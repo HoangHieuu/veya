@@ -124,6 +124,30 @@ export const LOCALITY_GEO: Record<string, GeoPoint> = {
 
   },
 
+  "vung-tau": {
+
+    lat: 10.346,
+
+    lng: 107.084,
+
+    label: "Vung Tau",
+
+    sublabel: "Coastal visit — onward from SGN",
+
+  },
+
+  "vung tau": {
+
+    lat: 10.346,
+
+    lng: 107.084,
+
+    label: "Vung Tau",
+
+    sublabel: "Coastal visit — onward from SGN",
+
+  },
+
   "da-nang": {
 
     lat: 16.0544,

@@ -14,7 +14,7 @@ import { HandoffScreen } from "./screens/HandoffScreen";
 import { AgentProfileScreen } from "./screens/AgentProfileScreen";
 import { AgentScreen } from "./screens/AgentScreen";
 import { HomeScreen } from "./screens/HomeScreen";
-import type { MemberDemoProfile } from "./lib/memberDemo";
+import { shouldSeedTripFromProfile, type MemberDemoProfile } from "./lib/memberDemo";
 import { ResultsScreen } from "./screens/ResultsScreen";
 import { TripWizardScreen } from "./screens/TripWizardScreen";
 
@@ -93,12 +93,13 @@ export default function App() {
   function handleAgentHandoff(card: RankedCard, canvas: AgentCanvasState) {
     setState((s) => ({
       ...s,
-      step: "handoff",
       selectedRouteId: card.routeId,
       response: canvas.response,
       status: "success",
       errorMessage: undefined,
     }));
+    openSearchUrl(card.handoff.searchUrl);
+    setToast("Vietnam Airlines opened in a new tab — switch back anytime to continue here.");
   }
 
   async function runRecommend(
@@ -199,7 +200,9 @@ export default function App() {
             onStart={startPlanning}
             onTalkToVeya={agentCanvasEnabled ? startAgent : undefined}
             onPlanAsProfile={
-              agentCanvasEnabled ? (profile) => enterAgent(profile, true) : undefined
+              agentCanvasEnabled
+                ? (profile) => enterAgent(profile, shouldSeedTripFromProfile(profile))
+                : undefined
             }
           />
         ) : null}
@@ -207,7 +210,7 @@ export default function App() {
         {agentCanvasEnabled && state.step === "agent_pick" ? (
           <AgentProfileScreen
             onBack={goHome}
-            onSelect={(profile) => enterAgent(profile, true)}
+            onSelect={(profile) => enterAgent(profile, shouldSeedTripFromProfile(profile))}
             onSkip={() => enterAgent("guest", false)}
           />
         ) : null}

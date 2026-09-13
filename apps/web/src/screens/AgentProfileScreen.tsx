@@ -31,7 +31,7 @@ export function AgentProfileScreen({
         <p className="agent-profile-eyebrow">Before we start</p>
         <h1 className="agent-profile-title">Who are we planning for?</h1>
         <p className="agent-profile-lead">
-          Each profile is a different traveller — membership, trip need, and brief are already set.
+          Guest starts with the origin globe. Member profiles load a ready-made demo brief.
         </p>
 
         <div className="agent-profile-grid">
@@ -66,7 +66,9 @@ export function AgentProfileScreen({
                 </div>
                 <p className="agent-profile-intent">{persona.intentSummary}</p>
                 <p className="agent-profile-brief">{seed.briefText}</p>
-                <span className="agent-profile-cta">Plan as {persona.displayName} →</span>
+                <span className="agent-profile-cta">
+                  {profile === "guest" ? "Start exploring →" : `Plan as ${persona.displayName} →`}
+                </span>
               </button>
             );
           })}

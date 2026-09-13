@@ -72,7 +72,7 @@ const FAQ = [
   },
   {
     q: "Who are the demo profiles?",
-    a: "Guest traveller (beach escape), Minh Nguyen (Gold · VFR to Cà Mau), and Alex Tran (LotuStudents · food & culture). Each loads a seeded brief so you can demo in one click.",
+    a: "Guest starts blank with the origin globe. Minh Nguyen (Gold · VFR to Cà Mau) and Alex Tran (LotuStudents · food & culture) load a seeded brief for one-click demos.",
   },
 ];
 
@@ -215,7 +215,7 @@ export function HomeScreen({
           <p className="home-eyebrow">Demo travellers</p>
           <h2 className="home-heading">Who are we planning for?</h2>
           <p className="home-personas-lead">
-            Same profiles as Talk to Veya — membership, trip need, and brief are already loaded.
+            Guest starts fresh with the globe. Member profiles load a demo brief in one click.
           </p>
 
           <div className="home-demo-profiles">
@@ -254,9 +254,13 @@ export function HomeScreen({
                     &ldquo;{seed.briefText}&rdquo;
                   </blockquote>
                   <p className="home-demo-profile-meta">
-                    {originLabel(seed.origin)} · {seed.monthHint}
+                    {profile === "guest"
+                      ? "Pick origin on the globe"
+                      : `${originLabel(seed.origin)} · ${seed.monthHint}`}
                   </p>
-                  <span className="home-demo-profile-cta">Plan as {persona.displayName} →</span>
+                  <span className="home-demo-profile-cta">
+                    {profile === "guest" ? "Start exploring →" : `Plan as ${persona.displayName} →`}
+                  </span>
                 </button>
               );
             })}

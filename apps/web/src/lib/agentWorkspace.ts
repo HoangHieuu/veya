@@ -523,6 +523,9 @@ export function tripToBrief(trip: TripSummary): string {
     if (/cà mau|ca mau/i.test(trip.destinationTitle)) {
       return `${originName}, visit family in Cà Mau, ${when}, ${pax} adults — one stop max.`;
     }
+    if (trip.travelStyle === "vfr" && trip.localityNote) {
+      return `${originName}, visit family in ${trip.localityNote}, ${when}, ${pax} adults — one stop max.`;
+    }
     if (trip.travelStyle === "beach_relaxation" || trip.destinationHint === "beach_central") {
       return `${originName}, beach trip in ${when} — ${trip.destinationTitle}, ${pax} adults, low hassle.`;
     }

@@ -11,8 +11,9 @@ import {
   agentReplyForInput,
   classifyAgentInput,
   friendlyApiError,
-  hasEnoughForCanvas,
-  mergeTextIntoDraft,
+  buildRecommendBrief,
+  hasEnoughForRecommend,
+  mergeTextIntoTrip,
   whatToAsk,
 } from "../lib/agentInput";
 import type { AgentWidget } from "../lib/agentFlow";
@@ -66,10 +67,6 @@ function localityFromTrip(trip: TripSummary): LocalityResolution | undefined {
   };
 }
 
-function summaryFromDraft(draft: TripDraft, profile: MemberDemoProfile): TripSummary {
-  return { ...emptyTripSummary(profile), ...draft };
-}
-
 function draftFromSummary(trip: TripSummary): TripDraft {
   return {
     origin: trip.origin,
@@ -107,6 +104,7 @@ export function AgentScreen({
   const memberProfile = trip.memberProfile;
   const [policyOverlay, setPolicyOverlay] = useState<PolicyOverlayId | null>(null);
   const [previewDestination, setPreviewDestination] = useState<BentoDestination | null>(null);
+  const [showOfferView, setShowOfferView] = useState(false);
 
   const tripDraft = useMemo(() => draftFromSummary(trip), [trip]);
 
@@ -133,7 +131,7 @@ export function AgentScreen({
         setMessages((m) => [
           ...m,
           agentMsg(
-            "Your route is ready in the centre — review your bonus miles offer, then continue on Vietnam Airlines.",
+            "Your trip summary is ready — review the map, season, and hotels in the centre, then continue to your offer when ready.",
           ),
         ]);
         setStatus("ready");
@@ -189,11 +187,24 @@ export function AgentScreen({
         return;
       }
 
-      const merged = mergeTextIntoDraft(trimmed, tripDraft);
-      applyDraft(merged);
+      const nextTrip = mergeTextIntoTrip(trimmed, trip);
+      setTrip(nextTrip);
+      const merged = draftFromSummary(nextTrip);
 
-      if (hasEnoughForCanvas(merged, trimmed) || hasEnoughForBooking(summaryFromDraft(merged, memberProfile))) {
-        const brief = trimmed.length >= 28 ? trimmed : tripToBrief(summaryFromDraft(merged, memberProfile));
+      if (inputKind === "too_short") {
+        if (hasEnoughForRecommend(merged, trimmed, nextTrip) || hasEnoughForBooking(nextTrip)) {
+          const brief = buildRecommendBrief(trimmed, nextTrip);
+          setMessages((m) => [...m, agentMsg("Got it — building your route…")]);
+          await loadCanvas(brief);
+          return;
+        }
+        const { reply, widget } = whatToAsk(merged, trimmed);
+        setMessages((m) => [...m, agentMsg(reply, widget)]);
+        return;
+      }
+
+      if (hasEnoughForRecommend(merged, trimmed, nextTrip) || hasEnoughForBooking(nextTrip)) {
+        const brief = buildRecommendBrief(trimmed, nextTrip);
         setMessages((m) => [...m, agentMsg("Got it — building your route…")]);
         await loadCanvas(brief);
         return;
@@ -202,7 +213,7 @@ export function AgentScreen({
       const { reply, widget } = whatToAsk(merged, trimmed);
       setMessages((m) => [...m, agentMsg(reply, widget)]);
     },
-    [tripDraft, memberProfile, applyDraft, loadCanvas],
+    [trip, loadCanvas],
   );
 
   const pickOrigin = useCallback(
@@ -264,6 +275,7 @@ export function AgentScreen({
     (suggestion: BentoDestination) => {
       const next = suggestionToTrip(suggestion, trip);
       setPreviewDestination(null);
+      setShowOfferView(false);
       setTrip(next);
       setMessages((m) => [
         ...m,
@@ -301,6 +313,7 @@ export function AgentScreen({
 
   const handleRestoreTrip = useCallback((restored: TripSummary) => {
     setPreviewDestination(null);
+    setShowOfferView(false);
     setRawResponse(undefined);
     setLastBrief("");
     setStatus("idle");
@@ -336,6 +349,9 @@ export function AgentScreen({
         <DiscoveryCanvas
           trip={trip}
           bookingReady={bookingReady}
+          showOfferView={showOfferView}
+          onContinueToOffer={() => setShowOfferView(true)}
+          onBackToTripSummary={() => setShowOfferView(false)}
           canvas={canvas}
           memberProfile={memberProfile}
           locality={locality}
@@ -349,7 +365,15 @@ export function AgentScreen({
           onOpenPolicy={() => setPolicyOverlay("direct-decision-offer")}
           onHandoff={() => {
             const card = canvas?.response.cards[0];
-            if (card && canvas) onHandoff(card, canvas);
+            if (card && canvas) {
+              onHandoff(card, canvas);
+              setMessages((m) => [
+                ...m,
+                agentMsg(
+                  "Opened Vietnam Airlines in a new tab — finish booking there. Your trip and offer stay here if you switch back.",
+                ),
+              ]);
+            }
           }}
         />
       }
