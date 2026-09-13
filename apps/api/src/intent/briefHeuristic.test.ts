@@ -210,6 +210,17 @@ describe("parseBriefHeuristic accuracy", () => {
     assert.equal(intent.preferredDestination, "DAD");
     assert.equal(intent.goal, "choose_route");
   });
+
+  it("gateway comparison leaves preferredDestination unset (Olivia 3-gateway)", () => {
+    const { intent, destinationSource } = parseBriefHeuristic(
+      "Trip from Sydney (SYD). 2 adults. 9 days in mid-November. Hanoi or Saigon? Beach and food trip, low hassle. Budget band: Standard. Priority: Lowest hassle.",
+      { now: FIXED_NOW },
+    );
+    assert.equal(destinationSource, "compare");
+    assert.equal(intent.goal, "discover_destination");
+    assert.equal(intent.preferredDestination, undefined);
+    assert.ok(!intent.missingFields.includes("preferredDestination"));
+  });
 });
 
 describe("parseTripIntent brief path", () => {

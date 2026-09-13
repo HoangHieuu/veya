@@ -1,30 +1,4 @@
-import type {
-  BudgetBand,
-  DestinationCity,
-  OriginCity,
-  PriorityPreset,
-  TravelStyle,
-  TripIntent,
-} from "../../../../shared/types.js";
-import {
-  COMPANION_TRAVEL_STYLES,
-  DEFAULT_ORIGIN_CITY,
-  DEFAULT_TRIP_DURATION_DAYS,
-  MAX_TRAVEL_STYLES,
-  PRIORITY_MAX_STOPS,
-} from "./constants.js";
-import {
-  buildDateWindow,
-  formatIsoDateUtc,
-  isIsoDate,
-  type DateFlexibility,
-} from "./dateWindow.js";
-import {
-  hasVisitLocationContext,
-  inferGatewayFromLocalities,
-  loadLocalityGateway,
-} from "../dataset/localityGateway.js";
-import { inferGatewayFromText, loadNeedPlaceMap } from "../dataset/needPlaceMap.js";
+import { isGatewayComparison, isNegatedDestinationMention } from "./discoveryMode.js";
 import {
   BUDGET_LEXICON,
   DESTINATION_LEXICON,
@@ -34,6 +8,34 @@ import {
   PRIORITY_LEXICON,
   STYLE_LEXICON,
 } from "./lexicon.js";
+import {
+  hasVisitLocationContext,
+  inferGatewayFromLocalities,
+  loadLocalityGateway,
+} from "../dataset/localityGateway.js";
+import { inferGatewayFromText, loadNeedPlaceMap } from "../dataset/needPlaceMap.js";
+import {
+  COMPANION_TRAVEL_STYLES,
+  DEFAULT_ORIGIN_CITY,
+  DEFAULT_TRIP_DURATION_DAYS,
+  MAX_TRAVEL_STYLES,
+  PRIORITY_MAX_STOPS,
+} from "./constants.js";
+import type {
+  BudgetBand,
+  DestinationCity,
+  OriginCity,
+  PriorityPreset,
+  TravelStyle,
+  TripIntent,
+} from "../../../../shared/types.js";
+import {
+  buildDateWindow,
+  formatIsoDateUtc,
+  isIsoDate,
+  MONTHS,
+  type DateFlexibility,
+} from "./dateWindow.js";
 
 export interface BriefParseHints {
   originCity?: OriginCity;
@@ -41,8 +43,17 @@ export interface BriefParseHints {
   now?: Date;
 }
 
+/** Why preferredDestination was set — internal only, not on TripIntent. */
+export type DestinationSource =
+  | "explicit"
+  | "locality"
+  | "need_place"
+  | "compare"
+  | "none";
+
 export interface BriefHeuristicResult {
   intent: TripIntent;
+  destinationSource: DestinationSource;
   fieldHits: {
     originCity: boolean;
     travelStyles: boolean;
@@ -61,28 +72,31 @@ function extractOrigin(text: string): OriginCity | undefined {
   return undefined;
 }
 
-function extractDestination(text: string): DestinationCity | undefined {
-  const localities = loadLocalityGateway();
+function resolveDestination(
+  text: string,
+  localities: ReturnType<typeof loadLocalityGateway>,
+): {
+  city: DestinationCity | undefined;
+  source: DestinationSource;
+} {
+  // Compare ≥2 gateways → leave destination open so ranking can return all three.
+  if (isGatewayComparison(text)) {
+    return { city: undefined, source: "compare" };
+  }
+
   const fromLocality = inferGatewayFromLocalities(text, localities);
-  if (fromLocality) return fromLocality;
+  if (fromLocality) return { city: fromLocality, source: "locality" };
 
   const fromPlaces = inferGatewayFromText(text, loadNeedPlaceMap());
-  if (fromPlaces) return fromPlaces;
+  if (fromPlaces) return { city: fromPlaces, source: "need_place" };
 
   for (const entry of DESTINATION_LEXICON) {
-    if (!entry.pattern.test(text)) continue;
     const match = text.match(entry.pattern);
-    if (match?.index !== undefined && isNegatedDestinationMention(text, match.index)) {
-      continue;
-    }
-    return entry.city;
+    if (!match || match.index === undefined) continue;
+    if (isNegatedDestinationMention(text, match.index)) continue;
+    return { city: entry.city, source: "explicit" };
   }
-  return undefined;
-}
-
-function isNegatedDestinationMention(text: string, matchIndex: number): boolean {
-  const window = text.slice(Math.max(0, matchIndex - 40), matchIndex);
-  return /\b(?:not|avoid|skip|without|no)\s+(?:going\s+to\s+)?$/i.test(window);
+  return { city: undefined, source: "none" };
 }
 
 function extractStyles(text: string): TravelStyle[] {
@@ -145,21 +159,6 @@ function extractTripDurationDays(text: string): number | undefined {
   if (/\bone\s+week\b|\ba\s+week\b/i.test(text)) return 7;
   return undefined;
 }
-
-const MONTHS: Record<string, number> = {
-  january: 0,
-  february: 1,
-  march: 2,
-  april: 3,
-  may: 4,
-  june: 5,
-  july: 6,
-  august: 7,
-  september: 8,
-  october: 9,
-  november: 10,
-  december: 11,
-};
 
 function extractFlexibility(text: string): DateFlexibility {
   if (/\bfixed\s+dates?\b/i.test(text)) return "fixed";
@@ -252,24 +251,23 @@ export function parseBriefHeuristic(
   const durationHit = duration !== undefined;
   if (!durationHit) missingFields.push("tripDurationDays");
 
-  const preferredDestination = extractDestination(text);
-  const destinationHit = preferredDestination !== undefined;
   const localities = loadLocalityGateway();
+  const { city: preferredDestination, source: destinationSource } =
+    resolveDestination(text, localities);
+  const destinationHit = preferredDestination !== undefined;
   const visitContext =
     travelStyles.includes("vfr") || hasVisitLocationContext(text, localities);
   const goal: TripIntent["goal"] = destinationHit
     ? "choose_route"
     : "discover_destination";
 
-  if (visitContext && !destinationHit) {
-    missingFields.push("preferredDestination");
-  }
-
-  if (
-    /\bPhu\s*Quoc\b|\bNha\s*Trang\b|\bHue\b/i.test(text) &&
-    !destinationHit
-  ) {
-    missingFields.push("preferredDestination");
+  // Compare leaves gateway intentionally open — do not push preferredDestination
+  // into missingFields (Veya should answer the comparison, not ask for it).
+  if (destinationSource !== "compare" && !destinationHit) {
+    const needsGateway =
+      visitContext ||
+      /\bPhu\s*Quoc\b|\bNha\s*Trang\b|\bHue\b/i.test(text);
+    if (needsGateway) missingFields.push("preferredDestination");
   }
 
   const flexibility = extractFlexibility(text);
@@ -306,5 +304,5 @@ export function parseBriefHeuristic(
     missingFields,
   };
 
-  return { intent, fieldHits };
+  return { intent, destinationSource, fieldHits };
 }
