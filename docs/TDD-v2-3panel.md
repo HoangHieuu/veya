@@ -146,7 +146,14 @@ When user asks about policy in chat (or taps a policy chip):
 - **Left:** agent short reply + **persistent chip** e.g. “View offer terms” to reopen same overlay (`PolicyOverlayId`).
 - **Right:** unchanged.
 
-**Not in scope:** live RAG stream; static approved snippets only.
+**Not in scope (default):** streaming live web RAG over arbitrary URLs.
+
+**Allowed exception (hackathon / Round 2):** offline semantic search over a
+**checked-in** VNA policy corpus (`data/policy-corpus/`) via
+`POST /api/policy/ask` — embeddings are precomputed; live OpenAI is only used
+to embed the user question and optionally synthesize a short cited answer.
+If OpenAI is unavailable, the API must fail clearly (not pretend the corpus
+missed). Keyword `data/policies/*.json` overlays remain the primary in-canvas path.
 
 ---
 

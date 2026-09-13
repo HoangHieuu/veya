@@ -137,12 +137,25 @@ try {
   chunkCount > 50
     ? pass(`${chunkCount} embedded chunks, model ${corpus.model}`)
     : fail(`only ${chunkCount} chunks in policy-corpus/vectors.json`);
+  corpus.model === "text-embedding-3-small"
+    ? pass(`embedding model is text-embedding-3-small`)
+    : fail(`unexpected embedding model: ${corpus.model}`);
   const badDims = (corpus.chunks ?? []).filter((c: any) => c.embedding?.length !== corpus.dims);
   badDims.length === 0
     ? pass(`all chunks match declared dims (${corpus.dims})`)
     : fail(`${badDims.length} chunk(s) have the wrong embedding length`);
   const noUrl = (corpus.chunks ?? []).filter((c: any) => !String(c.sourceUrl ?? "").startsWith("https://"));
   if (noUrl.length > 0) fail(`${noUrl.length} chunk(s) missing a sourceUrl`);
+  const docIds = new Set((corpus.chunks ?? []).map((c: any) => c.docId));
+  for (const expected of [
+    "travel-information_baggage_baggage-allowance-checked-baggage",
+    "travel-information_baggage_baggage-allowance-hand-baggage",
+    "buy-tickets-other-products_fare-conditions",
+  ]) {
+    docIds.has(expected)
+      ? pass(`covers ${expected}`)
+      : fail(`missing docId ${expected}`);
+  }
 } catch (error) {
   fail(`policy-corpus/vectors.json unreadable: ${(error as Error).message}`);
 }
@@ -183,7 +196,11 @@ try {
     const count = months ? Object.keys(months).length : 0;
     count === 12 ? pass(`${g}: 12 months`) : fail(`${g}: ${count} months (expected 12)`);
     for (const [month, rec] of Object.entries(months ?? {}) as [string, any][]) {
-      if (!rec.headline || !rec.summary) fail(`${g} ${month}: missing headline/summary (veya's parseSeason requires both)`);
+      // Loader: summary ?? note for body; headline optional (synthesized from rating).
+      const hasBody = Boolean(rec.summary || rec.note);
+      if (!hasBody) {
+        fail(`${g} ${month}: need summary or note (headline optional)`);
+      }
     }
   }
 } catch (error) {

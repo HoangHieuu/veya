@@ -27,9 +27,8 @@ export function registerAgentRoutes(
     response.status(200).json(result);
   });
 
-  // Semantic search over data/policy-corpus (baggage, fare conditions,
-  // refund/rebook, legal terms) — distinct from any keyword-only policy
-  // overlay elsewhere in the agent orchestrator.
+  // Offline policy corpus + optional OpenAI embed/synthesize.
+  // Opt-in like INTENT_LLM_ENABLED — prevents open CORS from burning the key.
   app.post("/api/policy/ask", async (request, response) => {
     const parsed = policyAskRequestSchema.safeParse(request.body);
     if (!parsed.success) {
@@ -40,16 +39,48 @@ export function registerAgentRoutes(
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY?.trim();
-    const result = await answerPolicyQuestion(parsed.data.question, apiKey);
-    if (!result) {
-      response.status(200).json({
+    if (process.env.POLICY_RAG_ENABLED !== "true") {
+      response.status(503).json({
         answered: false,
+        errorCode: "POLICY_RAG_DISABLED",
         message:
-          "Nothing in the policy corpus is confidently relevant to that question — please rephrase, or this may not be covered.",
+          "Policy semantic search is disabled. Set POLICY_RAG_ENABLED=true (and OPENAI_API_KEY) to enable.",
       });
       return;
     }
-    response.status(200).json({ answered: true, ...result });
+
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
+    const outcome = await answerPolicyQuestion(parsed.data.question, apiKey);
+
+    if (outcome.status === "answered") {
+      response.status(200).json({ answered: true, ...outcome.answer });
+      return;
+    }
+
+    if (
+      outcome.status === "openai_unavailable" ||
+      outcome.status === "corpus_unavailable"
+    ) {
+      response.status(503).json({
+        answered: false,
+        errorCode:
+          outcome.status === "openai_unavailable"
+            ? "OPENAI_UNAVAILABLE"
+            : "CORPUS_UNAVAILABLE",
+        message: outcome.message,
+      });
+      return;
+    }
+
+    if (outcome.status === "empty_question") {
+      throw httpError(400, "INVALID_POLICY_QUESTION", outcome.message);
+    }
+
+    // no_match
+    response.status(200).json({
+      answered: false,
+      errorCode: "POLICY_NO_MATCH",
+      message: outcome.message,
+    });
   });
 }

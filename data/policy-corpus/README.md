@@ -45,14 +45,27 @@ just the leaf sentence. `vectors.json` stores `{version, model, dims, capturedAt
 
 ## Retrieval and answering (`apps/api/src/agent/policyRag.ts`)
 
-1. Embed the incoming question with the same model.
+1. Embed the incoming question with the same model (6s timeout).
 2. Cosine-similarity rank against all 154 chunk embeddings; keep the top 4 above a relevance
-   threshold (0.32) — below that, the corpus is treated as having no answer (`undefined`), and
-   the caller must not guess.
+   threshold (0.32) — below that, the API returns `{ answered: false, errorCode: "POLICY_NO_MATCH" }`
+   (not the same as a missing OpenAI key).
 3. Synthesize a 2-4 sentence answer with an LLM (`OPENAI_MODEL`, default `gpt-4.1-nano`),
    strictly grounded on the retrieved excerpts, citing excerpt numbers, forbidden from stating any
    number/fee/rule not literally present in an excerpt. Falls back to the raw excerpt text if
-   synthesis fails (still grounded, just unpolished).
+   synthesis fails or citations are missing (still grounded, just unpolished).
+
+**Enablement:** `POLICY_RAG_ENABLED=true` **and** `OPENAI_API_KEY` (same opt-in pattern as
+`INTENT_LLM_ENABLED`). Without the flag the route returns `503 POLICY_RAG_DISABLED`.
+
+Outcome codes:
+
+| Status | HTTP | `errorCode` |
+|--------|------|-------------|
+| answered | 200 | — (`answered: true`) |
+| no corpus match | 200 | `POLICY_NO_MATCH` |
+| missing/failed OpenAI | 503 | `OPENAI_UNAVAILABLE` |
+| corpus load/search broken | 503 | `CORPUS_UNAVAILABLE` |
+| feature off | 503 | `POLICY_RAG_DISABLED` |
 
 Verified end-to-end against the live OpenAI API: correctly answered checked-baggage-weight,
 prohibited-carry-on-items and refund-eligibility questions with citations, and correctly declined
