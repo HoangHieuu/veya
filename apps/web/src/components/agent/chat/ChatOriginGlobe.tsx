@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import createGlobe from "cobe";
 import type { OriginCity } from "@shared/types";
 import { cityLabel } from "../../../lib/labels";
+import { DEFAULT_GLOBE_TUNING } from "../../../lib/globeTuning";
 
 const CITIES: Record<OriginCity, { lat: number; lng: number }> = {
   SYD: { lat: -33.87, lng: 151.21 },
@@ -10,13 +11,24 @@ const CITIES: Record<OriginCity, { lat: number; lng: number }> = {
 };
 
 const REF = CITIES.SYD;
+const CHAT_GLOBE = {
+  scale: 1.12,
+  offsetX: 0,
+  offsetY: 12,
+};
 
 function targetAngles(origin: OriginCity) {
   const { lat, lng } = CITIES[origin];
+  const t = DEFAULT_GLOBE_TUNING;
   return {
-    phi: 1.82 - ((lng - REF.lng) * Math.PI) / 180,
-    theta: -0.6 + ((lat - REF.lat) * Math.PI) / 180 * 0.35,
+    phi: t.auPhi - ((lng - REF.lng) * Math.PI) / 180,
+    theta: t.auTheta + ((lat - REF.lat) * Math.PI) / 180 * t.latFactor,
   };
+}
+
+function readShellSize(shell: HTMLElement): number {
+  const rect = shell.getBoundingClientRect();
+  return Math.round(Math.min(rect.width, rect.height)) || shell.clientWidth || 280;
 }
 
 function lerpAngle(a: number, b: number, t: number) {
@@ -43,7 +55,7 @@ export function ChatOriginGlobe({ origin }: { origin: OriginCity }) {
 
     let destroyed = false;
     let frame = 0;
-    let size = shell.clientWidth || 280;
+    let size = readShellSize(shell);
     const dpr = Math.min(window.devicePixelRatio, 2);
 
     const start = targetAngles(originRef.current);
@@ -59,8 +71,8 @@ export function ChatOriginGlobe({ origin }: { origin: OriginCity }) {
       height: size * dpr,
       phi,
       theta,
-      scale: 1.05,
-      offset: [0, 8],
+      scale: CHAT_GLOBE.scale,
+      offset: [CHAT_GLOBE.offsetX, CHAT_GLOBE.offsetY],
       dark: 0.08,
       diffuse: 1.35,
       mapSamples: 12000,
@@ -75,12 +87,17 @@ export function ChatOriginGlobe({ origin }: { origin: OriginCity }) {
     });
 
     function resize() {
-      size = shell!.clientWidth || 280;
+      size = readShellSize(shell!);
       canvas!.width = size * dpr;
       canvas!.height = size * dpr;
       canvas!.style.width = `${size}px`;
       canvas!.style.height = `${size}px`;
-      globe.update({ width: size * dpr, height: size * dpr });
+      globe.update({
+        width: size * dpr,
+        height: size * dpr,
+        scale: CHAT_GLOBE.scale,
+        offset: [CHAT_GLOBE.offsetX, CHAT_GLOBE.offsetY],
+      });
     }
 
     resize();

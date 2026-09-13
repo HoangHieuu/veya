@@ -8,7 +8,7 @@ import {
   VIBE_OPTIONS,
 } from "../../../lib/agentFlow";
 import { cityLabel } from "../../../lib/labels";
-import { OriginGlobe } from "../../OriginGlobe";
+import { ChatOriginGlobe } from "./ChatOriginGlobe";
 import { Button } from "../../ui/Button";
 
 function Chip({
@@ -85,7 +85,7 @@ export function ChatWidget({
         <div className="chat-origin-panel">
           <div className="chat-origin-globe-band">
             <div className="chat-origin-globe-layer">
-              <OriginGlobe origin={pendingOrigin} />
+              <ChatOriginGlobe origin={pendingOrigin} />
             </div>
           </div>
           <div className="chat-origin-actions">

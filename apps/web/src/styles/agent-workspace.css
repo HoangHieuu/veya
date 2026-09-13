@@ -387,23 +387,26 @@
   position: relative;
   height: 9.5rem;
   overflow: hidden;
+  background: linear-gradient(180deg, rgb(245 248 249) 0%, white 100%);
 }
 
 .chat-origin-globe-layer {
   position: absolute;
-  inset: -8% -12%;
+  inset: 0;
+  display: grid;
+  place-items: center;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .chat-origin-globe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  width: min(11.5rem, 92%);
+  aspect-ratio: 1;
 }
 
-.chat-origin-globe > div,
 .chat-origin-globe canvas {
+  display: block;
   width: 100% !important;
   height: 100% !important;
 }
