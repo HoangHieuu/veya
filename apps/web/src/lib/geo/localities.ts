@@ -148,6 +148,54 @@ export const LOCALITY_GEO: Record<string, GeoPoint> = {
 
   },
 
+  "nha-trang": {
+
+    lat: 12.2388,
+
+    lng: 109.1967,
+
+    label: "Nha Trang",
+
+    sublabel: "Central coast · onward from Da Nang gateway",
+
+  },
+
+  "nha trang": {
+
+    lat: 12.2388,
+
+    lng: 109.1967,
+
+    label: "Nha Trang",
+
+    sublabel: "Central coast · onward from Da Nang gateway",
+
+  },
+
+  "phu-quoc": {
+
+    lat: 10.227,
+
+    lng: 103.9672,
+
+    label: "Phu Quoc",
+
+    sublabel: "Island · connect from SGN",
+
+  },
+
+  "phu quoc": {
+
+    lat: 10.227,
+
+    lng: 103.9672,
+
+    label: "Phu Quoc",
+
+    sublabel: "Island · connect from SGN",
+
+  },
+
 };
 
 
@@ -240,7 +288,28 @@ export function isSameHub(gateway: GeoPoint, locality: GeoPoint): boolean {
 
 
 
-/** Approximate road path SGN → Cà Mau (illustrative polyline, not turn-by-turn) */
+export function isIslandLocality(localityId: string, title?: string): boolean {
+  const id = localityId.toLowerCase();
+  const t = (title ?? "").toLowerCase();
+  return id === "phu-quoc" || id === "phu quoc" || /\bphu quoc\b/.test(t);
+}
+
+export function buildFallbackRoute(
+  gateway: GeoPoint,
+  locality: GeoPoint,
+  localityId: string,
+): [number, number][] {
+  const id = localityId.toLowerCase();
+  if (id === "ca-mau" || id === "ca mau") {
+    return SGN_TO_CA_MAU_ROUTE;
+  }
+  return [
+    [gateway.lat, gateway.lng],
+    [locality.lat, locality.lng],
+  ];
+}
+
+/** Approximate road path SGN → Cà Mau (fallback if OSRM unavailable) */
 
 export const SGN_TO_CA_MAU_ROUTE: [number, number][] = [
 
