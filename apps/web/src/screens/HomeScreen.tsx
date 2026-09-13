@@ -110,12 +110,16 @@ const FAQ = [
 const OLIVIA_EXAMPLE =
   "I have 8–10 days free in November from Sydney. Beach-and-food trip with a friend — low hassle, few connections.";
 
+const agentCanvasEnabled = import.meta.env.VITE_AGENT_CANVAS === "true";
+
 export function HomeScreen({
   onStart,
   onTryExample,
+  onTalkToVeya,
 }: {
   onStart: () => void;
   onTryExample: (persona: DemoPersona) => void;
+  onTalkToVeya?: () => void;
 }) {
   const olivia = PERSONAS.find((p) => p.id === "olivia")!;
   const others = PERSONAS.filter((p) => !p.featured);
@@ -141,6 +145,11 @@ export function HomeScreen({
               <Button className="min-h-12 px-8 text-base" onClick={onStart}>
                 Start planning →
               </Button>
+              {agentCanvasEnabled && onTalkToVeya ? (
+                <Button variant="secondary" className="min-h-12 px-8 text-base" onClick={onTalkToVeya}>
+                  Talk to Veya
+                </Button>
+              ) : null}
               <button
                 type="button"
                 onClick={() => onTryExample("olivia")}

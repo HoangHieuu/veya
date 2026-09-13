@@ -11,10 +11,16 @@ import {
   type DemoPersona,
   type TripWizardState,
 } from "./lib/wizard";
+import type { AgentCanvasState } from "./lib/agentTypes";
 import { HandoffScreen } from "./screens/HandoffScreen";
+import { AgentProfileScreen } from "./screens/AgentProfileScreen";
+import { AgentScreen } from "./screens/AgentScreen";
 import { HomeScreen } from "./screens/HomeScreen";
+import type { MemberDemoProfile } from "./lib/memberDemo";
 import { ResultsScreen } from "./screens/ResultsScreen";
 import { TripWizardScreen } from "./screens/TripWizardScreen";
+
+const agentCanvasEnabled = import.meta.env.VITE_AGENT_CANVAS === "true";
 
 interface UIState {
   step: AppStep;
@@ -24,12 +30,16 @@ interface UIState {
   errorMessage?: string;
   response?: import("@shared/types").RankedResponse;
   selectedRouteId?: string;
+  agentProfile: MemberDemoProfile;
+  agentProfileSeeded: boolean;
 }
 
 const initial: UIState = {
   step: "home",
   wizard: initialWizardState,
   status: "idle",
+  agentProfile: "guest",
+  agentProfileSeeded: false,
 };
 
 export default function App() {
@@ -62,6 +72,34 @@ export default function App() {
       wizard: { ...initialWizardState, originCity: s.wizard.originCity },
       errorMessage: undefined,
       status: "idle",
+    }));
+  }
+
+  function startAgent() {
+    setState((s) => ({
+      ...s,
+      step: "agent_pick",
+    }));
+  }
+
+  function enterAgent(profile: MemberDemoProfile, seeded: boolean) {
+    setState((s) => ({
+      ...initial,
+      step: "agent",
+      agentProfile: profile,
+      agentProfileSeeded: seeded,
+      wizard: { ...initialWizardState, originCity: s.wizard.originCity },
+    }));
+  }
+
+  function handleAgentHandoff(card: RankedCard, canvas: AgentCanvasState) {
+    setState((s) => ({
+      ...s,
+      step: "handoff",
+      selectedRouteId: card.routeId,
+      response: canvas.response,
+      status: "success",
+      errorMessage: undefined,
     }));
   }
 
@@ -167,13 +205,35 @@ export default function App() {
 
   return (
       <div className="page-bg flex h-dvh flex-col overflow-hidden text-ink">
-        {state.step !== "home" ? (
+        {state.step !== "home" && state.step !== "agent" && state.step !== "agent_pick" ? (
           <Header step={state.step} onHome={goHome} />
         ) : null}
 
         <main className="min-h-0 flex-1 overflow-hidden">
         {state.step === "home" ? (
-          <HomeScreen onStart={startPlanning} onTryExample={tryExample} />
+          <HomeScreen
+            onStart={startPlanning}
+            onTryExample={tryExample}
+            onTalkToVeya={agentCanvasEnabled ? startAgent : undefined}
+          />
+        ) : null}
+
+        {agentCanvasEnabled && state.step === "agent_pick" ? (
+          <AgentProfileScreen
+            onBack={goHome}
+            onSelect={(profile) => enterAgent(profile, true)}
+            onSkip={() => enterAgent("guest", false)}
+          />
+        ) : null}
+
+        {agentCanvasEnabled && state.step === "agent" ? (
+          <AgentScreen
+            key={`${state.agentProfile}-${state.agentProfileSeeded}`}
+            initialProfile={state.agentProfile}
+            seedFromProfile={state.agentProfileSeeded}
+            onHome={goHome}
+            onHandoff={handleAgentHandoff}
+          />
         ) : null}
 
         {state.step === "brief" ? (

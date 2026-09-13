@@ -400,3 +400,61 @@ export interface AgentTurnResponse {
     sourceFields: string[];
   };
 }
+
+/** Cart-abandonment analogue for discovery → handoff (no PSS cart). */
+export type RecoveryTrigger =
+  | "visibility_hidden"
+  | "idle"
+  | "leave_home"
+  | "manual_save";
+
+export type RecoverySessionStatus =
+  | "active"
+  | "resumed"
+  | "dismissed"
+  | "opened_vna";
+
+export interface MockReminderStep {
+  atHours: 0 | 1 | 24;
+  subject: string;
+  body: string;
+  ctaLabel: string;
+}
+
+export interface RecoveryNudge {
+  headline: string;
+  itineraryLine: string;
+  whyGateway: string[];
+  loyaltyLine?: string;
+  directValueLines: string[];
+  disclaimer: string;
+  primaryCta: string;
+  secondaryCta: string;
+}
+
+export interface CreateRecoverySessionRequest {
+  requestId: string;
+  routeId: string;
+  intent: TripIntent;
+  trigger: RecoveryTrigger;
+  consentReminder: boolean;
+  screen: "results" | "handoff";
+  email?: string;
+  tripOutline?: string;
+  reasons?: string[];
+}
+
+export interface RecoverySessionResponse {
+  sessionId: string;
+  status: RecoverySessionStatus;
+  createdAt: string;
+  nudge: RecoveryNudge;
+  mockTimeline: MockReminderStep[];
+  resume: {
+    requestId: string;
+    routeId: string;
+    intent: TripIntent;
+    screen: "results" | "handoff";
+  };
+  remindAfterHours: number;
+}
