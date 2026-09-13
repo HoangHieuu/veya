@@ -23,6 +23,7 @@ export function DestinationBoard({
   onConfirm,
   onBack,
   onSkipHotels,
+  onContinueToOffer,
 }: {
   trip: TripSummary;
   locality?: LocalityResolution;
@@ -32,6 +33,7 @@ export function DestinationBoard({
   onConfirm?: () => void;
   onBack?: () => void;
   onSkipHotels?: () => void;
+  onContinueToOffer?: () => void;
 }) {
   const meta = resolveDestinationMeta(trip, suggestion);
   const origin = trip.origin ?? "SYD";
@@ -90,6 +92,14 @@ export function DestinationBoard({
             ) : null}
             <Button type="button" onClick={onConfirm}>
               Choose {meta.title}
+            </Button>
+          </div>
+        ) : null}
+
+        {!preview && onContinueToOffer ? (
+          <div className="disc-dest-actions disc-dest-actions-continue">
+            <Button type="button" className="w-full min-h-11" onClick={onContinueToOffer}>
+              View bonus miles offer →
             </Button>
           </div>
         ) : null}

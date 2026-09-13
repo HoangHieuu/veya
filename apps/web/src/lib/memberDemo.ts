@@ -48,9 +48,9 @@ export const MEMBER_PERSONAS: Record<MemberDemoProfile, MemberDemoPersona> = {
     tierLabel: "Guest",
     tierTone: "guest",
     note: "Join Lotusmiles to unlock bonus miles on direct bookings.",
-    intentSummary: "First Vietnam trip · beach escape from Sydney",
+    intentSummary: "Exploring Vietnam · pick origin and vibe first",
     defaultOrigin: "SYD",
-    defaultTravelStyle: "beach_relaxation",
+    defaultTravelStyle: "mixed",
   },
   lotusmiles_member: {
     displayName: "Minh Nguyen",
@@ -87,14 +87,13 @@ export const MEMBER_PROFILE_OPTIONS: MemberDemoProfile[] = [
 export const PERSONA_TRIP_SEEDS: Record<MemberDemoProfile, PersonaTripSeed> = {
   guest: {
     origin: "SYD",
-    travelStyle: "beach_relaxation",
+    travelStyle: "mixed",
     travellers: 2,
-    monthHint: "November",
-    destinationHint: "beach_central",
+    monthHint: "",
     briefText:
-      "Sydney, beach and relax with a friend in November — 2 adults, exploring Da Nang or the central coast.",
+      "Example brief — type your own: origin, vibe, dates, adults…",
     openingText:
-      "Hi — beach break from Sydney in November for two. Tap a coast destination in the centre →",
+      "Hi — where are you flying from in Australia? Use the globe below, then explore destinations in the centre →",
   },
   lotusmiles_member: {
     origin: "MEL",
@@ -143,5 +142,10 @@ export function formatMiles(n: number): string {
 }
 
 export function isMember(profile: MemberDemoProfile): boolean {
+  return profile !== "guest";
+}
+
+/** Member demos load a seeded brief; guest starts blank with the origin globe. */
+export function shouldSeedTripFromProfile(profile: MemberDemoProfile): boolean {
   return profile !== "guest";
 }

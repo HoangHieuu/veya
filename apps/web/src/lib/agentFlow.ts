@@ -89,7 +89,8 @@ export function draftToBrief(draft: TripDraft): string {
     return `${originName}, food-focused trip in ${when}, ${pax} travellers — Saigon or Hanoi.`;
   }
   if (draft.travelStyle === "vfr") {
-    return `${originName}, visiting family in Vietnam, ${when}, ${pax} adults.`;
+    const where = draft.localityNote ? ` in ${draft.localityNote}` : " in Vietnam";
+    return `${originName}, visiting family${where}, ${when}, ${pax} adults.`;
   }
   return `${originName}, ${when}, ${pax} travellers — not sure Hanoi, Ho Chi Minh City, or Da Nang. Beach and food.`;
 }

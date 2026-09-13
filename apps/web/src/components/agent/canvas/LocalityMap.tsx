@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { LocalityResolution } from "../../../lib/agentTypes";
 import {
   buildFallbackRoute,
@@ -17,10 +17,24 @@ export function LocalityMap({
   compact?: boolean;
 }) {
   const gateway = GATEWAY_GEO[resolution.gateway];
-  const locality = resolveLocalityGeo(
-    resolution.localityId,
-    resolution.localityTitle,
-    resolution.gateway,
+  const locality = useMemo(
+    () =>
+      resolveLocalityGeo(
+        resolution.localityId,
+        resolution.localityTitle,
+        resolution.gateway,
+      ),
+    [resolution.localityId, resolution.localityTitle, resolution.gateway],
+  );
+  const fallbackRoute = useMemo(
+    () => buildFallbackRoute(gateway, locality, resolution.localityId),
+    [
+      gateway.lat,
+      gateway.lng,
+      locality.lat,
+      locality.lng,
+      resolution.localityId,
+    ],
   );
   const sameHub = isSameHub(gateway, locality);
   const island = isIslandLocality(resolution.localityId, resolution.localityTitle);
@@ -31,7 +45,7 @@ export function LocalityMap({
       <LeafletRouteMap
         gateway={gateway}
         locality={locality}
-        fallbackRoute={buildFallbackRoute(gateway, locality, resolution.localityId)}
+        fallbackRoute={fallbackRoute}
         useOsrm={!sameHub && !island}
         hubMode={sameHub}
         islandMode={island}

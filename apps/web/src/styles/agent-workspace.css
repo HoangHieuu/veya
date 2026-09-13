@@ -588,6 +588,15 @@
   }
 }
 
+@keyframes disc-stage-in-y {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes disc-preview-overlay-in {
   from {
     opacity: 0;
@@ -643,6 +652,11 @@
   animation: disc-stage-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.discovery-canvas-stage.disc-stage-in .disc-dest-main > .disc-dest-sections {
+  opacity: 1;
+  animation: disc-stage-in-y 0.44s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
 .discovery-canvas-stage.disc-stage-in .disc-dest-main > *:nth-child(1) {
   animation-delay: 0.1s;
 }
@@ -691,6 +705,7 @@
   .discovery-canvas-stage.disc-stage-in .disc-bento-card,
   .discovery-canvas-stage.disc-stage-in .disc-dest-card,
   .discovery-canvas-stage.disc-stage-in .disc-dest-main > *,
+  .discovery-canvas-stage.disc-stage-in .disc-dest-main > .disc-dest-sections,
   .discovery-canvas-stage.disc-stage-in .disc-booking > * {
     animation: none;
     opacity: 1;
@@ -1017,6 +1032,34 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.25rem;
+}
+
+.disc-dest-actions-continue {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgb(228 236 239 / 0.95);
+}
+
+.disc-dest-actions-continue button {
+  font-weight: 600;
+}
+
+.disc-offer-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-teal);
+  cursor: pointer;
+}
+
+.disc-offer-back:hover {
+  text-decoration: underline;
 }
 
 /* Route strip */
@@ -2137,6 +2180,19 @@
   width: 100%;
   min-height: 8rem;
   border-radius: 0.625rem;
+  background: #e8eef0;
+  z-index: 0;
+}
+
+.leaflet-route-map .leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.625rem;
+  font-family: inherit;
+}
+
+.leaflet-route-map .leaflet-tile-pane {
+  z-index: 1;
 }
 
 /* Policy overlay */

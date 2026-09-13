@@ -10,6 +10,25 @@ export interface RouteMapMeta {
   source: "osrm" | "geodesic" | "fallback" | "hub";
 }
 
+const TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+function attachTiles(map: L.Map): L.TileLayer {
+  return L.tileLayer(TILE_URL, {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 14,
+    subdomains: "abc",
+  }).addTo(map);
+}
+
+function refreshMapSize(map: L.Map): void {
+  requestAnimationFrame(() => {
+    map.invalidateSize({ pan: false });
+    window.setTimeout(() => map.invalidateSize({ pan: false }), 450);
+    window.setTimeout(() => map.invalidateSize({ pan: false }), 900);
+  });
+}
+
 function renderHubMap(el: HTMLDivElement, locality: GeoPoint): L.Map {
   const map = L.map(el, {
     scrollWheelZoom: false,
@@ -18,11 +37,7 @@ function renderHubMap(el: HTMLDivElement, locality: GeoPoint): L.Map {
     attributionControl: true,
   });
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 14,
-  }).addTo(map);
+  attachTiles(map);
 
   L.circleMarker([locality.lat, locality.lng], {
     radius: 10,
@@ -32,11 +47,12 @@ function renderHubMap(el: HTMLDivElement, locality: GeoPoint): L.Map {
     fillOpacity: 1,
   })
     .bindPopup(
-      `<strong>${locality.label}</strong><br/>${locality.sublabel ?? "Fly in direct"}`
+      `<strong>${locality.label}</strong><br/>${locality.sublabel ?? "Fly in direct"}`,
     )
     .addTo(map);
 
   map.setView([locality.lat, locality.lng], 11);
+  refreshMapSize(map);
   return map;
 }
 
@@ -54,11 +70,7 @@ function renderRouteMap(
     attributionControl: true,
   });
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 14,
-  }).addTo(map);
+  attachTiles(map);
 
   const line = L.polyline(route, {
     color: "#c9a227",
@@ -75,7 +87,7 @@ function renderRouteMap(
     fillOpacity: 1,
   })
     .bindPopup(
-      `<strong>${gateway.label}</strong><br/>${gateway.sublabel ?? "VNA gateway"}`
+      `<strong>${gateway.label}</strong><br/>${gateway.sublabel ?? "VNA gateway"}`,
     )
     .addTo(map);
 
@@ -87,11 +99,12 @@ function renderRouteMap(
     fillOpacity: 1,
   })
     .bindPopup(
-      `<strong>${locality.label}</strong><br/>${locality.sublabel ?? "Your destination"}`
+      `<strong>${locality.label}</strong><br/>${locality.sublabel ?? "Your destination"}`,
     )
     .addTo(map);
 
   map.fitBounds(line.getBounds(), { padding: [28, 28], maxZoom: 9 });
+  refreshMapSize(map);
   return map;
 }
 
@@ -116,13 +129,21 @@ export function LeafletRouteMap({
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const onRouteMetaRef = useRef(onRouteMeta);
+  onRouteMetaRef.current = onRouteMeta;
+
   const [loading, setLoading] = useState(!hubMode && (useOsrm || islandMode));
+
+  const gwKey = `${gateway.lat},${gateway.lng}`;
+  const locKey = `${locality.lat},${locality.lng}`;
+  const routeKey = fallbackRoute.map((p) => p.join(",")).join("|");
 
   useEffect(() => {
     const el = hostRef.current;
     if (!el) return;
 
     let cancelled = false;
+    let resizeObserver: ResizeObserver | undefined;
 
     async function init() {
       if (mapRef.current) {
@@ -134,7 +155,13 @@ export function LeafletRouteMap({
         if (cancelled || !hostRef.current) return;
         mapRef.current = renderHubMap(hostRef.current, locality);
         setLoading(false);
-        onRouteMeta?.({ distanceKm: 0, durationHours: 0, source: "hub" });
+        onRouteMetaRef.current?.({ distanceKm: 0, durationHours: 0, source: "hub" });
+        if (mapRef.current && typeof ResizeObserver !== "undefined") {
+          resizeObserver = new ResizeObserver(() => {
+            mapRef.current?.invalidateSize({ pan: false });
+          });
+          resizeObserver.observe(hostRef.current);
+        }
         return;
       }
 
@@ -172,33 +199,31 @@ export function LeafletRouteMap({
         islandMode || meta.source === "fallback",
       );
       setLoading(false);
-      onRouteMeta?.(meta);
+      onRouteMetaRef.current?.(meta);
+
+      if (mapRef.current && typeof ResizeObserver !== "undefined") {
+        resizeObserver = new ResizeObserver(() => {
+          mapRef.current?.invalidateSize({ pan: false });
+        });
+        resizeObserver.observe(hostRef.current);
+      }
     }
 
     void init();
 
     return () => {
       cancelled = true;
+      resizeObserver?.disconnect();
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
       }
     };
-  }, [
-    gateway,
-    locality,
-    fallbackRoute,
-    useOsrm,
-    hubMode,
-    islandMode,
-    onRouteMeta,
-  ]);
+  }, [gwKey, locKey, routeKey, useOsrm, hubMode, islandMode]);
 
   return (
     <div className="leaflet-route-wrap">
-      {loading ? (
-        <div className="leaflet-route-loading">Loading map…</div>
-      ) : null}
+      {loading ? <div className="leaflet-route-loading">Loading map…</div> : null}
       <div
         className="leaflet-route-map"
         style={{ height }}

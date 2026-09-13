@@ -31,9 +31,15 @@ export function DiscoveryCanvas({
   onClosePolicy,
   onHandoff,
   onOpenPolicy,
+  showOfferView,
+  onContinueToOffer,
+  onBackToTripSummary,
 }: {
   trip: TripSummary;
   bookingReady: boolean;
+  showOfferView: boolean;
+  onContinueToOffer?: () => void;
+  onBackToTripSummary?: () => void;
   canvas?: AgentCanvasState;
   memberProfile: MemberDemoProfile;
   locality?: LocalityResolution;
@@ -47,12 +53,12 @@ export function DiscoveryCanvas({
   onHandoff?: () => void;
   onOpenPolicy?: () => void;
 }) {
-  const stage: DiscoveryStage = deriveStage(trip, bookingReady);
+  const stage: DiscoveryStage = deriveStage(trip, false);
   const hasDestination = Boolean(trip.destinationTitle) && stage !== "suggested_destinations";
-  const showBooking = Boolean(bookingReady && canvas && onHandoff);
+  const showBooking = Boolean(showOfferView && bookingReady && canvas && onHandoff);
   const centerView: CenterView = showBooking ? "offer" : hasDestination ? "destination" : "explore";
   const title = stageTitle(stage, trip, showBooking);
-  const lead = stageLead(stage, trip, showBooking);
+  const lead = stageLead(stage, trip, showBooking, bookingReady && !showOfferView);
 
   return (
     <div className="discovery-canvas">
@@ -76,13 +82,24 @@ export function DiscoveryCanvas({
       >
         <div key={centerView} className="discovery-canvas-stage disc-stage-in">
           {centerView === "offer" && canvas && onHandoff ? (
-            <BookingStage
-              variant="offer"
-              canvas={canvas}
-              memberProfile={memberProfile}
-              onHandoff={onHandoff}
-              onOpenPolicy={onOpenPolicy}
-            />
+            <>
+              {onBackToTripSummary ? (
+                <button
+                  type="button"
+                  className="disc-offer-back"
+                  onClick={onBackToTripSummary}
+                >
+                  ← Back to trip summary
+                </button>
+              ) : null}
+              <BookingStage
+                variant="offer"
+                canvas={canvas}
+                memberProfile={memberProfile}
+                onHandoff={onHandoff}
+                onOpenPolicy={onOpenPolicy}
+              />
+            </>
           ) : null}
 
           {centerView === "explore" ? (
@@ -101,6 +118,7 @@ export function DiscoveryCanvas({
               locality={locality}
               bookingReady={bookingReady}
               onSkipHotels={onSkipHotels}
+              onContinueToOffer={bookingReady ? onContinueToOffer : undefined}
             />
           ) : null}
         </div>
@@ -148,9 +166,17 @@ function stageTitle(stage: DiscoveryStage, trip: TripSummary, booking: boolean |
   return trip.destinationTitle ?? "Your destination";
 }
 
-function stageLead(stage: DiscoveryStage, trip: TripSummary, booking: boolean | undefined): string {
+function stageLead(
+  stage: DiscoveryStage,
+  trip: TripSummary,
+  booking: boolean | undefined,
+  tripSummaryReady?: boolean,
+): string {
   if (booking) {
     return "Review the limited-time bonus Lotusmiles and continue on Vietnam Airlines when ready.";
+  }
+  if (tripSummaryReady) {
+    return "Review map, season, and hotels — continue to your offer when you're ready.";
   }
   if (stage === "suggested_destinations") {
     if (!trip.origin) {

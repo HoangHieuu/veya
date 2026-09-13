@@ -221,7 +221,7 @@ export function AgentChat({
 
           onChange={(e) => onDraftChange(e.target.value)}
 
-          placeholder="Melbourne, visit family in Cà Mau, April, 2 adults…"
+          placeholder="Where from, vibe, destination, dates, adults…"
 
           rows={2}
 
