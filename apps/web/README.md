@@ -1,39 +1,63 @@
-# Veya Web (Person A — UI)
+# Veya Web
 
-React + Vite + Tailwind UI for Veya. Consumes `POST /api/recommend` and `POST /api/trips/save` per [docs/WORK_SPLIT.md](../../docs/WORK_SPLIT.md).
+React + Vite + Tailwind UI for **Veya** — Vietnam Airlines direct-channel discovery (UAVS Hackathon 2026).
 
-**Ownership:** Person A — edit only under `apps/web/`. See [docs/STRUCTURE.md](../../docs/STRUCTURE.md).
-
-## Run
+## Quick start (mock — no API)
 
 ```bash
 cd apps/web
 npm install
+cp .env.example .env
 npm run dev
 ```
 
 Open http://localhost:5173
 
-## Env
+Default `.env`:
 
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `VITE_USE_MOCK` | `true` | Use `src/mocks/rankedResponse.olivia.json` (no API) |
-| `VITE_API_BASE` | empty | Prefix for API; with Vite proxy, leave empty and set `VITE_USE_MOCK=false` |
+```env
+VITE_USE_MOCK=true
+VITE_AGENT_CANVAS=true
+```
 
-When Person D’s API is up on `:3001`:
+## Live API (ranking + RAG-lite copy from dataset)
+
+Terminal 1 — API on `:3001`:
+
+```bash
+cd apps/api
+npm ci && npm run dev
+```
+
+Terminal 2 — UI:
 
 ```env
 VITE_USE_MOCK=false
-VITE_API_BASE=
+VITE_AGENT_CANVAS=true
 ```
 
-Dev server proxies `/api` → `http://localhost:3001`.
+```bash
+cd apps/web
+npm run dev
+```
 
-## Screens
+Vite proxies `/api` and `/assets` to the API server.
 
-1. **Trip brief / Quick quiz** → submit  
-2. **Results** — 3 cards, priority preset re-rank (`cachedIntent`), judge score toggle, save toast  
-3. **Handoff** — pre-filled params + open mock search URL  
+## Demo paths (Round 2)
+
+| Path | Flow |
+|------|------|
+| **Talk to Veya** | Home → profile picker → 3-panel agent (chat · discovery · trip) |
+| **Olivia** | Beach vibe → Da Nang → booking offer → handoff to vietnamairlines.com |
+| **The Nguyens** | VFR → Cà Mau locality → SGN gateway map |
+| **Minh / Alex** | Member profiles → bonus miles offer on direct channel |
+| **Wizard fallback** | Start planning → 3-step quiz → results → handoff |
+
+## Build & lint
+
+```bash
+npm run build
+npm run lint
+```
 
 Shared types: `../../shared/types.ts` (alias `@shared/*`).

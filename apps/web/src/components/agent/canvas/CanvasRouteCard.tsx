@@ -34,7 +34,25 @@ export function CanvasRouteCard({
       <div className="agent-route-badges">
         <Badge tone="teal">{connectionLabel(route.connectionType)}</Badge>
         <Badge tone="neutral">{durationLabel(route.typicalDurationHours)}</Badge>
+        {route.dataConfidence === "illustrative" ? (
+          <Badge tone="warn">Illustrative</Badge>
+        ) : null}
       </div>
+
+      {card.score?.reasons?.length ? (
+        <ul className="agent-route-reasons">
+          {card.score.reasons.slice(0, 3).map((reason) => (
+            <li key={reason}>{reason}</li>
+          ))}
+        </ul>
+      ) : null}
+
+      {route.sourceDocument ? (
+        <p className="agent-route-source">
+          Source: {route.sourceDocument}
+          {route.dataConfidence === "illustrative" ? " (illustrative)" : ""}
+        </p>
+      ) : null}
     </div>
   );
 }

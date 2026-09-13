@@ -13,6 +13,16 @@ npm run dev
 
 Open http://localhost:5173 — mock mode is on by default (`VITE_USE_MOCK=true`).
 
+**Agent workspace (Round 2 primary demo):** set `VITE_AGENT_CANVAS=true` in `apps/web/.env`, then **Talk to Veya** from home.
+
+### Demo script (~3 min)
+
+1. **Problem (15s):** OTAs win before the traveller picks Hanoi vs Saigon vs Da Nang.
+2. **Olivia (45s):** Talk to Veya → beach → Da Nang → direct offer + handoff.
+3. **Nguyens (30s):** VFR Cà Mau → SGN gateway + locality map.
+4. **Direct value (30s):** member profile → miles offer; why book direct vs OTA.
+5. **Tech (30s):** intent + scoring API; RAG-lite reasons grounded in route dataset.
+
 ## Full stack (live API + dataset)
 
 ```bash
