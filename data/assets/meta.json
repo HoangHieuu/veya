@@ -2,7 +2,7 @@
   "$schema": "Background image provenance. Each entry maps to RouteRecord.backgroundImage in shared/types.ts.",
   "policy": "Licensed or public-domain imagery only, committed locally with recorded provenance. No scraped or unlicensed assets (proposal.txt: Assumptions).",
   "capturedAt": "2026-09-12",
-  "servingNote": "Route records reference /assets/<file>. Person A or D must serve data/assets at /assets, or copy these files into apps/web/public/assets at build time.",
+  "servingNote": "Records reference /assets/<file> and /assets/experiences/<file>. Person A or D must serve data/assets at /assets, or copy it into apps/web/public/assets at build time.",
   "attributionRequirement": "The two CC BY images must show their attributionLine wherever the photo is displayed. The CC0 image does not require it.",
   "files": {
     "da-nang-beach.jpg": {
@@ -49,6 +49,92 @@
       "licenseNote": "CC0 1.0 public domain dedication — no attribution required. Photographer Hiep Nguyen hiepng credited voluntarily. Downloaded 2026-09-12 from Wikimedia Commons at 1920px.",
       "attributionLine": "Photo: Hiep Nguyen hiepng (CC0)",
       "width": 1920
+    }
+  },
+  "highlightFiles": {
+    "han-ha-long-bay.jpg": {
+      "file": "han-ha-long-bay.jpg",
+      "highlightId": "han-ha-long-bay",
+      "servedAs": "/assets/experiences/han-ha-long-bay.jpg",
+      "description": "Huge karst rocks in Ha-Long Bay, Vietnam.",
+      "source": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Karst_HaLongBay_Vietnam_(pixinn.net).jpg",
+      "owner": "Christophe Meneboeuf",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "licenseNote": "CC BY 3.0 — attribution required. Credit \"Christophe Meneboeuf / Wikimedia Commons / CC BY 3.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+      "attributionLine": "Photo: Christophe Meneboeuf / Wikimedia Commons / CC BY 3.0",
+      "width": 800
+    },
+    "han-ninh-binh.jpg": {
+      "file": "han-ninh-binh.jpg",
+      "highlightId": "han-ninh-binh",
+      "servedAs": "/assets/experiences/han-ninh-binh.jpg",
+      "description": "Trang An Landscape Complex, Ninh Binh Province, Vietnam",
+      "source": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Trang_An_Landscape_Complex,_Ninh_Binh_Province,_Vietnam,_20240202_1433_5283.jpg",
+      "owner": "Jakub Hałun",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "licenseNote": "CC BY 4.0 — attribution required. Credit \"Jakub Hałun / Wikimedia Commons / CC BY 4.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+      "attributionLine": "Photo: Jakub Hałun / Wikimedia Commons / CC BY 4.0",
+      "width": 800
+    },
+    "sgn-cu-chi.jpg": {
+      "file": "sgn-cu-chi.jpg",
+      "highlightId": "sgn-cu-chi",
+      "servedAs": "/assets/experiences/sgn-cu-chi.jpg",
+      "description": "Inside the Cu Chi Tunnels in Viet Nam. Infamous and effective during the war, the tunnels are now a popular tourist attraction. Photo taken by Wikimedia Commons user Kevyn Jacobs, released into the pu",
+      "source": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:VietnamCuChiTunnels.jpg",
+      "owner": "Kevyn Jacobs",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "licenseNote": "Public domain — no attribution required. Kevyn Jacobs credited voluntarily. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+      "attributionLine": "Photo: Kevyn Jacobs (Public domain)",
+      "width": 800
+    },
+    "sgn-vung-tau.jpg": {
+      "file": "sgn-vung-tau.jpg",
+      "highlightId": "sgn-vung-tau",
+      "servedAs": "/assets/experiences/sgn-vung-tau.jpg",
+      "description": "Bãi Trước",
+      "source": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bai_Truoc,_Vung_Tau.jpg",
+      "owner": "Hữu Sơn at Vietnamese Wikipedia",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "licenseNote": "Public domain — no attribution required. Hữu Sơn at Vietnamese Wikipedia credited voluntarily. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+      "attributionLine": "Photo: Hữu Sơn at Vietnamese Wikipedia (Public domain)",
+      "width": 800
+    },
+    "dad-hoi-an.jpg": {
+      "file": "dad-hoi-an.jpg",
+      "highlightId": "dad-hoi-an",
+      "servedAs": "/assets/experiences/dad-hoi-an.jpg",
+      "description": "Hội An (Vietnam) – World Heritage Site Hoi An Ancient Town – houses",
+      "source": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:H%E1%BB%99i_An,_Ancient_Town,_2020-01_CN-05.jpg",
+      "owner": "Steffen Schmitz (more photos)",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "licenseNote": "CC BY-SA 4.0 — attribution required. Credit \"Steffen Schmitz (more photos) / Wikimedia Commons / CC BY-SA 4.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+      "attributionLine": "Photo: Steffen Schmitz (more photos) / Wikimedia Commons / CC BY-SA 4.0",
+      "width": 800
+    },
+    "dad-marble-mountains.jpg": {
+      "file": "dad-marble-mountains.jpg",
+      "highlightId": "dad-marble-mountains",
+      "servedAs": "/assets/experiences/dad-marble-mountains.jpg",
+      "description": "View from atop the Marble Mountains, Ngu Hanh Son District, Da Nang, Vietnam.",
+      "source": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Marble_Mountains_View_3.JPG",
+      "owner": "Dragfyre",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "licenseNote": "CC BY-SA 3.0 — attribution required. Credit \"Dragfyre / Wikimedia Commons / CC BY-SA 3.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 800px.",
+      "attributionLine": "Photo: Dragfyre / Wikimedia Commons / CC BY-SA 3.0",
+      "width": 800
     }
   }
 }
