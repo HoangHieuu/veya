@@ -520,6 +520,29 @@ export function suggestionToTrip(
   };
 }
 
+// The backend's heuristic brief parser (parseBriefHeuristic) only accepts a
+// brief when it recognizes 3+ of {origin, travelStyle, travellers, priority,
+// budgetBand} — otherwise it rejects the whole request as UNPARSEABLE. A bare
+// "Melbourne, Ho Chi Minh City, April, 2 adults." only hits origin +
+// travellers, so it must always fail. This fragment supplies a travelStyle
+// keyword the lexicon recognizes (STYLE_LEXICON in apps/api/src/intent/lexicon.ts).
+function tripStyleBriefFragment(style?: TravelStyle): string {
+  switch (style) {
+    case "vfr":
+      return "visiting family in";
+    case "family":
+      return "a family trip to";
+    case "food_culture":
+      return "a food & culture trip to";
+    case "education":
+      return "an education-focused trip to";
+    case "mixed":
+      return "a mixed-interest trip to";
+    default:
+      return "a trip to";
+  }
+}
+
 export function tripToBrief(trip: TripSummary): string {
   if (trip.destinationTitle && trip.origin) {
     const originName =
@@ -532,7 +555,8 @@ export function tripToBrief(trip: TripSummary): string {
     if (trip.travelStyle === "beach_relaxation" || trip.destinationHint === "beach_central") {
       return `${originName}, beach trip in ${when} — ${trip.destinationTitle}, ${pax} adults, low hassle.`;
     }
-    return `${originName}, ${trip.destinationTitle}, ${when}, ${pax} adults.`;
+    const styleFragment = tripStyleBriefFragment(trip.travelStyle);
+    return `${originName}, ${styleFragment} ${trip.destinationTitle} in ${when}, ${pax} adults, low hassle.`;
   }
   return draftToBrief(draftFromSummary(trip));
 }

@@ -63,9 +63,15 @@ export function parseDestinationHint(text: string): DestinationHint | undefined 
 
 export function mergeTextIntoDraft(text: string, draft: TripDraft): TripDraft {
   const next = { ...draft };
-  next.origin = next.origin ?? parseOrigin(text);
-  next.travelStyle = next.travelStyle ?? parseTravelStyle(text);
-  next.destinationHint = next.destinationHint ?? parseDestinationHint(text);
+  // A newly mentioned value must win over whatever was already in the draft —
+  // otherwise "I fly from Perth" can never correct an origin the user (or a
+  // persona seed) already set, which silently no-ops the whole message even
+  // though the chat reports success. travellers/monthHint below already got
+  // this right; origin/travelStyle/destinationHint previously used `??` and
+  // so could only ever fill a blank, never change an existing value.
+  next.origin = parseOrigin(text) ?? next.origin;
+  next.travelStyle = parseTravelStyle(text) ?? next.travelStyle;
+  next.destinationHint = parseDestinationHint(text) ?? next.destinationHint;
 
   const paxMatch = text.match(/(\d+)\s*adult/i);
   if (paxMatch) next.travellers = parseInt(paxMatch[1], 10);
