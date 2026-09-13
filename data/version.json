@@ -1,6 +1,6 @@
 {
-  "datasetVersion": "0.4.0",
-  "updatedAt": "2026-09-12",
+  "datasetVersion": "0.6.0",
+  "updatedAt": "2026-09-13",
   "status": "ready",
-  "note": "0.4.0 adds local experience bento images, scorer locks for all three personas, and need-place-map on top of 0.3.0. Bump on any change under data/routes, data/experiences or data/assets, and regenerate data/fixtures/expectedTop3.json in the same commit."
+  "note": "0.6.0 syncs the B-data domains veya's apps/api/src/agent/data.ts already has loader code for but never had data: data/destination-spotlight.json, data/seasons.json, data/offers/illustrative-fares.json and data/policies/{lotusmiles,lotustudents,direct-decision-offer}.json (ported from uavs-temp, reshaped to veya's exact field names — e.g. seasons needed headline/summary added per month, policies needed summary/sourceDocument added). Verified via loadAgentData(): capabilities.{destinations,season,offer,policies} all flip from 'unavailable' to 'ready', 0 loader errors. Intentionally NOT synced: data/promotions + data/profiles (veya's scoring engine computes promotionBoost from route.promotion directly, not member-tier eligibility — copying that data would be inert) and data/partners (no consuming code path in veya at all). 0.5.0's policy-corpus/RAG addition is unaffected. Bump on any change under data/routes, data/experiences, data/assets, data/policy-corpus, data/offers, data/policies, data/destination-spotlight.json or data/seasons.json, and regenerate data/fixtures/expectedTop3.json in the same commit."
 }

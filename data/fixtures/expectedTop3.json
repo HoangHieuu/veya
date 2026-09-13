@@ -1,7 +1,7 @@
 {
   "description": "Scorer regression lock for Person D. Every case is produced by POSTing its intent to the real /api/recommend as cachedIntent — no LLM, nothing hand-written. Regenerate whenever datasetVersion changes.",
-  "generatedAt": "2026-09-12",
-  "datasetVersion": "0.4.0",
+  "generatedAt": "2026-09-13",
+  "datasetVersion": "0.6.0",
   "scoringVersion": "0.1.0",
   "notes": [
     "olivia: Hanoi ranks first and Da Nang third because November is Da Nang's wet season (dateFit 40) despite a perfect intentMatch. The dataset is not tuned to match the UI mock.",

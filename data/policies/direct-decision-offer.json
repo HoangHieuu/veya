@@ -1,0 +1,20 @@
+{
+  "id": "direct-decision-offer",
+  "title": "Direct Decision Offer terms",
+  "status": "illustrative",
+  "discountPct": 5,
+  "expiryHours": 24,
+  "summary": "Illustrative −5% off the public fare when you decide on vietnamairlines.com during discovery, expiring 24h after first eligible canvas view.",
+  "sourceDocument": "Illustrative demo offer — not a published Vietnam Airlines fare rule; confirm final price at checkout on vietnamairlines.com.",
+  "disclaimer": "Illustrative discount for demo purposes only. Confirm final price at checkout — not valid on OTA channels.",
+  "eligibility": [
+    "Member profile unlocked in demo",
+    "Decision made within the discovery session"
+  ],
+  "bullets": [
+    "Illustrative −5% when you decide on vietnamairlines.com during discovery.",
+    "Offer fare shown after member profile unlock in demo.",
+    "Confirm final price at checkout — not valid on OTA channels.",
+    "Expires 24h from first eligible canvas view (demo timer)."
+  ]
+}

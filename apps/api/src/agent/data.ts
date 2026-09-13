@@ -383,13 +383,18 @@ function normalizeGatewaySeasonItems(value: unknown, file: string): unknown[] {
             : {};
         const destinationName = stringValue(record.destinationName) ?? gateway;
         const rating = stringValue(monthRecord.rating);
+        const explicitHeadline = stringValue(monthRecord.headline);
+        const explicitSummary =
+          stringValue(monthRecord.summary) ?? stringValue(monthRecord.note);
         return {
           gateway,
           month,
-          headline: rating
-            ? `${destinationName}: ${rating} season in ${month}`
-            : `${destinationName} in ${month}`,
-          summary: monthRecord.note,
+          headline:
+            explicitHeadline ??
+            (rating
+              ? `${destinationName}: ${rating} season in ${month}`
+              : `${destinationName} in ${month}`),
+          summary: explicitSummary,
           bestMonths,
           caveats: stringValue(record.seasonalityNotes)
             ? [record.seasonalityNotes]

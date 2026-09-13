@@ -52,6 +52,10 @@
 | Agent board spot pick | No (MVP) | &lt;200ms rule pick from highlights |
 
 - **RAG-lite (MVP):** template-filled `reasons[]` and `tripOutline` from `RouteRecord` + `TripIntent` — **no vector DB**.
+- **Policy corpus exception:** optional `POST /api/policy/ask` may use a
+  **checked-in** embedding file under `data/policy-corpus/` (not a hosted
+  vector DB). Live OpenAI is only for query embedding / short cited synthesis;
+  missing keys must surface as unavailable, not as “not in corpus”.
 - LLM API keys live **server-side (Person C only)**; browser never calls OpenAI/Gemini directly.
 
 ### Problem Statement
@@ -193,7 +197,7 @@ status: "idle" | "loading" | "success" | "error"
 
 ### Conclusion
 
-**Preferred approach:** Hybrid **3-step wizard + results agent board + rule-based ranking + RAG-lite copy**, with LLM only for optional free-text briefs. This maximizes **UX speed**, **technical demonstrability**, and **judge-facing AI story** without scraping VNA or building a booking site. Persona instant path ensures reliable demo under time pressure.
+**Preferred approach:** Hybrid **3-step wizard + results agent board + rule-based ranking + RAG-lite copy**, with LLM only for optional free-text briefs. This maximizes **UX speed**, **technical demonstrability**, and **judge-facing AI story** without building a booking site. Live VNA inventory scraping stays out of scope; the optional policy corpus under `data/policy-corpus/` is a **checked-in** reference capture (not a live scrape loop). Persona instant path ensures reliable demo under time pressure.
 
 ---
 
@@ -288,7 +292,7 @@ Goal: agentic visualize on Results — **panel only**, not chat replacing wizard
 
 ### Technical
 
-- Vector DB / full RAG pipeline
+- Vector DB / full RAG pipeline (exception: checked-in `data/policy-corpus/` + `POST /api/policy/ask` — see §2 RAG-lite)
 - Microservices split, PostgreSQL/Redis requirement
 - WebSocket / SSE streaming LLM to UI
 - LLM calls from browser

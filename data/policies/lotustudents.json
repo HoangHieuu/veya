@@ -1,0 +1,12 @@
+{
+  "id": "lotustudents",
+  "title": "LotuStudents",
+  "status": "illustrative",
+  "summary": "Vietnam Airlines' student fare programme — verified students get an illustrative extra discount on the direct booking channel.",
+  "sourceDocument": "Illustrative summary — see vietnamairlines.com/vn/en/plan-book/LotuSociety/lotustudents-offers for current LotuStudents programme terms.",
+  "bullets": [
+    "Verified student status required in production.",
+    "Demo shows illustrative extra discount on direct channel.",
+    "Terms apply at checkout on vietnamairlines.com."
+  ]
+}

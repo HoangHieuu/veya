@@ -151,7 +151,7 @@ Production story (slide): VNA Identity Service + internal Offer Engine.
 | Indicative pricing | fare band + snapshot AUD | Marketing fare module |
 | Offer −5% | mock `OfferQuote` | VNA Offer Engine |
 | Member promos | `route.promotion` | Loyalty + promo catalog |
-| Policies / T&C | `data/policies/*.json` | Approved RAG corpus |
+| Policies / T&C | `data/policies/*.json` (+ optional offline corpus `data/policy-corpus/` via `POST /api/policy/ask`) | Approved RAG corpus |
 | Flight inventory | handoff mock only | air-bounds session API |
 | Identity | mock toggle | VNA SSO / Lotusmiles |
 
@@ -344,7 +344,7 @@ Path: `apps/api/**`, `shared/**` (contract PR)
 - **Full chatbot replacing wizard** (agent canvas ≠ unlimited chat)
 - Cart abandonment product build (slide only)
 - MCP server build (slide only)
-- Vector DB / streaming SSE to UI
+- Vector DB / streaming SSE to UI (exception: checked-in `data/policy-corpus/` + `POST /api/policy/ask` — see `TDD.md` §2)
 - Multi-language UI (EN only)
 
 ---

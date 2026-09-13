@@ -1,0 +1,177 @@
+{
+  "version": "1.0.0",
+  "description": "Center-canvas 'suggested destinations' cards for the Round 2 agent workspace (TDD-v2.1 SS VIII/XI). Content is not new copy — it is assembled from data/routes/*.json (tripArchetypes, seasonalityNotes, licensed hero image) and data/experiences/*.json (highlight teasers), so nothing here is a fresh, unsourced marketing claim.",
+  "note": "Ranking by traveller vibe (tripArchetypes overlap) rather than a per-origin commercial push - no real VNA directive on which gateway to promote per Australian city exists in this dataset, so origin is not used to bias the order.",
+  "destinations": [
+    {
+      "id": "spotlight-dad",
+      "gateway": "DAD",
+      "destinationName": "Da Nang",
+      "subtitle": "Beach & relaxation, central coast",
+      "matchVibe": [
+        "beach_relaxation",
+        "family",
+        "food_culture"
+      ],
+      "image": {
+        "url": "/assets/da-nang-beach.jpg",
+        "archetype": "beach_relaxation",
+        "source": "Wikimedia Commons — https://commons.wikimedia.org/wiki/File:My_Khe_Beach,_Da_Nang,_Vietnam.jpg",
+        "owner": ". Ray in Manila",
+        "licenseNote": "CC BY 2.0 — attribution required. Credit \". Ray in Manila / Wikimedia Commons / CC BY 2.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 1920px."
+      },
+      "highlightTeasers": [
+        {
+          "title": "My Khe Beach",
+          "tags": [
+            "beach",
+            "quiet"
+          ]
+        },
+        {
+          "title": "Hoi An Ancient Town",
+          "tags": [
+            "culture",
+            "food"
+          ]
+        },
+        {
+          "title": "Marble Mountains",
+          "tags": [
+            "culture",
+            "family"
+          ]
+        }
+      ],
+      "seasonalityNotes": "Central Vietnam is driest and sunniest from February to August; September to December is the wet season, with October and November carrying the highest rain and storm risk.",
+      "bestMonths": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "shoulderMonths": [
+        1,
+        9
+      ],
+      "sourceDocument": "Connection: Lotusmiles sector table lists no Australia-to-Da Nang sector; vietnamairlines.com/en-au/flights-from-melbourne-to-da-nang states nonstop flights are not available and VNA operates connecting options via Hanoi or Ho Chi Minh City. Routed via SGN. Duration: vietnamairlines.com/en-au route page, published: 12 hours 30 minutes – 33 hours 55 minutes including transit (low end used). Fare band: Relative fare band: tercile of a nine-route AUD snapshot captured 2026-09-12 from the vietnamairlines.com/en-au route pages (site notes fares are collected within 48hrs and may change). Not a live price. Miles: Lotusmiles published sector distances — vietnamairlines.com/au/en/lotusmiles/earn-miles/earn-miles-after-flights/eligible-flight-and-miles-scheme. Promotion: vietnamairlines.com/au/en/plan-book/LotuSociety/lotustudents-offers. Captured 2026-09-12.",
+      "sourceOwner": "Vietnam Airlines published web content; curated by Veya Person B"
+    },
+    {
+      "id": "spotlight-han",
+      "gateway": "HAN",
+      "destinationName": "Hanoi",
+      "subtitle": "Culture & food, cooler north",
+      "matchVibe": [
+        "education",
+        "food_culture",
+        "vfr"
+      ],
+      "image": {
+        "url": "/assets/hanoi-food.jpg",
+        "archetype": "food_culture",
+        "source": "Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Old_Quarter_market,_Hanoi,_20240123_1811_3411.jpg",
+        "owner": "Jakub Hałun",
+        "licenseNote": "CC BY 4.0 — attribution required. Credit \"Jakub Hałun / Wikimedia Commons / CC BY 4.0\" wherever the image is displayed. Downloaded 2026-09-12 from Wikimedia Commons at 1920px."
+      },
+      "highlightTeasers": [
+        {
+          "title": "Old Quarter walks",
+          "tags": [
+            "food",
+            "culture"
+          ]
+        },
+        {
+          "title": "Hoàn Kiếm Lake",
+          "tags": [
+            "quiet",
+            "culture",
+            "family"
+          ]
+        },
+        {
+          "title": "Hạ Long Bay cruise",
+          "tags": [
+            "culture",
+            "family"
+          ]
+        }
+      ],
+      "seasonalityNotes": "October to December brings dry, cool air and the clearest skies of the northern year; June to August is hot and humid with heavy afternoon rain.",
+      "bestMonths": [
+        3,
+        4,
+        10,
+        11,
+        12
+      ],
+      "shoulderMonths": [
+        1,
+        2,
+        5,
+        9
+      ],
+      "sourceDocument": "Connection: Lotusmiles sector table lists a published MEL–HAN sector, so this is carried as a direct service. Duration: vietnamairlines.com/en-au route page, published: about 9 hours 40 minutes. Fare band: Relative fare band: tercile of a nine-route AUD snapshot captured 2026-09-12 from the vietnamairlines.com/en-au route pages (site notes fares are collected within 48hrs and may change). Not a live price. Miles: Lotusmiles published sector distances — vietnamairlines.com/au/en/lotusmiles/earn-miles/earn-miles-after-flights/eligible-flight-and-miles-scheme. Promotion: vietnamairlines.com/au/en/plan-book/LotuSociety/lotustudents-offers. Captured 2026-09-12.",
+      "sourceOwner": "Vietnam Airlines published web content; curated by Veya Person B"
+    },
+    {
+      "id": "spotlight-sgn",
+      "gateway": "SGN",
+      "destinationName": "Ho Chi Minh City",
+      "subtitle": "Food, family, gateway to the delta",
+      "matchVibe": [
+        "family",
+        "food_culture",
+        "vfr"
+      ],
+      "image": {
+        "url": "/assets/saigon-food.jpg",
+        "archetype": "food_culture",
+        "source": "Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Street_Food_Life_(Unsplash).jpg",
+        "owner": "Hiep Nguyen hiepng",
+        "licenseNote": "CC0 1.0 public domain dedication — no attribution required. Photographer Hiep Nguyen hiepng credited voluntarily. Downloaded 2026-09-12 from Wikimedia Commons at 1920px."
+      },
+      "highlightTeasers": [
+        {
+          "title": "District 1 street food",
+          "tags": [
+            "food",
+            "city"
+          ]
+        },
+        {
+          "title": "Vũng Tàu beach",
+          "tags": [
+            "beach",
+            "quiet",
+            "family"
+          ]
+        },
+        {
+          "title": "Chợ Lớn heritage",
+          "tags": [
+            "culture",
+            "family"
+          ]
+        }
+      ],
+      "seasonalityNotes": "The southern dry season runs December to March with warm, rain-free days; May to October brings short but intense afternoon downpours.",
+      "bestMonths": [
+        1,
+        2,
+        3,
+        12
+      ],
+      "shoulderMonths": [
+        4,
+        11
+      ],
+      "sourceDocument": "Connection: Lotusmiles sector table lists a published MEL–SGN sector, so this is carried as a direct service. Duration: vietnamairlines.com/en-au route page, published: around 8 hours 40 minutes. Fare band: Relative fare band: tercile of a nine-route AUD snapshot captured 2026-09-12 from the vietnamairlines.com/en-au route pages (site notes fares are collected within 48hrs and may change). Not a live price. Miles: Lotusmiles published sector distances — vietnamairlines.com/au/en/lotusmiles/earn-miles/earn-miles-after-flights/eligible-flight-and-miles-scheme. Promotion: vietnamairlines.com/au/en/plan-book/LotuSociety/lotustudents-offers. Captured 2026-09-12.",
+      "sourceOwner": "Vietnam Airlines published web content; curated by Veya Person B"
+    }
+  ]
+}
