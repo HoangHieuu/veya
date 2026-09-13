@@ -12,10 +12,18 @@ const dataAssetsDir = path.resolve(root, "../../data/assets");
 function localDataAssetsPlugin(): Plugin {
   return {
     name: "local-data-assets",
+    enforce: "pre",
     configureServer(server) {
       const serve = sirv(dataAssetsDir, { dev: true, etag: true, maxAge: 0 });
-      server.middlewares.use("/assets", (req, res, next) => {
-        serve(req, res, next);
+      server.middlewares.use((req, res, next) => {
+        const pathname = req.url?.split("?")[0] ?? "";
+        if (!pathname.startsWith("/assets/")) return next();
+        const saved = req.url;
+        req.url = pathname.slice("/assets".length) || "/";
+        serve(req, res, () => {
+          req.url = saved;
+          next();
+        });
       });
     },
   };
