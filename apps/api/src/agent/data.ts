@@ -3,8 +3,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type {
+  CabinClass,
   DestinationCity,
   DestinationSuggestion,
+  FareBrandId,
   MonthName,
   PolicyOverlayId,
   PolicySnippet,
@@ -24,6 +26,7 @@ export interface AgentDataCapabilities {
   locality: CapabilityStatus;
   season: CapabilityStatus;
   offer: CapabilityStatus;
+  fares: CapabilityStatus;
   policies: CapabilityStatus;
 }
 
@@ -54,6 +57,34 @@ export interface IllustrativeFareSnapshot {
   sourceFields: string[];
 }
 
+export interface FareBrandSnapshot {
+  brandId: FareBrandId;
+  cabin: CabinClass;
+  brandLabel: string;
+  cabinLabel: string;
+  priceMultiplier: number;
+  checkedBaggage: string;
+  checkedBaggageSource: string;
+  checkedBaggageIllustrative: boolean;
+  handBaggage: string;
+  changePolicy: string;
+  refundPolicy: string;
+  seatSelection: string;
+  milesEarnPct: number;
+  seatsRemaining?: number;
+  perks: string[];
+}
+
+export interface FareFamilySnapshot {
+  version: string;
+  disclaimer: string;
+  baggageSourceUrl?: string;
+  baggageSourceNote?: string;
+  handBaggageSourceUrl?: string;
+  brands: FareBrandSnapshot[];
+  sourceFields: string[];
+}
+
 export interface DirectOfferPolicySnapshot {
   id: "direct-decision-offer";
   discountPct: number;
@@ -74,6 +105,7 @@ export interface AgentDataSnapshot {
   localities: AgentLocalityRecord[];
   seasons: AgentSeasonRecord[];
   fares: IllustrativeFareSnapshot[];
+  fareFamilies?: FareFamilySnapshot;
   directOfferPolicy?: DirectOfferPolicySnapshot;
   policies: PolicySnippet[];
   legacyLocality: LocalityGatewayData;
@@ -115,6 +147,7 @@ export function loadAgentData(dataRoot = DATA_ROOT): AgentDataSnapshot {
   const localities = loadLocalities(dataRoot, legacyLocality, errors);
   const seasons = loadSeasons(dataRoot, errors);
   const fares = loadFares(dataRoot, errors);
+  const fareFamilies = loadFareFamilies(dataRoot, errors);
   const directOfferPolicy = loadDirectOfferPolicy(dataRoot, errors);
   const policies = loadPolicies(dataRoot, errors);
 
@@ -125,6 +158,7 @@ export function loadAgentData(dataRoot = DATA_ROOT): AgentDataSnapshot {
       locality: localities.length > 0 ? "ready" : "unavailable",
       season: seasons.length > 0 ? "ready" : "unavailable",
       offer: directOfferPolicy && fares.length > 0 ? "ready" : "unavailable",
+      fares: fareFamilies && fares.length > 0 ? "ready" : "unavailable",
       policies: policies.length > 0 ? "ready" : "unavailable",
     },
     errors,
@@ -132,6 +166,7 @@ export function loadAgentData(dataRoot = DATA_ROOT): AgentDataSnapshot {
     localities,
     seasons,
     fares,
+    fareFamilies,
     directOfferPolicy,
     policies,
     legacyLocality,
@@ -156,6 +191,9 @@ export function createAgentDataSnapshot(
   const directOfferPolicy = input.directOfferPolicy
     ? structuredClone(input.directOfferPolicy)
     : undefined;
+  const fareFamilies = input.fareFamilies
+    ? structuredClone(input.fareFamilies)
+    : undefined;
   return {
     version: input.version,
     capabilities: input.capabilities ?? {
@@ -163,6 +201,7 @@ export function createAgentDataSnapshot(
       locality: localities.length > 0 ? "ready" : "unavailable",
       season: seasons.length > 0 ? "ready" : "unavailable",
       offer: directOfferPolicy && fares.length > 0 ? "ready" : "unavailable",
+      fares: fareFamilies && fares.length > 0 ? "ready" : "unavailable",
       policies: policies.length > 0 ? "ready" : "unavailable",
     },
     errors: [...(input.errors ?? [])],
@@ -170,6 +209,7 @@ export function createAgentDataSnapshot(
     localities,
     seasons,
     fares,
+    fareFamilies,
     directOfferPolicy,
     policies,
     legacyLocality: structuredClone(legacyLocality),
@@ -425,6 +465,124 @@ function loadFares(root: string, errors: string[]): IllustrativeFareSnapshot[] {
     output.push(parsed);
   }
   return output;
+}
+
+const FARE_BRAND_IDS = new Set<string>([
+  "economy_lite",
+  "economy_classic",
+  "economy_flex",
+  "premium_economy",
+  "business_classic",
+  "business_flex",
+]);
+const CABINS = new Set<string>(["economy", "premium_economy", "business"]);
+
+/**
+ * Branded fare families for the booking grid. Absent or malformed file means the
+ * grid renders nothing rather than falling back to invented fares.
+ */
+function loadFareFamilies(
+  root: string,
+  errors: string[],
+): FareFamilySnapshot | undefined {
+  const file = path.join(root, "offers", "fare-families.json");
+  const raw = readJson(file, errors, "AGENT_FARE_FAMILY_INVALID_JSON");
+  if (!raw || typeof raw !== "object") return undefined;
+  const value = raw as Record<string, unknown>;
+  const disclaimer = stringValue(value.disclaimer);
+  if (!disclaimer) {
+    errors.push("AGENT_FARE_FAMILY_INVALID");
+    return undefined;
+  }
+
+  const brands: FareBrandSnapshot[] = [];
+  const seen = new Set<string>();
+  for (const entry of extractArray(value.brands, ["brands"])) {
+    const brand = parseFareBrand(entry);
+    if (!brand) {
+      errors.push("AGENT_FARE_BRAND_INVALID");
+      continue;
+    }
+    if (seen.has(brand.brandId)) {
+      errors.push("AGENT_FARE_BRAND_DUPLICATE");
+      continue;
+    }
+    seen.add(brand.brandId);
+    brands.push(brand);
+  }
+  if (brands.length === 0) {
+    errors.push("AGENT_FARE_FAMILY_EMPTY");
+    return undefined;
+  }
+
+  const baggageSource = value.baggageSource as Record<string, unknown> | undefined;
+  const handSource = value.handBaggageSource as Record<string, unknown> | undefined;
+  return {
+    version: stringValue(value.version) ?? "unversioned",
+    disclaimer,
+    baggageSourceUrl: baggageSource ? stringValue(baggageSource.url) : undefined,
+    baggageSourceNote: baggageSource ? stringValue(baggageSource.note) : undefined,
+    handBaggageSourceUrl: handSource ? stringValue(handSource.url) : undefined,
+    brands,
+    sourceFields: [sourceRef(file)],
+  };
+}
+
+function parseFareBrand(value: unknown): FareBrandSnapshot | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const item = value as Record<string, unknown>;
+  const brandId = stringValue(item.brandId);
+  const cabin = stringValue(item.cabin);
+  const brandLabel = stringValue(item.brandLabel);
+  const cabinLabel = stringValue(item.cabinLabel);
+  const priceMultiplier = numberValue(item.priceMultiplier);
+  const milesEarnPct = numberValue(item.milesEarnPct);
+  const checkedBaggage = stringValue(item.checkedBaggage);
+  const handBaggage = stringValue(item.handBaggage);
+  const changePolicy = stringValue(item.changePolicy);
+  const refundPolicy = stringValue(item.refundPolicy);
+  const seatSelection = stringValue(item.seatSelection);
+
+  if (
+    !brandId ||
+    !FARE_BRAND_IDS.has(brandId) ||
+    !cabin ||
+    !CABINS.has(cabin) ||
+    !brandLabel ||
+    !cabinLabel ||
+    priceMultiplier === undefined ||
+    priceMultiplier <= 0 ||
+    milesEarnPct === undefined ||
+    milesEarnPct < 0 ||
+    !checkedBaggage ||
+    !handBaggage ||
+    !changePolicy ||
+    !refundPolicy ||
+    !seatSelection
+  ) {
+    return undefined;
+  }
+
+  const seatsRemaining = numberValue(item.seatsRemaining);
+  return {
+    brandId: brandId as FareBrandId,
+    cabin: cabin as CabinClass,
+    brandLabel,
+    cabinLabel,
+    priceMultiplier,
+    checkedBaggage,
+    checkedBaggageSource: stringValue(item.checkedBaggageSource) ?? "illustrative",
+    checkedBaggageIllustrative: booleanValue(item.checkedBaggageIllustrative) ?? true,
+    handBaggage,
+    changePolicy,
+    refundPolicy,
+    seatSelection,
+    milesEarnPct,
+    ...(seatsRemaining !== undefined && seatsRemaining > 0
+      ? { seatsRemaining: Math.floor(seatsRemaining) }
+      : {}),
+    perks: stringArray(item.perks),
+  };
 }
 
 function loadDirectOfferPolicy(

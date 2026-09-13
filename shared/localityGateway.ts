@@ -28,11 +28,20 @@ export interface RawLocalityGatewayFile {
   localityBoost?: number;
 }
 
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
+/**
+ * \u0110/\u0111 carries no combining mark, so NFD leaves it intact and stripping marks
+ * alone turns "\u0110\u00e0 N\u1eb5ng" into "a-nang". Map it explicitly before folding.
+ */
+function foldDiacritics(text: string): string {
+  return text
+    .replace(/[\u0110]/g, "D")
+    .replace(/[\u0111]/g, "d")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function slugify(name: string): string {
+  return foldDiacritics(name.toLowerCase())
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
@@ -94,7 +103,7 @@ function isNegatedMention(text: string, matchIndex: number): boolean {
 
 /** Match user text with or without Vietnamese diacritics (e.g. Cà Mau ↔ Ca Mau). */
 function foldForMatch(text: string): string {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return foldDiacritics(text);
 }
 
 function patternMatch(source: string, text: string): RegExpExecArray | null {

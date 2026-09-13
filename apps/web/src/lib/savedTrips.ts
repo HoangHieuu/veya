@@ -1,4 +1,4 @@
-import type { TripSummary } from "./agentWorkspace";
+import type { TripSummary } from "@shared/types";
 
 const STORAGE_KEY = "veya-agent-saved-trips";
 const MAX_SAVED = 5;
@@ -42,9 +42,9 @@ export function saveAgentTrip(trip: TripSummary, routeLabel?: string): SavedAgen
   const existing = readAll().filter(
     (s) =>
       !(
-        s.trip.origin === trip.origin &&
+        s.trip.originCity === trip.originCity &&
         s.trip.destinationTitle === trip.destinationTitle &&
-        s.trip.monthHint === trip.monthHint &&
+        s.trip.departDate === trip.departDate &&
         s.trip.memberProfile === trip.memberProfile
       ),
   );
@@ -59,18 +59,20 @@ export function removeSavedTrip(id: string) {
 
 export function savedTripTitle(trip: TripSummary, routeLabel?: string): string {
   if (routeLabel) return routeLabel;
-  if (trip.destinationTitle && trip.origin) {
-    return `${trip.origin} → ${trip.destinationTitle}`;
+  if (trip.destinationTitle && trip.originCity) {
+    return `${trip.originCity} → ${trip.destinationTitle}`;
   }
   if (trip.destinationTitle) return trip.destinationTitle;
-  if (trip.origin) return `From ${trip.origin}`;
+  if (trip.originCity) return `From ${trip.originCity}`;
   return "Trip draft";
 }
 
 export function savedTripSubtitle(trip: TripSummary): string {
   const parts: string[] = [];
-  if (trip.monthHint) parts.push(trip.monthHint);
+  if (trip.departDate) parts.push(trip.departDate);
+  else if (trip.departMonth) parts.push(trip.departMonth);
   if (trip.travellers) parts.push(`${trip.travellers} adult${trip.travellers > 1 ? "s" : ""}`);
+  if (trip.fareBrandId) parts.push(trip.fareBrandId.replace(/_/g, " "));
   return parts.join(" · ") || "In progress";
 }
 

@@ -20,17 +20,20 @@ export const DESTINATION_LEXICON: ReadonlyArray<{
   city: DestinationCity;
 }> = [
   {
-    pattern: /\bHAN\b|\bHa\s*Noi\b|\bHanoi\b|\bHa\s*Long\b|\bNinh\s*Binh\b/i,
+    pattern:
+      /\bHAN\b|\bHa\s*Noi\b|\bH[àa]\s*N[ộo]i\b|\bHanoi\b|\bHa\s*Long\b|\bH[ạa]\s*Long\b|\bNinh\s*Binh\b|\bNinh\s*B[ìi]nh\b/i,
     city: "HAN",
   },
   {
     pattern:
-      /\bSGN\b|\bSaigon\b|\bHo\s*Chi\s*Minh\b|\bHCMC\b|\bVung\s*Tau\b|\bCu\s*Chi\b/i,
+      /\bSGN\b|\bSaigon\b|\bS[àa]i\s*G[òo]n\b|\bHo\s*Chi\s*Minh\b|\bH[ồo]\s*Ch[íi]\s*Minh\b|\bHCMC\b|\bVung\s*Tau\b|\bV[ũu]ng\s*T[àa]u\b|\bCu\s*Chi\b|\bC[ủu]\s*Chi\b/i,
     city: "SGN",
   },
   {
+    // "Đ" is not a \w character, so the Vietnamese spelling anchors on the
+    // following vowel instead of a leading word boundary.
     pattern:
-      /\bDAD\b|\bDa\s*Nang\b|\bDanang\b|\bHoi\s*An\b|\bHội\s*An\b|\bMy\s*Khe\b|\bMarble\s*Mountains?\b/i,
+      /\bDAD\b|\bDa\s*Nang\b|[Đđ]\s*[àa]\s*N[ẵaă]ng\b|\bDanang\b|\bHoi\s*An\b|\bHội\s*An\b|\bMy\s*Khe\b|\bM[ỹy]\s*Kh[êe]\b|\bMarble\s*Mountains?\b/i,
     city: "DAD",
   },
 ];

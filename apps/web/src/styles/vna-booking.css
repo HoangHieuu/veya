@@ -1,0 +1,743 @@
+/*
+ * Booking board styles — the centre panel at the fare-selection stage, laid
+ * out like the Vietnam Airlines availability page: itinerary rows on top,
+ * branded fare columns grouped by cabin below, running total pinned at the
+ * bottom. Prefixed `vna-` so it never collides with the earlier discovery
+ * canvas rules in agent-workspace.css.
+ */
+
+/* --- shared primitives --------------------------------------------------- */
+
+.vna-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-teal);
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.vna-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-teal) 85%, black);
+}
+
+.vna-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* --- itinerary rows ------------------------------------------------------ */
+
+.vna-itineraries {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.vna-itinerary {
+  border: 1px solid rgb(228 236 239 / 0.95);
+  border-radius: 0.875rem;
+  background: white;
+  padding: 0.875rem 1rem;
+}
+
+.vna-itinerary-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.625rem;
+}
+
+.vna-itinerary-dir {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.vna-itinerary-date {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.vna-itinerary-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.vna-itinerary-end {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.vna-itinerary-end-right {
+  text-align: right;
+}
+
+.vna-itinerary-time {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.vna-itinerary-code {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-teal);
+}
+
+.vna-itinerary-city {
+  font-size: 0.6875rem;
+  color: var(--color-muted-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vna-itinerary-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.vna-itinerary-duration,
+.vna-itinerary-stops {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.vna-itinerary-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 1px;
+  background: rgb(228 236 239);
+}
+
+.vna-itinerary-dot,
+.vna-itinerary-stopdot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--color-teal);
+}
+
+.vna-itinerary-stopdot {
+  background: var(--color-gold);
+}
+
+.vna-itinerary-segments {
+  margin: 0.75rem 0 0;
+  padding: 0.625rem 0 0;
+  list-style: none;
+  border-top: 1px dashed rgb(228 236 239);
+  display: grid;
+  gap: 0.3rem;
+}
+
+.vna-itinerary-segments li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.vna-segment-flight {
+  font-weight: 700;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.vna-segment-leg {
+  flex: 1;
+  min-width: 0;
+}
+
+.vna-segment-duration {
+  font-variant-numeric: tabular-nums;
+}
+
+.vna-schedule-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.6875rem;
+  color: var(--color-muted-2);
+}
+
+/* --- fare grid ----------------------------------------------------------- */
+
+.vna-fare-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.vna-fare-cabin-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted-2);
+}
+
+.vna-fare-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.75rem;
+}
+
+.vna-fare {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.875rem;
+  border: 1px solid rgb(228 236 239 / 0.95);
+  border-radius: 0.875rem;
+  background: white;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.vna-fare:hover {
+  border-color: rgb(0 104 133 / 0.3);
+}
+
+.vna-fare-selected {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 2px rgb(0 104 133 / 0.14);
+}
+
+.vna-fare-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem;
+}
+
+.vna-fare-brand {
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.vna-fare-flag {
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  background: rgb(196 154 60 / 0.14);
+  color: var(--color-gold);
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.vna-fare-price {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.vna-fare-amount {
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.vna-fare-unit {
+  font-size: 0.625rem;
+  color: var(--color-muted-2);
+}
+
+.vna-fare-total {
+  margin: -0.25rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.vna-fare-perks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.vna-fare-perks li {
+  position: relative;
+  padding-left: 0.9rem;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+.vna-fare-perks li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.42rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: var(--color-teal);
+}
+
+.vna-fare-seats {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--color-warn);
+}
+
+.vna-fare-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-teal);
+  border-radius: 999px;
+  background: white;
+  color: var(--color-teal);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.vna-fare-select:hover:not(:disabled) {
+  background: rgb(0 104 133 / 0.08);
+}
+
+.vna-fare-select-on {
+  background: var(--color-teal);
+  color: white;
+}
+
+.vna-fare-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vna-fare-rules-toggle {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-muted-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.vna-fare-rules-toggle:hover {
+  color: var(--color-teal);
+}
+
+.vna-fare-rules {
+  margin: 0;
+  padding: 0.625rem 0 0;
+  border-top: 1px dashed rgb(228 236 239);
+  display: grid;
+  gap: 0.375rem;
+}
+
+.vna-fare-rule {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.vna-fare-rule dt {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted-2);
+}
+
+.vna-fare-rule dd {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.6875rem;
+  color: var(--color-ink);
+}
+
+.vna-fare-rule-flag {
+  padding: 0.05rem 0.3rem;
+  border-radius: 999px;
+  background: rgb(196 154 60 / 0.14);
+  color: var(--color-gold);
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: help;
+}
+
+.vna-fare-rule-flag-real {
+  background: rgb(0 104 133 / 0.12);
+  color: var(--color-teal);
+}
+
+/* --- selected fare summary ----------------------------------------------- */
+
+.vna-selected {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-teal);
+  border-radius: 1rem;
+  background: rgb(0 104 133 / 0.04);
+}
+
+.vna-selected-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.vna-selected-eyebrow {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+}
+
+.vna-selected-title {
+  margin: 0.2rem 0 0;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.vna-selected-sub {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.vna-selected-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.vna-selected-total {
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.vna-selected-unit {
+  font-size: 0.625rem;
+  color: var(--color-muted-2);
+}
+
+.vna-selected-rules {
+  margin: 0.875rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.625rem;
+}
+
+.vna-selected-rules dt {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted-2);
+}
+
+.vna-selected-rules dd {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.vna-selected-actions {
+  margin-top: 0.875rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.vna-selected-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-teal);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.vna-selected-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.625rem;
+  line-height: 1.5;
+  color: var(--color-muted-2);
+}
+
+/* --- running total ------------------------------------------------------- */
+
+.vna-summary-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.875rem 1rem;
+  border: 1px solid rgb(228 236 239 / 0.95);
+  border-radius: 1rem;
+  background: rgb(255 255 255 / 0.97);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -4px 16px rgb(15 40 50 / 0.06);
+}
+
+.vna-summary-label {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.vna-summary-total {
+  margin: 0.1rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.vna-offer {
+  border: 1px solid rgb(196 154 60 / 0.4);
+  border-radius: 0.875rem;
+  background: rgb(196 154 60 / 0.06);
+  padding: 0.875rem 1rem;
+}
+
+/* --- misc centre-panel blocks -------------------------------------------- */
+
+.disc-empty-hints ul,
+.disc-ruledout,
+.disc-season-caveats {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.disc-season-caveats {
+  margin-bottom: 1rem;
+}
+
+/* --- chat additions ------------------------------------------------------ */
+
+.agent-chat-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.agent-chat-reset {
+  flex-shrink: 0;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid rgb(228 236 239 / 0.95);
+  border-radius: 999px;
+  background: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--color-muted-2);
+  cursor: pointer;
+}
+
+.agent-chat-reset:hover:not(:disabled) {
+  border-color: var(--color-teal);
+  color: var(--color-teal);
+}
+
+.agent-chat-reset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.agent-chat-bubble-error {
+  border-color: rgb(200 60 60 / 0.35) !important;
+  background: rgb(200 60 60 / 0.06) !important;
+}
+
+.agent-chat-sources {
+  margin-top: 0.375rem;
+  padding: 0.5rem 0.625rem;
+  border-left: 2px solid rgb(0 104 133 / 0.25);
+  background: rgb(0 104 133 / 0.04);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.agent-chat-sources-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+}
+
+.agent-chat-sources ul {
+  margin: 0;
+  padding-left: 0.9rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.agent-chat-sources li {
+  font-size: 0.6875rem;
+  line-height: 1.4;
+}
+
+.agent-chat-sources a {
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.agent-chat-sources a:hover {
+  color: var(--color-teal);
+}
+
+/* --- trip panel additions ------------------------------------------------ */
+
+.trip-panel-stage {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgb(0 104 133 / 0.1);
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+}
+
+.trip-panel-fare {
+  border: 1px solid var(--color-teal);
+  border-radius: 0.75rem;
+  background: rgb(0 104 133 / 0.05);
+  padding: 0.75rem 0.875rem;
+}
+
+.trip-panel-fare-brand {
+  margin: 0.2rem 0 0;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+
+.trip-panel-fare-cabin {
+  margin: 0;
+  font-size: 0.6875rem;
+  color: var(--color-muted-2);
+}
+
+.trip-panel-fare-total {
+  margin: 0.4rem 0 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.trip-panel-fare-total span {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-muted-2);
+}
+
+.trip-panel-fare-bag {
+  margin: 0.25rem 0 0;
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.trip-panel-meta {
+  margin: 0.75rem 0 0;
+  font-size: 0.5625rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted-2);
+}
+
+@media (max-width: 900px) {
+  .vna-itinerary-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    text-align: left;
+  }
+
+  .vna-itinerary-end-right {
+    text-align: left;
+  }
+
+  .vna-itinerary-mid {
+    align-items: flex-start;
+  }
+}
+
+.agent-chat-sources-fare {
+  border-left-color: rgb(196 154 60 / 0.45);
+  background: rgb(196 154 60 / 0.06);
+}
+
+.agent-chat-sources-fare .agent-chat-sources-label {
+  margin: 0;
+  color: var(--color-gold);
+}

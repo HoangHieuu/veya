@@ -40,6 +40,14 @@ const memberDemoProfile = z.enum([
   "lotusmiles_member",
   "lotustudents_verified",
 ]);
+const fareBrandId = z.enum([
+  "economy_lite",
+  "economy_classic",
+  "economy_flex",
+  "premium_economy",
+  "business_classic",
+  "business_flex",
+]);
 const monthName = z.enum([
   "January",
   "February",
@@ -205,6 +213,7 @@ export const tripSummarySchema = z
     departDate: isoDate,
     returnDate: isoDate,
     hotelInterest: z.boolean(),
+    fareBrandId,
     memberProfile: memberDemoProfile,
   })
   .partial({
@@ -218,6 +227,7 @@ export const tripSummarySchema = z
     departDate: true,
     returnDate: true,
     hotelInterest: true,
+    fareBrandId: true,
   })
   .strict()
   .superRefine((trip, context) => {
@@ -231,6 +241,7 @@ export const tripSummarySchema = z
   });
 
 export const agentInputEventSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("open_workspace") }).strict(),
   z.object({ type: z.literal("select_origin"), originCity }).strict(),
   z.object({ type: z.literal("select_vibe"), travelStyle }).strict(),
   z
@@ -262,6 +273,7 @@ export const agentInputEventSchema = z.discriminatedUnion("type", [
         });
       }
     }),
+  z.object({ type: z.literal("select_fare"), fareBrandId }).strict(),
   z.object({ type: z.literal("continue_booking") }).strict(),
   z.object({ type: z.literal("view_policy"), policyId: nonBlankString }).strict(),
   z.object({ type: z.literal("close_policy") }).strict(),
@@ -292,6 +304,7 @@ export const agentTurnRequestSchema: z.ZodType<AgentTurnRequest> = z
 export const policyAskRequestSchema = z
   .object({
     question: nonBlankString.max(500),
+    trip: tripSummarySchema.optional(),
   })
   .strict();
 

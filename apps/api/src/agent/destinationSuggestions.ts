@@ -6,7 +6,8 @@ import type {
 import type { AgentDataSnapshot, DestinationSuggestionRecord } from "./data.js";
 
 export interface DestinationSuggestionInput {
-  originCity: OriginCity;
+  /** Omit to show every curated destination as inspiration before an origin is known. */
+  originCity?: OriginCity;
   travelStyle?: TravelStyle;
   limit?: number;
 }
@@ -61,8 +62,9 @@ export function canonicalStyle(tag: string): TravelStyle | undefined {
 
 function supportsOrigin(
   suggestion: DestinationSuggestionRecord,
-  origin: OriginCity,
+  origin: OriginCity | undefined,
 ): boolean {
+  if (!origin) return true;
   return !suggestion.supportedOrigins || suggestion.supportedOrigins.includes(origin);
 }
 

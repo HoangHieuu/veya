@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import type { PriorityPreset, RankedCard, RecommendRequest } from "@shared/types";
+import type {
+  AgentTurnResponse,
+  PriorityPreset,
+  RankedCard,
+  RecommendRequest,
+} from "@shared/types";
 import { ApiClientError, recommend, saveTrip } from "./api/client";
 import { Header, type AppStep } from "./components/layout/Header";
 import { Toast } from "./components/ui/Toast";
@@ -9,7 +14,6 @@ import {
   WIZARD_STEPS,
   type TripWizardState,
 } from "./lib/wizard";
-import type { AgentCanvasState } from "./lib/agentTypes";
 import { HandoffScreen } from "./screens/HandoffScreen";
 import { AgentProfileScreen } from "./screens/AgentProfileScreen";
 import { AgentScreen } from "./screens/AgentScreen";
@@ -90,12 +94,15 @@ export default function App() {
     }));
   }
 
-  function handleAgentHandoff(card: RankedCard, canvas: AgentCanvasState) {
+  function handleAgentHandoff(card: RankedCard, turn: AgentTurnResponse) {
+    if (turn.centerContent.kind !== "booking") return;
     setState((s) => ({
       ...s,
       step: "handoff",
       selectedRouteId: card.routeId,
-      response: canvas.response,
+      response: turn.centerContent.kind === "booking"
+        ? turn.centerContent.recommendation
+        : s.response,
       status: "success",
       errorMessage: undefined,
     }));

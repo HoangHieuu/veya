@@ -4,14 +4,18 @@ import type { AppDependencies } from "../app.js";
 import {
   type AgentCenterContent,
   type AgentInputEvent,
+  type AgentMessageIntent,
   type AgentTurnRequest,
   type AgentTurnResponse,
   type DestinationSuggestion,
   type DiscoveryMode,
   type DiscoveryStage,
+  type FareOption,
+  type FlightItineraryView,
   type LocalityResolution,
   type MonthName,
   type NextTripField,
+  type PolicyAnswer,
   type PolicyOverlayId,
   type TripIntent,
   type TripSummary,
@@ -24,8 +28,11 @@ import {
   tripIntentSchema,
 } from "../validation.js";
 import { requireDataset, recommendFromIntent } from "../routes/recommend.js";
+import type { TripPatch } from "../intent/messageUnderstanding.js";
 import { buildAgentCanvasState } from "./canvasState.js";
 import { buildDestinationSuggestions } from "./destinationSuggestions.js";
+import { buildFareOptions, buildItineraries, findFareOption } from "./fareOptions.js";
+import { answerPolicyQuestion } from "./policyRag.js";
 import { resolveLocalityGateway } from "./localityResolution.js";
 import { buildOfferQuote } from "./offerQuote.js";
 import { buildSeasonNote } from "./seasonNote.js";
@@ -64,7 +71,7 @@ async function executeAgentTurn(
       nextField: "originCity",
       agentMessage: "Your trip has been reset. Where will you fly from?",
       stage: "pick_origin",
-      centerContent: { kind: "empty" },
+      centerContent: inspirationContent(dependencies),
       policyOverlay: null,
       meta: baseMeta(dependencies, requestNow, false, []),
     };
@@ -88,19 +95,52 @@ async function executeAgentTurn(
     input,
     dependencies,
     session.discoveryMode === undefined,
+    requestNow,
   );
+
+  if (result.requestReset) {
+    resetSession(session, requestNow, dependencies);
+    return {
+      sessionId: session.id,
+      discoveryMode: "discovery",
+      tripPatch: { memberProfile: currentTrip.memberProfile },
+      resetTrip: true,
+      nextField: "originCity",
+      agentMessage: "Starting fresh. Where will you fly from — Sydney, Melbourne or Perth?",
+      stage: "pick_origin",
+      centerContent: inspirationContent(dependencies),
+      policyOverlay: null,
+      messageIntent: "reset",
+      meta: baseMeta(dependencies, requestNow, false, []),
+    };
+  }
+
   const nextTrip = enrichTripFromData(result.trip, dependencies);
+  const touched = diffTrip(currentTrip, nextTrip);
+  const routeChanged = touched.some((field) =>
+    [
+      "originCity",
+      "travelStyle",
+      "destinationLocalityId",
+      "gateway",
+      "travellers",
+      "departMonth",
+      "departDate",
+      "returnDate",
+    ].includes(field),
+  );
+  // A different route prices differently, so the chosen brand no longer applies.
+  // Party size is not part of that: it only re-totals the same per-adult fare,
+  // so the traveller keeps their selection.
+  const farePriceInvalidated = touched.some((field) =>
+    ["originCity", "gateway", "destinationLocalityId", "departDate", "returnDate"].includes(
+      field,
+    ),
+  );
+  if (farePriceInvalidated && nextTrip.fareBrandId) delete nextTrip.fareBrandId;
+
   const changedFields = diffTrip(currentTrip, nextTrip);
-  if (changedFields.some((field) => [
-    "originCity",
-    "travelStyle",
-    "destinationLocalityId",
-    "gateway",
-    "travellers",
-    "departMonth",
-    "departDate",
-    "returnDate",
-  ].includes(field))) {
+  if (routeChanged) {
     session.offer = undefined;
     session.bookingRequestId = undefined;
     session.bookingGeneratedAt = undefined;
@@ -182,10 +222,18 @@ async function executeAgentTurn(
   let offer = session.offer;
   let bookingRequestId: string | undefined;
   let bookingGeneratedAt: string | undefined;
+  let fareOptions: FareOption[] = [];
+  let itineraries: FlightItineraryView[] = [];
+  let selectedFare: FareOption | undefined;
   const sourceFields = [...(locality?.sourceFields ?? [])];
 
   if (stage === "pick_origin") {
-    centerContent = { kind: "empty" };
+    centerContent = inspirationContent(dependencies, nextTrip.travelStyle);
+    if (centerContent.kind === "destination_grid") {
+      sourceFields.push(
+        ...centerContent.suggestions.flatMap((suggestion) => suggestion.sourceFields),
+      );
+    }
   } else if (stage === "suggested_destinations") {
     if (!nextTrip.originCity) {
       centerContent = { kind: "empty" };
@@ -199,8 +247,13 @@ async function executeAgentTurn(
       sourceFields.push(...suggestions.flatMap((suggestion) => suggestion.sourceFields));
     }
   } else if (stage === "destination_detail") {
-    const suggestion = getSelectedSuggestion(nextTrip, dependencies);
-    const resolved = locality ?? resolveFromSuggestion(suggestion);
+    // A destination typed in chat ("Ninh Binh", "Hoi An") will not be in the
+    // curated suggestion grid. As long as we resolved a gateway for it, render
+    // it from the trip itself rather than failing the turn.
+    const suggestion =
+      getSelectedSuggestion(nextTrip, dependencies) ?? suggestionFromTrip(nextTrip);
+    const resolved =
+      locality ?? resolveFromSuggestion(suggestion) ?? localityFromTrip(nextTrip);
     if (!suggestion || !resolved) {
       requireCapability(dependencies, "destinations");
       throw httpError(
@@ -286,7 +339,32 @@ async function executeAgentTurn(
       ),
       agentMessage,
     });
-    centerContent = { kind: "booking", recommendation, canvas };
+    const card = recommendation.cards[0];
+    fareOptions = card
+      ? buildFareOptions({ card, trip: nextTrip, data: dependencies.agentData })
+      : [];
+    itineraries = card ? buildItineraries(card, nextTrip) : [];
+    selectedFare = findFareOption(fareOptions, nextTrip.fareBrandId);
+    // A brand that no longer exists in the grid must not linger on the trip.
+    if (nextTrip.fareBrandId && !selectedFare) delete nextTrip.fareBrandId;
+    centerContent = {
+      kind: "booking",
+      recommendation,
+      canvas,
+      fareOptions,
+      itineraries,
+      ...(selectedFare
+        ? {
+            selectedFare: {
+              fare: structuredClone(selectedFare),
+              travellers: nextTrip.travellers ?? 1,
+              totalAud: selectedFare.totalAud,
+              selectedAt: requestNow.toISOString(),
+            },
+          }
+        : {}),
+    };
+    sourceFields.push(...fareOptions.flatMap((option) => option.sourceFields));
     sourceFields.push(...recommendation.cards.flatMap((card) => [
       card.route.sourceDocument,
       "route.id",
@@ -296,6 +374,31 @@ async function executeAgentTurn(
       "route.gettingAround",
     ]));
     if (offer) sourceFields.push(...offer.sourceFields);
+  }
+
+  let policyAnswer: PolicyAnswer | undefined;
+  let finalMessage = agentMessage;
+
+  if (result.policyQuestion) {
+    policyAnswer = await resolvePolicyAnswer(
+      result.policyQuestion,
+      nextTrip,
+      centerContent,
+      dependencies,
+    );
+    finalMessage = policyAnswer.answered
+      ? policyAnswer.answer
+      : policyAnswer.lookupFailed
+        ? "My policy lookup did not respond just then, so I have not answered rather than guess. Ask me again in a moment."
+        : "I could not find that in the Vietnam Airlines policy pages I have indexed, so I would rather not guess. Try rephrasing, or check vietnamairlines.com for the exact rule.";
+  } else if (result.messageIntent === "select_fare" && selectedFare) {
+    finalMessage = `${selectedFare.brandLabel} it is — A$${formatAud(selectedFare.totalAud)} total for ${nextTrip.travellers ?? 1} adult${(nextTrip.travellers ?? 1) > 1 ? "s" : ""}, ${selectedFare.checkedBaggage} checked. Ask me about its baggage or change rules any time.`;
+  } else if (result.messageIntent === "smalltalk" && stage !== "booking") {
+    finalMessage = `Hi! Tell me about your Vietnam trip and I will build it in the centre panel. ${agentMessage}`;
+  } else if (result.messageIntent === "unknown") {
+    finalMessage = `I did not catch a trip detail in that. ${agentMessage}`;
+  } else if (result.messageIntent === "change_trip" && changedFields.length > 0) {
+    finalMessage = `${describeChanges(changedFields, nextTrip)} ${agentMessage}`;
   }
 
   if (result.policyId && !policySnippet) {
@@ -334,12 +437,14 @@ async function executeAgentTurn(
     }, {}),
     resetTrip: false,
     nextField,
-    agentMessage,
+    agentMessage: finalMessage,
     stage,
     centerContent,
     ...(centerContent.kind === "booking" ? { canvas: centerContent.canvas } : {}),
     ...(result.policyId ? { policyOverlay: result.policyId } : input.event?.type === "close_policy" ? { policyOverlay: null } : {}),
     ...(policySnippet ? { policySnippet } : {}),
+    ...(policyAnswer ? { policyAnswer } : {}),
+    ...(result.messageIntent ? { messageIntent: result.messageIntent } : {}),
     meta: baseMeta(dependencies, requestNow, usedIllustrativeData, sourceFields),
   };
 }
@@ -349,6 +454,10 @@ interface AppliedInput {
   mode?: DiscoveryMode;
   policyOnly: boolean;
   policyId?: PolicyOverlayId;
+  /** Free-text policy question to answer from the corpus after the trip resolves. */
+  policyQuestion?: string;
+  messageIntent?: AgentMessageIntent;
+  requestReset?: boolean;
 }
 
 async function applyInput(
@@ -356,6 +465,7 @@ async function applyInput(
   input: AgentTurnRequest,
   dependencies: AppDependencies,
   shouldClassifyMode: boolean,
+  now: Date,
 ): Promise<AppliedInput> {
   if (input.event) {
     if (input.event.type === "view_policy") {
@@ -364,28 +474,65 @@ async function applyInput(
     if (input.event.type === "close_policy") {
       return { trip: current, policyOnly: true };
     }
+    if (input.event.type === "open_workspace") {
+      // Pure render request: never advances the journey or resolves a mode.
+      return { trip: current, policyOnly: false };
+    }
     return {
       trip: applyEvent(current, input.event, dependencies),
       mode: "discovery",
       policyOnly: false,
+      messageIntent: input.event.type === "select_fare" ? "select_fare" : undefined,
     };
   }
 
   const message = input.message?.trim() ?? "";
+
+  // Keyword overlays stay ahead of the corpus: they open a specific curated
+  // panel ("offer terms") rather than answering in prose.
   const policyId = dependencies.agentIntent.classifyPolicyIntent(message);
   if (policyId) {
-    return { trip: current, policyOnly: true, policyId };
+    return {
+      trip: current,
+      policyOnly: true,
+      policyId,
+      messageIntent: "policy_question",
+    };
   }
-  let candidate: Partial<TripSummary>;
+
+  let understood;
   try {
-    candidate = await dependencies.agentIntent.patchTripSummary(message, current);
+    understood = await dependencies.agentIntent.understandMessage(message, current, {
+      now,
+      apiKey: process.env.OPENAI_API_KEY?.trim(),
+    });
   } catch (error) {
     throw mapIntentDependencyError(error, "The intent patcher failed unexpectedly.");
   }
-  const nextTrip = canonicalizeTrip({ ...current, ...candidate });
+
+  if (understood.intent === "reset") {
+    return { trip: current, policyOnly: false, requestReset: true, messageIntent: "reset" };
+  }
+
+  if (understood.intent === "policy_question") {
+    return {
+      trip: current,
+      policyOnly: true,
+      policyQuestion: understood.policyQuestion ?? message,
+      messageIntent: "policy_question",
+    };
+  }
+
+  const nextTrip = canonicalizeTrip(applyTripPatch(current, understood.patch));
+
   let mode: DiscoveryMode | undefined;
+  const messageChangedRoute =
+    understood.intent === "change_trip" ||
+    understood.patch.gateway !== undefined ||
+    understood.patch.destinationLocalityId !== undefined;
   if (
     shouldClassifyMode ||
+    messageChangedRoute ||
     dependencies.agentIntent.shouldClassifyDiscoveryMode?.(message, current)
   ) {
     try {
@@ -401,7 +548,29 @@ async function applyInput(
     trip: nextTrip,
     mode,
     policyOnly: false,
+    messageIntent: understood.intent,
   };
+}
+
+/**
+ * Merge a patch onto the trip. `null` deletes the field, which is how a
+ * correction ("actually, not Da Nang") unwinds an earlier answer; `undefined`
+ * or an absent key leaves the current value alone.
+ */
+export function applyTripPatch(
+  current: TripSummary,
+  patch: TripPatch,
+): TripSummary {
+  const next = structuredClone(current) as unknown as Record<string, unknown>;
+  for (const [field, value] of Object.entries(patch)) {
+    if (value === undefined) continue;
+    if (value === null) {
+      delete next[field];
+      continue;
+    }
+    next[field] = value;
+  }
+  return next as unknown as TripSummary;
 }
 
 function applyEvent(
@@ -455,6 +624,10 @@ function applyEvent(
       next.returnDate = event.returnDate;
       next.departMonth = monthNameFromIso(event.departDate);
       return next;
+    case "select_fare":
+      next.fareBrandId = event.fareBrandId;
+      return next;
+    case "open_workspace":
     case "continue_booking":
     case "view_policy":
     case "close_policy":
@@ -481,9 +654,9 @@ function chooseStage(input: {
   if (!input.trip.departMonth && !input.trip.departDate) {
     return "destination_detail";
   }
-  if (input.previousStage === "booking" && input.seasonAcknowledged && !input.continueBooking) {
-    return "booking";
-  }
+  // Once the traveller has reached booking, a later correction re-prices in
+  // place instead of demoting them back through the season step.
+  if (input.previousStage === "booking") return "booking";
   if (!input.continueBooking) return "season";
   return "booking";
 }
@@ -614,6 +787,34 @@ function getSelectedSuggestion(
     : undefined;
 }
 
+/**
+ * Minimal suggestion card for a destination the traveller named in chat that
+ * B's curated grid does not cover. Carries no editorial copy it cannot source.
+ */
+function suggestionFromTrip(trip: TripSummary): DestinationSuggestion | undefined {
+  if (!trip.destinationLocalityId || !trip.gateway) return undefined;
+  const title = trip.destinationTitle ?? trip.destinationLocalityId;
+  return {
+    localityId: trip.destinationLocalityId,
+    title,
+    gateway: trip.gateway,
+    summary: `You named ${title}. Vietnam Airlines flies into ${GATEWAY_LABEL[trip.gateway] ?? trip.gateway} for this area.`,
+    tags: [],
+    sourceFields: ["trip.destinationLocalityId", "trip.gateway"],
+  };
+}
+
+function localityFromTrip(trip: TripSummary): LocalityResolution | undefined {
+  if (!trip.destinationLocalityId || !trip.gateway) return undefined;
+  return {
+    localityId: trip.destinationLocalityId,
+    localityTitle: trip.destinationTitle ?? trip.destinationLocalityId,
+    gateway: trip.gateway,
+    ruledOut: [],
+    sourceFields: ["trip.destinationLocalityId", "trip.gateway"],
+  };
+}
+
 function resolveFromSuggestion(
   suggestion: DestinationSuggestion | undefined,
 ): LocalityResolution | undefined {
@@ -631,6 +832,126 @@ function resolveFromSuggestion(
     onwardNote: suggestion.onwardNote,
     sourceFields: [...suggestion.sourceFields, "suggestion.gateway"],
   };
+}
+
+/**
+ * Opening the workspace to a blank panel gives the traveller nothing to react
+ * to, so the origin step shows the curated destinations as inspiration. With no
+ * origin yet they are unfiltered; naming a city re-filters them next turn.
+ */
+function inspirationContent(
+  dependencies: AppDependencies,
+  travelStyle?: TripSummary["travelStyle"],
+): AgentCenterContent {
+  if (dependencies.agentData.capabilities.destinations !== "ready") {
+    return { kind: "empty" };
+  }
+  return {
+    kind: "destination_grid",
+    suggestions: buildDestinationSuggestions({ travelStyle, limit: 6 }, dependencies.agentData),
+  };
+}
+
+const GATEWAY_LABEL: Record<string, string> = {
+  HAN: "Hanoi",
+  SGN: "Ho Chi Minh City",
+  DAD: "Da Nang",
+};
+
+/**
+ * Answer a free-text policy question from the scraped corpus, scoped to this
+ * traveller's route and selected fare. Never invents an answer: when nothing
+ * clears the relevance threshold the caller says so explicitly.
+ */
+async function resolvePolicyAnswer(
+  question: string,
+  trip: TripSummary,
+  centerContent: AgentCenterContent,
+  dependencies: AppDependencies,
+): Promise<PolicyAnswer> {
+  const selectedFare =
+    centerContent.kind === "booking" ? centerContent.selectedFare?.fare : undefined;
+  const routeLabel =
+    trip.originCity && trip.gateway
+      ? `${trip.originCity} → ${trip.gateway} (${GATEWAY_LABEL[trip.gateway] ?? trip.gateway})`
+      : undefined;
+
+  let result;
+  let lookupFailed = false;
+  try {
+    result = await answerPolicyQuestion(
+      question,
+      process.env.OPENAI_API_KEY?.trim(),
+      { trip, selectedFare, routeLabel },
+    );
+  } catch (error) {
+    // A transient provider error is not the same as "the corpus has no answer",
+    // and telling the traveller it is not covered would be wrong. Log it —
+    // swallowing this silently made the failure impossible to diagnose.
+    console.error("[policy] lookup failed:", error);
+    lookupFailed = true;
+  }
+
+  if (!result) {
+    return {
+      answer: "",
+      grounded: false,
+      answered: false,
+      lookupFailed,
+      sources: [],
+      ...(selectedFare ? { appliedFareBrandId: selectedFare.brandId } : {}),
+    };
+  }
+  return {
+    answer: result.answer,
+    grounded: result.grounded,
+    answered: true,
+    sources: result.sources,
+    ...(selectedFare ? { appliedFareBrandId: selectedFare.brandId } : {}),
+  };
+}
+
+const CHANGE_LABELS: Partial<Record<keyof TripSummary, string>> = {
+  originCity: "departure",
+  gateway: "arrival gateway",
+  destinationTitle: "destination",
+  travellers: "travellers",
+  departDate: "departure date",
+  returnDate: "return date",
+  travelStyle: "trip style",
+  fareBrandId: "fare",
+};
+
+/** Short "updated X to Y" line so a correction is visibly acknowledged. */
+function describeChanges(
+  changedFields: (keyof TripSummary)[],
+  trip: TripSummary,
+): string {
+  const destinationEqualsGateway =
+    trip.gateway !== undefined &&
+    trip.destinationTitle?.toLowerCase() ===
+      (GATEWAY_LABEL[trip.gateway] ?? trip.gateway).toLowerCase();
+  const described = changedFields
+    .filter((field) => field in CHANGE_LABELS && trip[field] !== undefined)
+    .filter((field) => !(field === "gateway" && destinationEqualsGateway))
+    .slice(0, 3)
+    .map((field) => {
+      const value = trip[field];
+      const rendered =
+        field === "gateway"
+          ? `${GATEWAY_LABEL[String(value)] ?? String(value)} (${String(value)})`
+          : String(value).replace(/_/g, " ");
+      return `${CHANGE_LABELS[field]} → ${rendered}`;
+    });
+  if (described.length === 0) return "Updated.";
+  return `Updated ${described.join(", ")}.`;
+}
+
+function formatAud(value: number): string {
+  return value.toLocaleString("en-AU", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
 }
 
 function getPolicySnippet(
@@ -704,6 +1025,7 @@ function diffTrip(current: TripSummary, next: TripSummary): (keyof TripSummary)[
     "departDate",
     "returnDate",
     "hotelInterest",
+    "fareBrandId",
     "memberProfile",
   ];
   return fields.filter((field) => JSON.stringify(current[field]) !== JSON.stringify(next[field]));

@@ -41,7 +41,9 @@ export function registerAgentRoutes(
     }
 
     const apiKey = process.env.OPENAI_API_KEY?.trim();
-    const result = await answerPolicyQuestion(parsed.data.question, apiKey);
+    const result = await answerPolicyQuestion(parsed.data.question, apiKey, {
+      trip: parsed.data.trip,
+    });
     if (!result) {
       response.status(200).json({
         answered: false,

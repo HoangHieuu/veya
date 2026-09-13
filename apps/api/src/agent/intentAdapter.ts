@@ -9,8 +9,14 @@ import type {
   TripSummary,
 } from "../../../../shared/types.js";
 import {
+  understandMessage as cUnderstandMessage,
+  type UnderstandOptions,
+  type UnderstoodMessage,
+} from "../intent/messageUnderstanding.js";
+import {
   buildAgentAck as cBuildAgentAck,
 } from "../intent/agentAckTemplates.js";
+import { finalizeTripIntent as cFinalizeTripIntent } from "../intent/finalizeTripIntent.js";
 import {
   classifyDiscoveryMode as cClassifyDiscoveryMode,
 } from "../intent/discoveryMode.js";
@@ -22,6 +28,12 @@ import {
 } from "../intent/tripOrchestration.js";
 
 export interface AgentIntentDependencies {
+  /** Free-text turn -> intent + trip patch (null clears a field). */
+  understandMessage(
+    message: string,
+    current: TripSummary,
+    options: UnderstandOptions,
+  ): Promise<UnderstoodMessage>;
   patchTripSummary(
     message: string,
     current: TripSummary,
@@ -46,6 +58,9 @@ export interface AgentIntentDependencies {
 /** Temporary boundary adapter until C removes its local Round 2 type mirrors. */
 export function createDefaultAgentIntentDependencies(): AgentIntentDependencies {
   return {
+    understandMessage(message, current, options) {
+      return cUnderstandMessage(message, current, options);
+    },
     patchTripSummary(message, current) {
       return cPatchTripSummary(
         message,
@@ -68,6 +83,7 @@ export function createDefaultAgentIntentDependencies(): AgentIntentDependencies 
       );
       return normalizeNextField(cField, trip);
     },
+    finalizeTripIntent: cFinalizeTripIntent,
     classifyPolicyIntent: cClassifyPolicyIntent,
     buildAgentAck(actionType, vars) {
       return cBuildAgentAck(actionType as Parameters<typeof cBuildAgentAck>[0], vars);
@@ -103,6 +119,7 @@ function nextBookingField(trip: TripSummary): NextTripField {
   if (trip.travellers === undefined) return "travellers";
   if (!trip.departDate) return "departDate";
   if (!trip.returnDate) return "returnDate";
+  if (!trip.fareBrandId) return "fareBrand";
   return null;
 }
 
@@ -126,9 +143,17 @@ function buildDefaultNextFieldPrompt(input: {
       return "What is your return date? Please use YYYY-MM-DD.";
     case "departMonth":
       return "When would you roughly like to travel?";
+    case "fareBrand":
+      return input.stage === "booking"
+        ? "Pick a fare in the centre — Lite, Classic, Flex, Premium Economy or Business. I can explain the baggage and change rules for any of them."
+        : input.stage === "season"
+          ? "Have a look at the seasonal note, then continue when you want to see fares."
+          : "Your trip is complete — continue when you want to see fares.";
     case null:
       return input.stage === "season"
         ? "Review the seasonal note, then continue when you are ready to book."
-        : "Your trip details are ready for the next step.";
+        : input.stage === "booking"
+          ? "Your fare is locked in — review it in the centre, then continue on Vietnam Airlines."
+          : "Your trip details are ready for the next step.";
   }
 }

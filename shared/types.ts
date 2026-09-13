@@ -200,6 +200,19 @@ export type MemberDemoProfile =
 
 export type DiscoveryMode = "discovery" | "route_known";
 
+/**
+ * What a free-text chat turn is asking for. Drives whether the orchestrator
+ * patches the trip, answers from the policy corpus, or resets the journey.
+ */
+export type AgentMessageIntent =
+  | "update_trip"
+  | "change_trip"
+  | "select_fare"
+  | "policy_question"
+  | "reset"
+  | "smalltalk"
+  | "unknown";
+
 export type DiscoveryStage =
   | "pick_origin"
   | "suggested_destinations"
@@ -216,7 +229,90 @@ export type NextTripField =
   | "departDate"
   | "returnDate"
   | "departMonth"
+  | "fareBrand"
   | null;
+
+export type CabinClass = "economy" | "premium_economy" | "business";
+
+/**
+ * Vietnam Airlines branded fare families as presented on the public booking
+ * availability grid. Definitions live in data/offers/fare-families.json.
+ */
+export type FareBrandId =
+  | "economy_lite"
+  | "economy_classic"
+  | "economy_flex"
+  | "premium_economy"
+  | "business_classic"
+  | "business_flex";
+
+export interface FareRuleLine {
+  label: string;
+  value: string;
+  /** Where this specific line came from — corpus chunk id or data file field. */
+  source: string;
+  /** True when the value is a demo approximation rather than a scraped VNA rule. */
+  illustrative: boolean;
+}
+
+export interface FareOption {
+  brandId: FareBrandId;
+  cabin: CabinClass;
+  /** Display name, e.g. "Economy Classic". */
+  brandLabel: string;
+  cabinLabel: string;
+  /** Round-trip price per traveller, AUD. */
+  pricePerAdultAud: number;
+  /** pricePerAdultAud × travellers. */
+  totalAud: number;
+  currency: "AUD";
+  /** Cheapest option in the returned set. */
+  lowest: boolean;
+  /** Short selling points for the fare column. */
+  perks: string[];
+  rules: FareRuleLine[];
+  checkedBaggage: string;
+  handBaggage: string;
+  changePolicy: string;
+  refundPolicy: string;
+  milesEarnPct: number;
+  /** Seats left — demo scarcity cue only. */
+  seatsRemaining?: number;
+  illustrative: true;
+  sourceFields: string[];
+}
+
+export interface FlightSegmentView {
+  flightNumber: string;
+  departAirport: string;
+  arriveAirport: string;
+  departTime: string;
+  arriveTime: string;
+  durationLabel: string;
+  aircraft?: string;
+}
+
+export interface FlightItineraryView {
+  direction: "outbound" | "inbound";
+  date: string;
+  originAirport: string;
+  destinationAirport: string;
+  departTime: string;
+  arriveTime: string;
+  durationLabel: string;
+  connectionType: ConnectionType;
+  viaHub?: DestinationCity | null;
+  stopsLabel: string;
+  segments: FlightSegmentView[];
+  illustrative: true;
+}
+
+export interface FareSelectionSummary {
+  fare: FareOption;
+  travellers: number;
+  totalAud: number;
+  selectedAt: string;
+}
 
 export type MonthName =
   | "January"
@@ -249,10 +345,14 @@ export interface TripSummary {
   departDate?: string;
   returnDate?: string;
   hotelInterest?: boolean;
+  /** Branded fare the traveller picked on the booking grid; survives later turns. */
+  fareBrandId?: FareBrandId;
   memberProfile: MemberDemoProfile;
 }
 
 export type AgentInputEvent =
+  /** First render: fetch the centre panel for the trip the client already holds. */
+  | { type: "open_workspace" }
   | { type: "select_origin"; originCity: OriginCity }
   | { type: "select_vibe"; travelStyle: TravelStyle }
   | {
@@ -262,6 +362,7 @@ export type AgentInputEvent =
     }
   | { type: "set_travellers"; travellers: number }
   | { type: "set_dates"; departDate: string; returnDate: string }
+  | { type: "select_fare"; fareBrandId: FareBrandId }
   | { type: "continue_booking" }
   | { type: "view_policy"; policyId: PolicyOverlayId }
   | { type: "close_policy" }
@@ -379,7 +480,30 @@ export type AgentCenterContent =
       kind: "booking";
       recommendation: RankedResponse;
       canvas: AgentCanvasState;
+      /** Branded fare grid for the ranked route, mirroring the VNA availability page. */
+      fareOptions: FareOption[];
+      itineraries: FlightItineraryView[];
+      selectedFare?: FareSelectionSummary;
     };
+
+export interface PolicyAnswerSource {
+  title: string;
+  url: string;
+  breadcrumb: string[];
+}
+
+/** Grounded answer from the policy corpus, surfaced in the chat transcript. */
+export interface PolicyAnswer {
+  answer: string;
+  grounded: boolean;
+  /** False when nothing in the corpus cleared the relevance threshold. */
+  answered: boolean;
+  /** True when the lookup itself failed — distinct from "not covered". */
+  lookupFailed?: boolean;
+  sources: PolicyAnswerSource[];
+  /** Set when the answer was scoped to the traveller's selected fare. */
+  appliedFareBrandId?: FareBrandId;
+}
 
 export interface AgentTurnResponse {
   sessionId: string;
@@ -393,6 +517,10 @@ export interface AgentTurnResponse {
   canvas?: AgentCanvasState;
   policyOverlay?: PolicyOverlayId | null;
   policySnippet?: PolicySnippet;
+  /** Present when the turn was understood as a free-text policy question. */
+  policyAnswer?: PolicyAnswer;
+  /** What the understanding layer decided the message was, for UI affordances. */
+  messageIntent?: AgentMessageIntent;
   meta: {
     generatedAt: string;
     datasetVersion: string;

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/agent-workspace.css";
+@import "./styles/vna-booking.css";
 
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;

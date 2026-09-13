@@ -1,0 +1,146 @@
+{
+  "version": "1.0.0",
+  "currency": "AUD",
+  "capturedAt": "2026-09-13",
+  "baselineFareType": "round_trip_economy",
+  "baselineSource": "data/offers/illustrative-fares.json",
+  "disclaimer": "Branded fare names and cabin structure follow Vietnam Airlines' public fare-family lineup (Economy Lite/Classic/Flex, Premium Economy, Business Classic/Flex). Checked and hand baggage for Australia routes are quoted from the scraped policy corpus and are real. Price multipliers, change/refund wording, miles earn rates and seat counts are ILLUSTRATIVE demo values, not scraped fare rules — the fare-conditions pages on vietnamairlines.com render their rules behind a JavaScript lookup widget that the corpus scrape could not reach (see data/policy-corpus/README.md). Never present a multiplier or fee from this file as a quoted Vietnam Airlines figure.",
+  "baggageSource": {
+    "chunkId": "travel-information_baggage_baggage-allowance-checked-baggage#77",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage/baggage-allowance-checked-baggage",
+    "note": "FROM/TO AUSTRALIA (EXCLUDING ITINERARIES FROM JAPAN TO AUSTRALIA) — Business 2 pieces 32kg each, Premium Economy 2 pieces 23kg each, Economy 1 piece of 23kg.",
+    "caveat": "VNA states free checked baggage may vary by itinerary and fare type; the per-brand split below within Economy is illustrative."
+  },
+  "handBaggageSource": {
+    "chunkId": "travel-information_baggage_baggage-allowance-hand-baggage",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage/baggage-allowance-hand-baggage"
+  },
+  "brands": [
+    {
+      "brandId": "economy_lite",
+      "cabin": "economy",
+      "brandLabel": "Economy Lite",
+      "cabinLabel": "Economy",
+      "priceMultiplier": 0.88,
+      "checkedBaggage": "1 piece, 23kg",
+      "checkedBaggageSource": "corpus:travel-information_baggage_baggage-allowance-checked-baggage#77",
+      "checkedBaggageIllustrative": false,
+      "handBaggage": "1 piece, 10kg total",
+      "changePolicy": "Changes not permitted",
+      "refundPolicy": "Non-refundable",
+      "seatSelection": "Assigned at check-in",
+      "milesEarnPct": 50,
+      "seatsRemaining": 4,
+      "perks": [
+        "Lowest round-trip fare on this route",
+        "1 checked bag, 23kg",
+        "No changes or refunds"
+      ]
+    },
+    {
+      "brandId": "economy_classic",
+      "cabin": "economy",
+      "brandLabel": "Economy Classic",
+      "cabinLabel": "Economy",
+      "priceMultiplier": 1,
+      "checkedBaggage": "1 piece, 23kg",
+      "checkedBaggageSource": "corpus:travel-information_baggage_baggage-allowance-checked-baggage#77",
+      "checkedBaggageIllustrative": false,
+      "handBaggage": "1 piece, 10kg total",
+      "changePolicy": "Changes for a fee, before departure",
+      "refundPolicy": "Refundable for a fee, before departure",
+      "seatSelection": "Standard seat selection included",
+      "milesEarnPct": 100,
+      "seatsRemaining": 9,
+      "perks": [
+        "Change or refund for a fee",
+        "1 checked bag, 23kg",
+        "Full Lotusmiles earn"
+      ]
+    },
+    {
+      "brandId": "economy_flex",
+      "cabin": "economy",
+      "brandLabel": "Economy Flex",
+      "cabinLabel": "Economy",
+      "priceMultiplier": 1.24,
+      "checkedBaggage": "2 pieces, 23kg each",
+      "checkedBaggageSource": "illustrative",
+      "checkedBaggageIllustrative": true,
+      "handBaggage": "1 piece, 10kg total",
+      "changePolicy": "Free changes before departure",
+      "refundPolicy": "Refundable before departure",
+      "seatSelection": "Preferred seat selection included",
+      "milesEarnPct": 125,
+      "seatsRemaining": 6,
+      "perks": [
+        "Free changes before departure",
+        "Refundable",
+        "Priority on standby"
+      ]
+    },
+    {
+      "brandId": "premium_economy",
+      "cabin": "premium_economy",
+      "brandLabel": "Premium Economy",
+      "cabinLabel": "Premium Economy",
+      "priceMultiplier": 1.72,
+      "checkedBaggage": "2 pieces, 23kg each",
+      "checkedBaggageSource": "corpus:travel-information_baggage_baggage-allowance-checked-baggage#77",
+      "checkedBaggageIllustrative": false,
+      "handBaggage": "2 pieces, 18kg total",
+      "changePolicy": "Changes for a fee, before departure",
+      "refundPolicy": "Refundable for a fee, before departure",
+      "seatSelection": "Wider seat, extra recline, included selection",
+      "milesEarnPct": 150,
+      "seatsRemaining": 5,
+      "perks": [
+        "2 checked bags, 23kg each",
+        "Wider seat and extra legroom",
+        "Priority check-in"
+      ]
+    },
+    {
+      "brandId": "business_classic",
+      "cabin": "business",
+      "brandLabel": "Business Classic",
+      "cabinLabel": "Business",
+      "priceMultiplier": 3.15,
+      "checkedBaggage": "2 pieces, 32kg each",
+      "checkedBaggageSource": "corpus:travel-information_baggage_baggage-allowance-checked-baggage#77",
+      "checkedBaggageIllustrative": false,
+      "handBaggage": "2 pieces, 18kg total",
+      "changePolicy": "Changes for a fee, before departure",
+      "refundPolicy": "Refundable for a fee, before departure",
+      "seatSelection": "Lie-flat seat, included selection",
+      "milesEarnPct": 200,
+      "seatsRemaining": 3,
+      "perks": [
+        "2 checked bags, 32kg each",
+        "Lie-flat seat and lounge access",
+        "Priority boarding and baggage"
+      ]
+    },
+    {
+      "brandId": "business_flex",
+      "cabin": "business",
+      "brandLabel": "Business Flex",
+      "cabinLabel": "Business",
+      "priceMultiplier": 3.68,
+      "checkedBaggage": "2 pieces, 32kg each",
+      "checkedBaggageSource": "corpus:travel-information_baggage_baggage-allowance-checked-baggage#77",
+      "checkedBaggageIllustrative": false,
+      "handBaggage": "2 pieces, 18kg total",
+      "changePolicy": "Free changes before departure",
+      "refundPolicy": "Fully refundable before departure",
+      "seatSelection": "Lie-flat seat, included selection",
+      "milesEarnPct": 250,
+      "seatsRemaining": 2,
+      "perks": [
+        "Free changes, fully refundable",
+        "2 checked bags, 32kg each",
+        "Lounge access and priority everything"
+      ]
+    }
+  ]
+}

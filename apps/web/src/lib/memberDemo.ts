@@ -1,5 +1,4 @@
 import type { OriginCity, TravelStyle } from "@shared/types";
-import type { DestinationHint } from "./agentFlow";
 
 export type MemberDemoProfile =
   | "guest"
@@ -29,8 +28,6 @@ export interface PersonaTripSeed {
   travelStyle: TravelStyle;
   travellers: number;
   monthHint: string;
-  destinationHint?: DestinationHint;
-  localityNote?: string;
   briefText: string;
   openingText: string;
 }
@@ -90,7 +87,6 @@ export const PERSONA_TRIP_SEEDS: Record<MemberDemoProfile, PersonaTripSeed> = {
     travelStyle: "beach_relaxation",
     travellers: 2,
     monthHint: "November",
-    destinationHint: "beach_central",
     briefText:
       "Sydney, beach and relax with a friend in November — 2 adults, exploring Da Nang or the central coast.",
     openingText:
@@ -101,8 +97,6 @@ export const PERSONA_TRIP_SEEDS: Record<MemberDemoProfile, PersonaTripSeed> = {
     travelStyle: "vfr",
     travellers: 2,
     monthHint: "April",
-    destinationHint: "family_south",
-    localityNote: "Cà Mau",
     briefText:
       "Melbourne, visit family in Cà Mau, April, 2 adults — one stop max, prefer direct routes and miles earn.",
     openingText:
@@ -113,7 +107,6 @@ export const PERSONA_TRIP_SEEDS: Record<MemberDemoProfile, PersonaTripSeed> = {
     travelStyle: "food_culture",
     travellers: 2,
     monthHint: "November",
-    destinationHint: "food_city",
     briefText:
       "Sydney, street food and culture trip in November — 2 adults, budget-conscious student break.",
     openingText:

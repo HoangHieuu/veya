@@ -1,111 +1,307 @@
-import type { AgentCanvasState } from "../../lib/agentTypes";
-import type { MemberDemoProfile } from "../../lib/memberDemo";
-import { isMember } from "../../lib/memberDemo";
-import { GATEWAY_GEO, isSameHub, resolveLocalityGeo } from "../../lib/geo/localities";
-import { gatewayInfo } from "../../lib/labels";
-import { CanvasRouteCard } from "./canvas/CanvasRouteCard";
-import { EnrollmentCard } from "./canvas/EnrollmentCard";
-import { HandoffCTA } from "./canvas/HandoffCTA";
-import { LocalityMap } from "./canvas/LocalityMap";
-import { OfferBlock } from "./canvas/OfferBlock";
+import type {
+  AgentCenterContent,
+  DestinationSuggestion,
+  FareOption,
+  MemberDemoProfile,
+  TripSummary,
+} from "@shared/types";
+import { gatewayLabel, originLabel } from "../../lib/agentSession";
+import { DestinationBento } from "./canvas/DestinationBento";
+import { FareGrid } from "./canvas/FareGrid";
+import { FlightItineraryRow } from "./canvas/FlightItineraryRow";
+import { SelectedFareSummary } from "./canvas/SelectedFareSummary";
 
-/** Right canvas: destination context + flights & offers only */
+function StageHeader({
+  eyebrow,
+  title,
+  lead,
+}: {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+}) {
+  return (
+    <header className="discovery-canvas-head">
+      <div className="discovery-canvas-head-inner disc-stage-in">
+        <p className="discovery-canvas-eyebrow">{eyebrow}</p>
+        <h2 className="discovery-canvas-title">{title}</h2>
+        {lead ? <p className="discovery-canvas-lead">{lead}</p> : null}
+      </div>
+    </header>
+  );
+}
+
+/**
+ * Centre panel. Everything here renders from the server's `centerContent`, so
+ * a chat turn that changes the trip changes this view on the same round trip.
+ */
 export function CanvasRenderer({
-  canvas,
+  content,
+  trip,
   memberProfile,
+  busy,
+  onSelectDestination,
+  onSelectFare,
+  onContinueBooking,
+  onAskPolicy,
   onHandoff,
 }: {
-  canvas: AgentCanvasState;
+  content: AgentCenterContent;
+  trip: TripSummary;
   memberProfile: MemberDemoProfile;
-  onHandoff: (cardIndex: number) => void;
+  busy?: boolean;
+  onSelectDestination: (suggestion: DestinationSuggestion) => void;
+  onSelectFare: (option: FareOption) => void;
+  onContinueBooking: () => void;
+  onAskPolicy: (question: string) => void;
+  onHandoff: () => void;
 }) {
-  const { response, discoveryMode, locality, offer } = canvas;
-  const card = response.cards[0];
+  const routeLabel =
+    trip.originCity && trip.gateway
+      ? `${trip.originCity} → ${trip.gateway}`
+      : undefined;
 
-  if (!card) {
+  if (content.kind === "empty") {
     return (
-      <div className="agent-canvas agent-canvas-empty">
-        <p className="agent-canvas-muted">No routes yet.</p>
+      <div className="discovery-canvas">
+        <StageHeader
+          eyebrow="Discovery"
+          title="Tell me about your trip"
+          lead="Where are you flying from, roughly when, and what are you going for? I'll build the route here as we talk."
+        />
+        <div className="discovery-canvas-body veya-scroll">
+          <div className="disc-empty-hints">
+            <p className="agent-canvas-muted">Try something like:</p>
+            <ul>
+              <li>“Melbourne, visiting family in Cà Mau, 2 adults, April”</li>
+              <li>“Beach trip from Sydney, 12/04/2027 to 26/04/2027”</li>
+              <li>“How much checked baggage do I get?”</li>
+            </ul>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const gw = gatewayInfo(card.route.destinationCity);
+  if (content.kind === "destination_grid") {
+    return (
+      <div className="discovery-canvas">
+        <StageHeader
+          eyebrow="Discovery"
+          title={
+            trip.originCity
+              ? `Where in Vietnam, from ${originLabel(trip.originCity)}?`
+              : "Where in Vietnam?"
+          }
+          lead={
+            trip.originCity
+              ? "Pick one, or just name a province or town in chat — I'll work out which gateway serves it."
+              : "Pick a gateway to start, or tell me your city and what you're going for and I'll narrow these down."
+          }
+        />
+        <div className="discovery-canvas-body veya-scroll discovery-canvas-body-explore">
+          <div className="discovery-canvas-stage disc-stage-in">
+            <DestinationBento
+              suggestions={content.suggestions}
+              selectedId={trip.destinationLocalityId}
+              disabled={busy}
+              onSelect={onSelectDestination}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (content.kind === "destination_detail") {
+    const { suggestion, locality } = content;
+    return (
+      <div className="discovery-canvas">
+        <StageHeader
+          eyebrow="Destination"
+          title={locality.localityTitle}
+          lead={`Vietnam Airlines flies into ${gatewayLabel(locality.gateway)} (${locality.gateway}) for this area.`}
+        />
+        <div className="discovery-canvas-body veya-scroll">
+          <section className="agent-canvas-block">
+            <p className="agent-canvas-sub">{suggestion.summary}</p>
+            {locality.onwardNote ? (
+              <p className="agent-decision-onward">{locality.onwardNote}</p>
+            ) : null}
+          </section>
+
+          {locality.ruledOut.length > 0 ? (
+            <section className="agent-canvas-block">
+              <h3 className="agent-canvas-label">Why not the other gateways</h3>
+              <ul className="disc-ruledout">
+                {locality.ruledOut.map((entry) => (
+                  <li key={entry.gateway}>
+                    <strong>{gatewayLabel(entry.gateway)}</strong> — {entry.reason}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          <p className="agent-canvas-muted">
+            Tell me how many adults and your dates, and I'll price it.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (content.kind === "season") {
+    return (
+      <div className="discovery-canvas">
+        <StageHeader
+          eyebrow="Season check"
+          title={content.note.headline}
+          lead={content.note.summary}
+        />
+        <div className="discovery-canvas-body veya-scroll">
+          {content.note.caveats.length > 0 ? (
+            <ul className="disc-season-caveats">
+              {content.note.caveats.map((caveat) => (
+                <li key={caveat}>{caveat}</li>
+              ))}
+            </ul>
+          ) : null}
+          <button type="button" className="vna-primary" disabled={busy} onClick={onContinueBooking}>
+            Show me fares
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (content.kind === "hotels") {
+    return (
+      <div className="discovery-canvas">
+        <StageHeader eyebrow="Stays" title="Where to stay" />
+        <div className="discovery-canvas-body veya-scroll">
+          <p className="agent-canvas-muted">
+            Hotel partners are out of scope for this prototype. Say “skip hotels”
+            and I'll go straight to fares.
+          </p>
+          <button type="button" className="vna-primary" disabled={busy} onClick={onContinueBooking}>
+            Skip to fares
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Booking: the VNA-style availability board.
+  const card = content.recommendation.cards[0];
+  const travellers = trip.travellers ?? 1;
 
   return (
-    <div className="agent-canvas">
-      <header className="agent-canvas-header">
-        <div>
-          <p className="agent-canvas-eyebrow">Canvas · destination & flights</p>
-          <h2 className="agent-canvas-title">{gw.title}</h2>
-          <p className="agent-canvas-sub">{gw.subtitle}</p>
-        </div>
-        {discoveryMode === "discovery" ? (
-          <span className="agent-mode-badge agent-mode-discovery">Direct offer</span>
-        ) : null}
-      </header>
+    <div className="discovery-canvas">
+      <StageHeader
+        eyebrow="Select your fare"
+        title={`${originLabel(trip.originCity)} → ${gatewayLabel(trip.gateway)}`}
+        lead={
+          card
+            ? `${card.route.originAirport}–${card.route.destinationAirport} · ${travellers} adult${travellers > 1 ? "s" : ""} · return`
+            : undefined
+        }
+      />
 
-      <div className="agent-canvas-layout">
-        <div className="agent-canvas-main">
-          <section className="agent-canvas-block agent-dest-block">
-            <h3 className="agent-canvas-label">Destination</h3>
-            {locality ? (
-              <>
-                <p className="agent-dest-lead">
-                  {(() => {
-                    const gwGeo = GATEWAY_GEO[locality.gateway];
-                    const locGeo = resolveLocalityGeo(
-                      locality.localityId,
-                      locality.localityTitle,
-                      locality.gateway,
-                    );
-                    if (isSameHub(gwGeo, locGeo)) {
-                      return (
-                        <>
-                          Your trip centres on <strong>{locality.localityTitle}</strong> — fly
-                          direct into <strong>{card.route.destinationAirport}</strong>.
-                        </>
-                      );
-                    }
-                    return (
-                      <>
-                        Visiting <strong>{locality.localityTitle}</strong> — international flights
-                        land at <strong>{card.route.destinationAirport}</strong>, not the province
-                        directly.
-                      </>
-                    );
-                  })()}
-                </p>
-                <LocalityMap resolution={locality} compact />
-                {locality.onwardNote ? (
-                  <p className="agent-decision-onward">{locality.onwardNote}</p>
-                ) : null}
-              </>
-            ) : (
-              <p className="agent-dest-lead">
-                {card.route.destinationName} is your recommended VNA gateway for this trip.
-              </p>
-            )}
-            <p className="agent-canvas-muted">{card.tripOutline}</p>
-          </section>
-
-          <section className="agent-canvas-block agent-flights-block">
-            <h3 className="agent-canvas-label">Flights</h3>
-            <CanvasRouteCard card={card} intent={response.intent} />
-          </section>
-        </div>
-
-        <aside className="agent-canvas-aside">
-          {offer ? (
-            <OfferBlock offer={offer} memberProfile={memberProfile} />
-          ) : null}
-          {!isMember(memberProfile) && offer?.eligible ? <EnrollmentCard /> : null}
-          <HandoffCTA
-            handoff={card.handoff}
-            destinationName={card.route.destinationName}
-            onContinue={() => onHandoff(0)}
+      <div className="discovery-canvas-body veya-scroll discovery-canvas-body-offer">
+        {content.selectedFare ? (
+          <SelectedFareSummary
+            selection={content.selectedFare}
+            routeLabel={routeLabel}
+            onChangeFare={() => {
+              document
+                .getElementById("vna-fare-grid")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            onAskBaggage={() =>
+              onAskPolicy(
+                `What is the checked baggage allowance for my ${content.selectedFare?.fare.brandLabel} ticket?`,
+              )
+            }
           />
-        </aside>
+        ) : null}
+
+        {content.itineraries.length > 0 ? (
+          <section className="agent-canvas-block">
+            <h3 className="agent-canvas-label">Your flights</h3>
+            <div className="vna-itineraries">
+              {content.itineraries.map((itinerary) => (
+                <FlightItineraryRow key={itinerary.direction} itinerary={itinerary} />
+              ))}
+            </div>
+            <p className="vna-schedule-note">
+              Indicative schedule for the demo — confirm live times on
+              vietnamairlines.com.
+            </p>
+          </section>
+        ) : null}
+
+        <section className="agent-canvas-block" id="vna-fare-grid">
+          <h3 className="agent-canvas-label">
+            {content.selectedFare ? "Change your fare" : "Choose your fare"}
+          </h3>
+          <FareGrid
+            options={content.fareOptions}
+            selectedBrandId={content.selectedFare?.fare.brandId}
+            travellers={travellers}
+            busy={busy}
+            onSelect={onSelectFare}
+          />
+        </section>
+
+        {content.canvas.offer?.eligible ? (
+          <section className="agent-canvas-block vna-offer">
+            <h3 className="agent-canvas-label">Direct Decision Offer</h3>
+            <p className="agent-canvas-sub">
+              {content.canvas.offer.discountPct}% off the illustrative direct fare
+              when you book direct — expires{" "}
+              {new Date(content.canvas.offer.expiresAt).toLocaleString("en-AU", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+              .
+            </p>
+            {memberProfile === "guest" ? (
+              <p className="agent-canvas-muted">
+                Join Lotusmiles at checkout to claim it.
+              </p>
+            ) : null}
+          </section>
+        ) : null}
+
+        {card ? (
+          <div className="vna-summary-bar">
+            <div>
+              <p className="vna-summary-label">
+                {content.selectedFare
+                  ? `${content.selectedFare.fare.brandLabel} · ${travellers} adult${travellers > 1 ? "s" : ""}`
+                  : "No fare selected yet"}
+              </p>
+              <p className="vna-summary-total">
+                {content.selectedFare
+                  ? new Intl.NumberFormat("en-AU", {
+                      style: "currency",
+                      currency: "AUD",
+                      maximumFractionDigits: 0,
+                    }).format(content.selectedFare.totalAud)
+                  : "—"}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="vna-primary"
+              disabled={!content.selectedFare || busy}
+              onClick={onHandoff}
+            >
+              Continue on Vietnam Airlines
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -15,6 +15,18 @@ Open http://localhost:5173 — mock mode is on by default (`VITE_USE_MOCK=true`)
 
 **Agent workspace (Round 2 primary demo):** set `VITE_AGENT_CANVAS=true` in `apps/web/.env`, then **Talk to Veya** from home.
 
+The agent workspace is **server-driven and has no mock path** — start the API first
+(see *Full stack* below). Every chat message and every click goes through
+`POST /api/agent/turn`, which returns the stage and the centre-panel content, so
+the conversation and the canvas cannot drift apart. Correcting yourself works:
+"actually from Perth", "change it to Hanoi", "make it 4 adults" all re-render the
+centre panel on the same round trip. At the fare step the centre shows a branded
+fare grid (Economy Lite/Classic/Flex, Premium Economy, Business Classic/Flex);
+the fare you pick is remembered on the trip and stays on screen. Asking about
+baggage, changes or refunds answers from the embedded VNA policy corpus, scoped
+to your route and selected fare, with citations — and declines when the corpus
+does not cover it (see `data/policy-corpus/README.md`).
+
 ### Demo script (~3 min)
 
 1. **Problem (15s):** OTAs win before the traveller picks Hanoi vs Saigon vs Da Nang.

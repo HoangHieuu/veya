@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { TripSummary } from "../../lib/agentWorkspace";
+import type { TripSummary } from "@shared/types";
 import {
   formatSavedWhen,
   listSavedTrips,
