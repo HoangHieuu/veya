@@ -130,6 +130,31 @@ for (const gateway of ["HAN", "SGN", "DAD"]) {
   }
 }
 
+console.log("\n== data/policy-corpus (baggage/fare-conditions RAG) ==");
+try {
+  const corpus = JSON.parse(readFileSync(path.join(DATA, "policy-corpus/vectors.json"), "utf8"));
+  const chunkCount = corpus.chunks?.length ?? 0;
+  chunkCount > 50
+    ? pass(`${chunkCount} embedded chunks, model ${corpus.model}`)
+    : fail(`only ${chunkCount} chunks in policy-corpus/vectors.json`);
+  const badDims = (corpus.chunks ?? []).filter((c: any) => c.embedding?.length !== corpus.dims);
+  badDims.length === 0
+    ? pass(`all chunks match declared dims (${corpus.dims})`)
+    : fail(`${badDims.length} chunk(s) have the wrong embedding length`);
+  const noUrl = (corpus.chunks ?? []).filter((c: any) => !String(c.sourceUrl ?? "").startsWith("https://"));
+  if (noUrl.length > 0) fail(`${noUrl.length} chunk(s) missing a sourceUrl`);
+} catch (error) {
+  fail(`policy-corpus/vectors.json unreadable: ${(error as Error).message}`);
+}
+try {
+  const sources = JSON.parse(readFileSync(path.join(DATA, "policy-corpus/sources.json"), "utf8"));
+  sources.length >= 15
+    ? pass(`${sources.length} source pages listed`)
+    : fail(`only ${sources.length} source pages listed`);
+} catch (error) {
+  fail(`policy-corpus/sources.json unreadable: ${(error as Error).message}`);
+}
+
 console.log("\n== data/fixtures/sampleIntent.json (vs D's tripIntentSchema) ==");
 try {
   const raw = JSON.parse(readFileSync(path.join(DATA, "fixtures/sampleIntent.json"), "utf8"));

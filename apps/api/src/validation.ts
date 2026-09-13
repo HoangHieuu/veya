@@ -289,6 +289,12 @@ export const agentTurnRequestSchema: z.ZodType<AgentTurnRequest> = z
     }
   }) as z.ZodType<AgentTurnRequest>;
 
+export const policyAskRequestSchema = z
+  .object({
+    question: nonBlankString.max(500),
+  })
+  .strict();
+
 export type ValidatedRecommendRequest = RecommendRequest;
 
 export function formatValidationIssues(error: {

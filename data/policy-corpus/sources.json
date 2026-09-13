@@ -1,0 +1,122 @@
+[
+  {
+    "id": "legal_terms-and-conditions",
+    "slug": "legal_terms-and-conditions",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/terms-and-conditions",
+    "title": "Terms and Conditions"
+  },
+  {
+    "id": "legal_conditions-of-carriage",
+    "slug": "legal_conditions-of-carriage",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/conditions-of-carriage",
+    "title": "Conditions of Carriage"
+  },
+  {
+    "id": "legal_conditions-of-check-in-cancellation",
+    "slug": "legal_conditions-of-check-in-cancellation",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/conditions-of-check-in-cancellation",
+    "title": "Conditions of Check-in and Cancellation"
+  },
+  {
+    "id": "legal_conditions-of-online-booking",
+    "slug": "legal_conditions-of-online-booking",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/conditions-of-online-booking",
+    "title": "Conditions of Online Booking"
+  },
+  {
+    "id": "legal_conditions-of-website-use",
+    "slug": "legal_conditions-of-website-use",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/conditions-of-website-use",
+    "title": "Conditions of Website Use"
+  },
+  {
+    "id": "legal_cookies-policy",
+    "slug": "legal_cookies-policy",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/cookies-policy",
+    "title": "Cookies Policy"
+  },
+  {
+    "id": "legal_privacy-policy",
+    "slug": "legal_privacy-policy",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/privacy-policy",
+    "title": "Privacy Policy"
+  },
+  {
+    "id": "legal_terms-and-conditions-evoucher",
+    "slug": "legal_terms-and-conditions-evoucher",
+    "url": "https://www.vietnamairlines.com/vn/en/legal/terms-and-conditions-evoucher",
+    "title": "Terms and Conditions - eVoucher"
+  },
+  {
+    "id": "travel-information_baggage",
+    "slug": "travel-information_baggage",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage",
+    "title": "Baggage"
+  },
+  {
+    "id": "travel-information_baggage_baggage-allowance-checked-baggage",
+    "slug": "travel-information_baggage_baggage-allowance-checked-baggage",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage/baggage-allowance-checked-baggage",
+    "title": "Free Checked Baggage"
+  },
+  {
+    "id": "travel-information_baggage_baggage-allowance-hand-baggage",
+    "slug": "travel-information_baggage_baggage-allowance-hand-baggage",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage/baggage-allowance-hand-baggage",
+    "title": "Hand Baggage"
+  },
+  {
+    "id": "travel-information_baggage_excess-baggage",
+    "slug": "travel-information_baggage_excess-baggage",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage/excess-baggage",
+    "title": "Excess Baggage"
+  },
+  {
+    "id": "travel-information_baggage_restricted-baggage",
+    "slug": "travel-information_baggage_restricted-baggage",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage/restricted-baggage",
+    "title": "Restricted Baggage"
+  },
+  {
+    "id": "travel-information_baggage_special-baggage",
+    "slug": "travel-information_baggage_special-baggage",
+    "url": "https://www.vietnamairlines.com/vn/en/travel-information/baggage/special-baggage",
+    "title": "Special Baggage"
+  },
+  {
+    "id": "buy-tickets-other-products_fare-conditions",
+    "slug": "buy-tickets-other-products_fare-conditions",
+    "url": "https://www.vietnamairlines.com/vn/en/buy-tickets-other-products/fare-conditions",
+    "title": "Fare Conditions"
+  },
+  {
+    "id": "buy-tickets-other-products_fare-conditions_fare-types",
+    "slug": "buy-tickets-other-products_fare-conditions_fare-types",
+    "url": "https://www.vietnamairlines.com/vn/en/buy-tickets-other-products/fare-conditions/fare-types",
+    "title": "Fare Types and Fare Condition Lookup"
+  },
+  {
+    "id": "buy-tickets-other-products_fare-conditions_taxes-fee-charges-surcharges",
+    "slug": "buy-tickets-other-products_fare-conditions_taxes-fee-charges-surcharges",
+    "url": "https://www.vietnamairlines.com/vn/en/buy-tickets-other-products/fare-conditions/taxes-fee-charges-surcharges",
+    "title": "Taxes, Fees, Charges and Surcharges"
+  },
+  {
+    "id": "buy-tickets-other-products_booking-and-manage-bookings_voluntary-refund-rebook",
+    "slug": "buy-tickets-other-products_booking-and-manage-bookings_voluntary-refund-rebook",
+    "url": "https://www.vietnamairlines.com/vn/en/buy-tickets-other-products/booking-and-manage-bookings/voluntary-refund-rebook",
+    "title": "Voluntary Refund and Rebook"
+  },
+  {
+    "id": "buy-tickets-other-products_booking-and-manage-bookings_involuntary-rebook",
+    "slug": "buy-tickets-other-products_booking-and-manage-bookings_involuntary-rebook",
+    "url": "https://www.vietnamairlines.com/vn/en/buy-tickets-other-products/booking-and-manage-bookings/involuntary-rebook",
+    "title": "Involuntary Rebook"
+  },
+  {
+    "id": "buy-tickets-other-products_booking-and-manage-bookings_check-in",
+    "slug": "buy-tickets-other-products_booking-and-manage-bookings_check-in",
+    "url": "https://www.vietnamairlines.com/vn/en/buy-tickets-other-products/booking-and-manage-bookings/check-in",
+    "title": "Check-in"
+  }
+]
