@@ -13,9 +13,31 @@ npm run dev
 
 Open http://localhost:5173 — mock mode is on by default (`VITE_USE_MOCK=true`).
 
+## Full stack (live API + dataset)
+
+```bash
+# Terminal 1 — API
+cd apps/api
+npm ci
+cp .env.example .env   # add OPENAI_API_KEY; INTENT_LLM_ENABLED=true for brief LLM
+npm run dev
+
+# Terminal 2 — UI
+cd apps/web
+npm ci
+cp .env.example .env
+# Set VITE_USE_MOCK=false for live ranking
+npm run dev
+```
+
+API serves curated route images at `/assets` (proxied by Vite in dev).
+
 ## Repo layout
 
-Each role owns a **separate top-level path** so parallel work rarely touches the same files. See **[docs/STRUCTURE.md](./docs/STRUCTURE.md)** for ownership, merge rules, and API contracts.
+Each role owns a **separate top-level path** so parallel work rarely touches the same files.
+
+**Start here:** **[docs/TDD.md](./docs/TDD.md)** — scope, frozen flows, out-of-scope (use as AI context too).  
+Also: [STRUCTURE.md](./docs/STRUCTURE.md) · [WORK_SPLIT.md](./docs/WORK_SPLIT.md) · [AGENTS.md](./AGENTS.md)
 
 | Path | Owner | Purpose |
 |------|-------|---------|
@@ -43,7 +65,8 @@ Full API & scoring contract: [docs/WORK_SPLIT.md](./docs/WORK_SPLIT.md).
 |---------|-------|------|
 | `npm run dev` | `apps/web` | UI dev server (:5173) |
 | `npm run build` | `apps/web` | Production build |
-| `npm run dev` | `apps/api` | API dev server (:3001) — stub until D wires routes |
+| `npm run dev` | `apps/api` | API dev server (:3001) |
+| `npm test` | `apps/api` | API + intent + scoring tests |
 
 ## Branch naming (avoid merge pain)
 
