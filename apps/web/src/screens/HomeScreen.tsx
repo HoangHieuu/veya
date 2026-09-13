@@ -7,7 +7,7 @@ const DESTINATIONS = [
     code: "DAD",
     name: "Da Nang",
     tag: "Beach & coast",
-    blurb: "My Khe, Hoi An day trips, central Vietnam gateway.",
+    blurb: "My Khe, Hoi An day trips, central coast.",
     image:
       "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&q=80",
   },
@@ -30,26 +30,26 @@ const DESTINATIONS = [
 ] as const;
 
 const GATEWAYS = [
-  { code: "SYD", city: "Sydney", note: "Main Oceania gateway" },
-  { code: "MEL", city: "Melbourne", note: "Direct SGN & HAN" },
-  { code: "PER", city: "Perth", note: "Shortest Australia haul" },
+  { code: "SYD", city: "Sydney", note: "Fly to all three cities" },
+  { code: "MEL", city: "Melbourne", note: "Nonstop to Hanoi & Saigon" },
+  { code: "PER", city: "Perth", note: "Shorter flights westbound" },
 ] as const;
 
 const STEPS = [
   {
     n: "01",
     title: "Three quick taps",
-    body: "Origin, trip vibe, when & who — about 30 seconds.",
+    body: "Where you’re flying from, the vibe, dates, and who’s going — about 30 seconds.",
   },
   {
     n: "02",
-    title: "See ranked routes",
-    body: "Hanoi, Saigon, or Da Nang — with reasons and a trip sketch.",
+    title: "See your best matches",
+    body: "Ranked routes into Hanoi, Ho Chi Minh City, or Da Nang — plus ideas for after you land.",
   },
   {
     n: "03",
-    title: "Search on VNA",
-    body: "We open vietnamairlines.com with your route pre-filled.",
+    title: "Continue to book",
+    body: "Open Vietnam Airlines with your dates and destination already filled in.",
   },
 ] as const;
 
@@ -74,7 +74,7 @@ const PERSONAS: {
     id: "vfr",
     name: "The Nguyens",
     from: "Melbourne",
-    trip: "Family visit with kids, flexible ±3 days, one stop max",
+    trip: "Visit family in Cà Mau — fly into Saigon, one stop max",
     image:
       "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80",
   },
@@ -90,16 +90,20 @@ const PERSONAS: {
 
 const FAQ = [
   {
-    q: "Is this a booking site?",
-    a: "No. Veya is a discovery layer only. Fares, seats, and payment happen on the official Vietnam Airlines website.",
+    q: "Do I book here?",
+    a: "No — we help you choose where to fly in and what fits your trip. Prices and payment happen on Vietnam Airlines when you continue from the last step.",
   },
   {
-    q: "Do I need to know my destination?",
-    a: "Not at all. That's the point — tell us the vibe and constraints, and we'll suggest where to start.",
+    q: "Do I need to pick Hanoi vs Saigon first?",
+    a: "Not necessarily. Tell us the vibe and dates; we suggest which city to fly into and why.",
   },
   {
-    q: "How long does the form take?",
-    a: "Three short steps — or skip straight to demo routes with Olivia, the Nguyens, or James.",
+    q: "Why Vietnam Airlines and not a comparison site?",
+    a: "You still book with the airline. We only narrow down the right place to land and pass your trip details into their search so you don’t re-type everything.",
+  },
+  {
+    q: "How long does it take?",
+    a: "Three short steps — or tap Olivia, the Nguyens, or James to see example routes instantly.",
   },
 ];
 
@@ -127,9 +131,12 @@ export function HomeScreen({
 
         <div className="hero-home-inner">
           <div className="hero-home-copy anim-rise">
-            <p className="hero-home-eyebrow">Vietnam Airlines · Australia</p>
-            <h1 className="hero-home-title">Explore Vietnam</h1>
-            <p className="hero-home-lead">Your route, ranked.</p>
+            <p className="hero-home-eyebrow">Australia → Vietnam</p>
+            <h1 className="hero-home-title">Where should you fly in?</h1>
+            <p className="hero-home-lead">
+              Not sure Hanoi, Ho Chi Minh City, or Da Nang? Tell us your trip — we&apos;ll suggest
+              the best place to land, then help you continue on Vietnam Airlines.
+            </p>
             <div className="hero-home-actions">
               <Button className="min-h-12 px-8 text-base" onClick={onStart}>
                 Start planning →
@@ -185,10 +192,22 @@ export function HomeScreen({
         </div>
       </section>
 
+      <section className="home-section home-ota-loss">
+        <div className="home-section-inner">
+          <p className="home-eyebrow">Why the city matters</p>
+          <h2 className="home-heading">Same country, very different trips</h2>
+          <ul className="home-ota-list">
+            <li>Beach time near Da Nang is not the same as street food in Saigon or a week in Hanoi.</li>
+            <li>The cheapest flight isn&apos;t always the right airport for what you want to do.</li>
+            <li>We match your trip to a place you&apos;ll actually enjoy — then you pick flights on the airline site.</li>
+          </ul>
+        </div>
+      </section>
+
       <section className="home-section home-section-muted">
         <div className="home-section-inner">
           <p className="home-eyebrow">Destinations</p>
-          <h2 className="home-heading">Where we rank routes</h2>
+          <h2 className="home-heading">Three places you might fly into</h2>
           <div className="home-dest-bento">
             {DESTINATIONS.map((d, i) => (
               <article
@@ -286,7 +305,7 @@ export function HomeScreen({
           <Button className="mt-6 min-h-12 px-10 text-base" onClick={onStart}>
             Start planning →
           </Button>
-          <p className="home-cta-foot">Discovery only · booking on vietnamairlines.com</p>
+          <p className="home-cta-foot">We don&apos;t sell tickets — booking and payment on Vietnam Airlines.</p>
         </div>
       </section>
     </div>

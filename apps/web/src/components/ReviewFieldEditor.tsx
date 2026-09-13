@@ -12,7 +12,7 @@ import { WIZARD_STEPS, type TripWizardState } from "../lib/wizard";
 
 const ORIGINS: { code: OriginCity; city: string; hint: string }[] = [
 
-  { code: "SYD", city: "Sydney", hint: "SYD · Main gateway" },
+  { code: "SYD", city: "Sydney", hint: "SYD · All Vietnam routes" },
 
   { code: "MEL", city: "Melbourne", hint: "MEL · Direct to SGN & HAN" },
 
@@ -347,3 +347,5 @@ function FieldWithDescribe({
   );
 
 }
+
+

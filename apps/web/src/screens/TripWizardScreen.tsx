@@ -18,8 +18,8 @@ import {
 } from "../lib/wizard";
 
 const ORIGINS: { code: OriginCity; city: string; hint: string }[] = [
-  { code: "SYD", city: "Sydney", hint: "Main gateway" },
-  { code: "MEL", city: "Melbourne", hint: "Direct to SGN & HAN" },
+  { code: "SYD", city: "Sydney", hint: "Routes to all three cities" },
+  { code: "MEL", city: "Melbourne", hint: "Nonstop to Hanoi & Saigon" },
   { code: "PER", city: "Perth", hint: "Shortest haul to Asia" },
 ];
 
@@ -272,20 +272,22 @@ function renderStepBody(
             onSelect={(v) =>
               patch({
                 travelStyle: v as TravelStyle,
-                vibeDescribe: undefined,
               })
             }
           />
           <OptionalField
-            label="Anything specific? (optional)"
-            value={wizard.vibeDescribe ?? ""}
-            onChange={(v) =>
-              patch({
-                vibeDescribe: v,
-                travelStyle: v.trim() ? undefined : wizard.travelStyle,
-              })
+            label={
+              wizard.travelStyle === "vfr"
+                ? "Where are you visiting? (helps us pick the right airport)"
+                : "Anything specific? (optional)"
             }
-            placeholder="e.g. Vung Tau beaches, Hoi An, visiting cousins in Hanoi…"
+            value={wizard.vibeDescribe ?? ""}
+            onChange={(v) => patch({ vibeDescribe: v })}
+            placeholder={
+              wizard.travelStyle === "vfr"
+                ? "e.g. relatives in Bắc Giang, family in Hai Phong, cousins in Hanoi…"
+                : "e.g. Vung Tau beaches, Hoi An old town, quiet beaches…"
+            }
           />
         </div>
       );

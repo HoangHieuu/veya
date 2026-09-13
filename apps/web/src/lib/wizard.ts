@@ -70,7 +70,7 @@ export const WIZARD_STEPS: {
 
     title: "When & who's going?",
 
-    subtitle: "Rough is fine. Live prices come later on VNA.",
+    subtitle: "Rough dates are fine — you'll see live prices on the airline site.",
 
   },
 
@@ -254,11 +254,10 @@ export function vfrWizardState(): TripWizardState {
 
     dateFlexibility: "flexible_±3",
 
-    dateDescribe: "Visiting family in Hanoi, ±3 days flexible",
-
     travelStyle: "vfr",
 
-    vibeDescribe: "Family visit with kids — one stop max, prefer direct if possible.",
+    vibeDescribe:
+      "Visit family in Cà Mau — one stop max, prefer direct if possible.",
 
     budgetBand: "standard",
 
@@ -472,7 +471,7 @@ export function buildRecommendRequest(w: TripWizardState): RecommendRequest {
 
 
 
-  if (quizComplete && !usesDescribe) {
+  if (quizComplete && !usesDescribe && resolved.travelStyle !== "vfr") {
 
     return {
 
@@ -564,7 +563,9 @@ export function synthesizeBrief(w: TripWizardState): string {
 
     parts.push(`Trip vibe: ${resolved.vibeDescribe!.trim()}`);
 
-  } else if (resolved.travelStyle) {
+  }
+
+  if (resolved.travelStyle) {
 
     parts.push(`Travel style: ${travelStyleLabel(resolved.travelStyle)}`);
 
@@ -657,3 +658,5 @@ export function wizardSummaryLines(
   ];
 
 }
+
+
