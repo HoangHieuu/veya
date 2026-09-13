@@ -2,12 +2,15 @@
 
 Monorepo for **4 parallel developers**. Paths are split so each person commits mostly inside their own tree — fewer merge conflicts when everyone pushes to `main` or short-lived feature branches.
 
+**Docs:** [TDD.md](./TDD.md) · [WORK_SPLIT.md](./WORK_SPLIT.md) · [VNA_ALIGNMENT_PLAN.md](./VNA_ALIGNMENT_PLAN.md) · [TDD-v2.md](./TDD-v2.md) · [TDD-v2-3panel.md](./TDD-v2-3panel.md)  
+**Repo:** https://github.com/HoangHieuu/veya
+
 ## Directory map
 
 ```
-uavs-temp/
+veya/
 ├── apps/
-│   ├── web/                    ← Person A (UI)
+    10|│   ├── web/                    ← Person A (UI)
 │   │   ├── public/             static assets (sky.png, vnaplane.png, …)
 │   │   ├── src/
 │   │   │   ├── api/            HTTP client → /api/*
@@ -113,4 +116,4 @@ Vite proxies `/api` → `localhost:3001` (see `apps/web/vite.config.ts`).
 - **C**: `parseTripIntent()` + fixtures; quiz path works without LLM.
 - **D**: `curl` to `/api/recommend` returns valid `RankedResponse`; README for wiring UI.
 
-Details and scoring weights: [WORK_SPLIT.md](./WORK_SPLIT.md).
+Details and scoring weights: [WORK_SPLIT.md](./WORK_SPLIT.md). Product scope: [TDD.md](./TDD.md).

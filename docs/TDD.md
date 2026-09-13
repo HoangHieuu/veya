@@ -1,10 +1,12 @@
 # TDD — Veya (UAVS Hackathon)
 
-> **High-level Technical Design Document** — drafted per TEKO `tdd-design` skill (6-section template).
-> **Operational guardrails** for dev/AI remain in §Appendix A–C.
-> **Contract detail:** [WORK_SPLIT.md](./WORK_SPLIT.md) · **Folders:** [STRUCTURE.md](./STRUCTURE.md)
+> **High-level Technical Design Document** — product scope and delivery plan.  
+> **Operational guardrails** for dev/AI remain in §Appendix A–C.  
+> **Contracts:** [WORK_SPLIT.md](./WORK_SPLIT.md) · **Folders:** [STRUCTURE.md](./STRUCTURE.md)  
+> **VNA pitch map:** [VNA_ALIGNMENT_PLAN.md](./VNA_ALIGNMENT_PLAN.md)  
+> **Round 2 (agent canvas):** [TDD-v2.md](./TDD-v2.md) · [TDD-v2-3panel.md](./TDD-v2-3panel.md)
 
-**Repo:** https://github.com/meomeolucifr/uavs-temp
+**Repo:** https://github.com/HoangHieuu/veya
 
 ---
 
@@ -23,37 +25,15 @@
 
 ## II. Background
 
-### Current State — `apps/web` (Person A)
+### Planned modules (ownership)
 
-- React + Vite + Tailwind v4 UI with frozen screen flow: `home → brief → results → handoff`.
-- **Home:** hero, persona cards, destination/gateway explainer.
-- **Brief:** **3-step wizard** (origin → vibe → when/who); budget/priority inferred or under collapsed “More options”; no separate review step.
-- **Results:** ranked cards, priority re-rank via `cachedIntent`, intent sidebar.
-- **Handoff:** confirm pre-fill params, open VNA (or mock URL) in new tab.
-- **Mock mode:** `VITE_USE_MOCK=true` serves static `RankedResponse` JSON; persona buttons skip wizard and load results directly.
-- **Gap:** destination-first card layout and agent destination board are **designed, partially unbuilt**; still relies on mock data until API + dataset ship.
-
-### Current State — `apps/api` (Person D)
-
-- Express stub: `POST /api/recommend` and `POST /api/trips/save` return **501 NOT_IMPLEMENTED**.
-- Skeleton folders: `routes/`, `dataset/`, `scoring/` — orchestration not wired.
-- **Gap:** no live ranking, handoff URL builder, or RAG-lite reason generation.
-
-### Current State — `apps/api/src/intent` (Person C)
-
-- `parseTripIntent()` stub returns `LLM_ERROR`.
-- **Gap:** quiz deterministic mapper and brief → `TripIntent` parser not implemented.
-
-### Current State — `data/` (Person B)
-
-- `version.json` + README only; **`data/routes/*.json` empty** (9 routes not shipped).
-- Reference captures exist in repo root (`air-bounds.json`, `another.json`, `search.json`) for **curated content only** — not runtime API integration.
-- **Gap:** route records, experience highlights, image licenses, scorer fixtures.
-
-### Current State — `shared/types.ts`
-
-- Frozen contract: `TripIntent`, `RouteRecord`, `RankedResponse`, `RecommendRequest`, etc.
-- Single source of truth for web + api; changes require team approval.
+| Layer | Owner | Planned deliverable |
+|-------|-------|---------------------|
+| `apps/web` | A | `home → brief → results → handoff`; 3-step wizard; persona one-click; mock mode |
+| `apps/api` | D | `POST /api/recommend`, scoring, handoff builder, RAG-lite copy, save stub |
+| `apps/api/src/intent` | C | Quiz deterministic mapper; brief → validated `TripIntent` (optional LLM) |
+| `data/` | B | 9 `RouteRecord` JSON + version, highlights, licenses, scorer fixtures |
+| `shared/types.ts` | D (+ team) | Frozen contracts; changes require team approval |
 
 ### Technical Knowledge — Discovery vs booking
 
@@ -237,14 +217,14 @@ Goal: `home → brief (3 tap) → results → handoff → VNA` with live or stab
 
 | No. | Service / Role | Action description | Note |
 |-----|----------------|-------------------|------|
-| 1 | **A — web/** | 3-step wizard (origin → vibe → when/who); persona → skip to Results | **Done** |
-| 2 | **A — web/** | Destination-first Results copy; handoff “what to expect on VNA” | In progress |
+| 1 | **A — web/** | 3-step wizard (origin → vibe → when/who); persona → skip to Results | P0 |
+| 2 | **A — web/** | Destination-first Results copy; handoff “what to expect on VNA” | P0 |
 | 3 | **A — web/** | Wire `VITE_USE_MOCK=false` when D ready | E2E validation |
 | 4 | **B — data/** | Ship 9 `RouteRecord` JSON files + `version.json`; `gettingAround`, `tripArchetypes`, `seasonalityNotes` | Reference captures only — do not commit scrape files to repo |
 | 5 | **B — data/** | `fixtures/sampleIntent.json` + `expectedTop3.json` | Unblocks D scorer tests |
 | 6 | **C — intent/** | Quiz → `TripIntent` deterministic mapper | **No LLM** required for Phase 1 demo |
 | 7 | **C — intent/** | Brief → `TripIntent` (LLM + Zod); fixtures Olivia/VFR/James | P1 if time |
-| 8 | **D — api/** | `POST /api/recommend`: parse → load dataset → score → cards + handoff | Replace 501 stub |
+| 8 | **D — api/** | `POST /api/recommend`: parse → load dataset → score → cards + handoff | Replace stub with live path |
 | 9 | **D — api/** | RAG-lite `reasons[]` + `tripOutline` from `RouteRecord` | No vector DB |
 | 10 | **D — api/** | `POST /api/trips/save` stub; optional `/dev/scoring` | Judge traceability |
 | 11 | **All** | 3 persona scenarios E2E | Phase 1 Definition of Done |
@@ -361,19 +341,6 @@ Do not change shared/types.ts without explicit contract-change approval.
 | All | Demo includes agent visualize narrative |
 
 **Scoring / handoff summary:** see [WORK_SPLIT.md §4](./WORK_SPLIT.md) for weights, tie-break, `returnDate` formula, `cards.length = min(3, candidateCount)`.
-
----
-
-## Appendix D — Implementation status (last updated: Phase 1 in progress)
-
-| Module | Phase 1 | Phase 2 |
-|--------|---------|---------|
-| `apps/web` wizard | 3-step + persona skip **done** | Agent board **not started** |
-| `apps/web` results/handoff | Polish in progress | Agent bento TBD |
-| `apps/api` | Stub 501 | `destination/preview` TBD |
-| `data/routes` | Not shipped | Highlights enrichment TBD |
-| `apps/api/src/intent` | Stub | — |
-| `shared/types.ts` | Frozen | Optional highlights field TBD |
 
 ---
 
