@@ -41,7 +41,7 @@ cd apps/web
 npm run dev
 ```
 
-Vite proxies `/api` and `/assets` to the API server.
+Vite proxies `/api` to the API server. `/assets` is served from `data/assets/` in dev (mock-friendly); with API running, the same files are also available via Express static.
 
 ## Demo paths (Round 2)
 

@@ -15,24 +15,21 @@ const DESTINATIONS = [
     name: "Da Nang",
     tag: "Beach & coast",
     blurb: "My Khe, Hoi An day trips, central coast.",
-    image:
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&q=80",
+    image: "/assets/da-nang-beach.jpg",
   },
   {
     code: "SGN",
     name: "Ho Chi Minh City",
     tag: "Food & city life",
     blurb: "Street food, districts, direct from Sydney & Melbourne.",
-    image:
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&q=80",
+    image: "/assets/destinations/ho-chi-minh-city.jpg",
   },
   {
     code: "HAN",
     name: "Hanoi",
     tag: "Culture & history",
     blurb: "Old Quarter, cool-season walks, northern Vietnam base.",
-    image:
-      "https://images.unsplash.com/photo-1509030450996-bdd17d7e1e9f?w=800&q=80",
+    image: "/assets/destinations/hanoi.png",
   },
 ] as const;
 

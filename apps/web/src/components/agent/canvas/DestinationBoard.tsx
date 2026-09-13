@@ -7,6 +7,7 @@ import {
   type DestinationSuggestion,
   type TripSummary,
 } from "../../../lib/agentWorkspace";
+import { resolveRouteImageUrl } from "../../../lib/routeMedia";
 import { Button } from "../../ui/Button";
 import { HotelPartnerCards } from "./HotelPartnerCards";
 import { LocalityMap } from "./LocalityMap";
@@ -41,7 +42,11 @@ export function DestinationBoard({
       <article className="disc-dest-card">
         <span
           className="disc-dest-card-bg"
-          style={meta.imageUrl ? { backgroundImage: `url(${meta.imageUrl})` } : undefined}
+          style={
+            meta.imageUrl
+              ? { backgroundImage: `url(${resolveRouteImageUrl(meta.imageUrl)})` }
+              : undefined
+          }
           aria-hidden
         />
         <span className="disc-dest-card-scrim" aria-hidden />

@@ -56,8 +56,7 @@ export const DESTINATION_SPOTLIGHT: DestinationSuggestion[] = [
     vibes: ["vfr", "mixed"],
     spotlight: true,
     tone: "south",
-    imageUrl:
-      "https://images.unsplash.com/photo-1528181302910-026601aaeb21?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/assets/destinations/ca-mau.jpg",
   },
   {
     id: "ho-chi-minh-city",
@@ -67,8 +66,7 @@ export const DESTINATION_SPOTLIGHT: DestinationSuggestion[] = [
     vibes: ["food_culture", "mixed", "vfr"],
     spotlight: true,
     tone: "south",
-    imageUrl:
-      "https://images.unsplash.com/photo-1599786827856-5642f2f45814?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/assets/destinations/ho-chi-minh-city.jpg",
   },
   {
     id: "da-nang",
@@ -78,8 +76,7 @@ export const DESTINATION_SPOTLIGHT: DestinationSuggestion[] = [
     vibes: ["beach_relaxation", "mixed"],
     spotlight: true,
     tone: "central",
-    imageUrl:
-      "https://images.unsplash.com/photo-1559592413-7cec4b9632a8?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/assets/da-nang-beach.jpg",
   },
   {
     id: "nha-trang",
@@ -88,8 +85,7 @@ export const DESTINATION_SPOTLIGHT: DestinationSuggestion[] = [
     gateway: "DAD",
     vibes: ["beach_relaxation"],
     tone: "central",
-    imageUrl:
-      "https://images.unsplash.com/photo-1555884124-aa03659a1fa2?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/assets/destinations/nha-trang.jpg",
   },
   {
     id: "hanoi",
@@ -98,8 +94,7 @@ export const DESTINATION_SPOTLIGHT: DestinationSuggestion[] = [
     gateway: "HAN",
     vibes: ["food_culture", "mixed", "vfr"],
     tone: "north",
-    imageUrl:
-      "https://images.unsplash.com/photo-1508804185872-a7b3ce947066?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/assets/destinations/hanoi.png",
   },
   {
     id: "phu-quoc",
@@ -108,8 +103,7 @@ export const DESTINATION_SPOTLIGHT: DestinationSuggestion[] = [
     gateway: "SGN",
     vibes: ["beach_relaxation"],
     tone: "south",
-    imageUrl:
-      "https://images.unsplash.com/photo-1596436889108-f808787c47ba?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/assets/destinations/phu-quoc.jpg",
   },
 ];
 
