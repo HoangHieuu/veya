@@ -9,7 +9,7 @@
  *
  * Exits non-zero when the dataset is not safe to merge.
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -154,6 +154,90 @@ try {
 } catch (error) {
   fail(`policy-corpus/sources.json unreadable: ${(error as Error).message}`);
 }
+
+console.log("\n== data/destination-spotlight.json + data/seasons.json (3-panel) ==");
+try {
+  const spotlight = JSON.parse(readFileSync(path.join(DATA, "destination-spotlight.json"), "utf8"));
+  const seenGateways = new Set<string>();
+  for (const d of spotlight.destinations ?? []) {
+    if (seenGateways.has(d.gateway)) fail(`duplicate spotlight gateway ${d.gateway}`);
+    seenGateways.add(d.gateway);
+    if (!Array.isArray(d.matchVibe) || d.matchVibe.length === 0) {
+      fail(`${d.id}: matchVibe must be a non-empty array`);
+    }
+    const rel = String(d.image?.url ?? "").replace(/^\/assets\//, "");
+    try { readFileSync(path.join(DATA, "assets", rel)); } catch { fail(`${d.id}: image has no file at data/assets/${rel}`); }
+  }
+  for (const g of ["HAN", "SGN", "DAD"]) {
+    if (!seenGateways.has(g)) fail(`no spotlight card for gateway ${g}`);
+  }
+  pass(`${spotlight.destinations?.length ?? 0} spotlight card(s), covering ${seenGateways.size}/3 gateways`);
+} catch (error) {
+  fail(`destination-spotlight.json unreadable: ${(error as Error).message}`);
+}
+
+try {
+  const seasons = JSON.parse(readFileSync(path.join(DATA, "seasons.json"), "utf8"));
+  for (const g of ["HAN", "SGN", "DAD"]) {
+    const months = seasons.gateways?.[g]?.months;
+    const count = months ? Object.keys(months).length : 0;
+    count === 12 ? pass(`${g}: 12 months`) : fail(`${g}: ${count} months (expected 12)`);
+    for (const [month, rec] of Object.entries(months ?? {}) as [string, any][]) {
+      if (!rec.headline || !rec.summary) fail(`${g} ${month}: missing headline/summary (veya's parseSeason requires both)`);
+    }
+  }
+} catch (error) {
+  fail(`seasons.json unreadable: ${(error as Error).message}`);
+}
+
+console.log("\n== data/offers/illustrative-fares.json ==");
+try {
+  const fares = JSON.parse(readFileSync(path.join(DATA, "offers/illustrative-fares.json"), "utf8"));
+  const routeIds = new Set(snap.routes.map((r: any) => r.id));
+  const seenRouteIds = new Set<string>();
+  for (const f of fares.fares ?? []) {
+    if (seenRouteIds.has(f.routeId)) fail(`duplicate fare entry for ${f.routeId}`);
+    seenRouteIds.add(f.routeId);
+    if (!routeIds.has(f.routeId)) fail(`illustrative-fares.json: ${f.routeId} is not a real route id`);
+    if (!(f.publicFareAud > 0)) fail(`${f.routeId}: publicFareAud must be positive`);
+  }
+  for (const id of routeIds) {
+    if (!seenRouteIds.has(id)) fail(`illustrative-fares.json: missing fare for route ${id}`);
+  }
+  pass(`${seenRouteIds.size}/9 routes have a sourced fare`);
+} catch (error) {
+  fail(`illustrative-fares.json unreadable: ${(error as Error).message}`);
+}
+
+console.log("\n== data/policies/*.json (agent/data.ts loadPolicies + loadDirectOfferPolicy) ==");
+try {
+  const offer = JSON.parse(readFileSync(path.join(DATA, "policies/direct-decision-offer.json"), "utf8"));
+  const offerOk = offer.discountPct >= 0 && offer.discountPct <= 100 && offer.expiryHours > 0 && offer.sourceDocument && offer.disclaimer;
+  offerOk
+    ? pass("direct-decision-offer.json has discountPct/expiryHours/sourceDocument/disclaimer")
+    : fail("direct-decision-offer.json missing a required field for loadDirectOfferPolicy()");
+} catch (error) {
+  fail(`policies/direct-decision-offer.json unreadable: ${(error as Error).message}`);
+}
+const POLICY_IDS = new Set(["direct-decision-offer", "lotusmiles", "lotustudents"]);
+const policyIds = new Set<string>();
+for (const file of readdirSync(path.join(DATA, "policies")).filter((f) => f.endsWith(".json"))) {
+  const policy = JSON.parse(readFileSync(path.join(DATA, "policies", file), "utf8"));
+  if (policyIds.has(policy.id)) fail(`duplicate policy id ${policy.id}`);
+  policyIds.add(policy.id);
+  if (!POLICY_IDS.has(policy.id)) fail(`${file}: id "${policy.id}" is not in veya's POLICY_IDS`);
+  if (!policy.title) fail(`${file}: missing title`);
+  if (file !== "direct-decision-offer.json" && !policy.summary) {
+    fail(`${file}: missing summary (loadPolicies() requires it, not just "note")`);
+  }
+  if (file !== "direct-decision-offer.json" && !policy.sourceDocument) {
+    fail(`${file}: missing sourceDocument (loadPolicies() requires it)`);
+  }
+  if (!Array.isArray(policy.bullets) || policy.bullets.length === 0) {
+    fail(`${file}: bullets must be a non-empty array`);
+  }
+}
+pass(`${policyIds.size} policy snippet(s) parsed`);
 
 console.log("\n== data/fixtures/sampleIntent.json (vs D's tripIntentSchema) ==");
 try {

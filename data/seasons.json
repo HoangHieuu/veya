@@ -1,0 +1,240 @@
+{
+  "version": "1.0.0",
+  "description": "Month-by-month illustrative season panel for the Round 2 agent workspace (TDD-v2.1 center canvas 'season' stage). Ratings are derived directly from each gateway's data/routes/*.json bestMonths/shoulderMonths, not a separate weather dataset - no live weather API, no invented temperature figures.",
+  "gateways": {
+    "DAD": {
+      "destinationName": "Da Nang",
+      "seasonalityNotes": "Central Vietnam is driest and sunniest from February to August; September to December is the wet season, with October and November carrying the highest rain and storm risk.",
+      "months": {
+        "January": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "February": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "March": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "April": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "May": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "June": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "July": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "August": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "September": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "October": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "November": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "December": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        }
+      }
+    },
+    "HAN": {
+      "destinationName": "Hanoi",
+      "seasonalityNotes": "October to December brings dry, cool air and the clearest skies of the northern year; June to August is hot and humid with heavy afternoon rain.",
+      "months": {
+        "January": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "February": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "March": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "April": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "May": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "June": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "July": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "August": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "September": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "October": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "November": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "December": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        }
+      }
+    },
+    "SGN": {
+      "destinationName": "Ho Chi Minh City",
+      "seasonalityNotes": "The southern dry season runs December to March with warm, rain-free days; May to October brings short but intense afternoon downpours.",
+      "months": {
+        "January": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "February": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "March": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        },
+        "April": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "May": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "June": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "July": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "August": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "September": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "October": {
+          "rating": "off",
+          "note": "Outside the route's listed best/shoulder window — check current conditions before booking.",
+          "headline": "Off-season",
+          "summary": "Outside the route's listed best/shoulder window — check current conditions before booking."
+        },
+        "November": {
+          "rating": "shoulder",
+          "note": "Shoulder season — still workable, expect more variability.",
+          "headline": "Shoulder season",
+          "summary": "Shoulder season — still workable, expect more variability."
+        },
+        "December": {
+          "rating": "best",
+          "note": "Best months to fly in — see the route's seasonality note for why.",
+          "headline": "Best time to visit",
+          "summary": "Best months to fly in — see the route's seasonality note for why."
+        }
+      }
+    }
+  }
+}

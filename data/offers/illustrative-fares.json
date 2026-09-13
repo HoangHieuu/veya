@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "currency": "AUD",
+  "fareType": "round_trip_economy",
+  "capturedAt": "2026-09-12",
+  "source": "https://www.vietnamairlines.com/en-au/flights-from-<origin>-to-<destination> (one page per route, same-day snapshot)",
+  "disclaimer": "Vietnam Airlines states these fares were collected within the last 48 hours and may no longer be available at booking. Round-trip Economy, AUD, not one-way — convert deliberately if a one-way figure is needed, do not assume half.",
+  "note": "Supersedes any hardcoded fare table in apps/web (e.g. lib/illustrativeFareAud): those numbers do not match this real, sourced snapshot. Read from this file instead so the figure shown to judges traces back to a real capture, not an approximation.",
+  "fares": [
+    { "routeId": "SYD-HAN-direct", "originCity": "SYD", "destinationCity": "HAN", "publicFareAud": 930 },
+    { "routeId": "SYD-SGN-direct", "originCity": "SYD", "destinationCity": "SGN", "publicFareAud": 872 },
+    { "routeId": "SYD-DAD-one_stop", "originCity": "SYD", "destinationCity": "DAD", "publicFareAud": 928 },
+    { "routeId": "MEL-HAN-direct", "originCity": "MEL", "destinationCity": "HAN", "publicFareAud": 853 },
+    { "routeId": "MEL-SGN-direct", "originCity": "MEL", "destinationCity": "SGN", "publicFareAud": 820 },
+    { "routeId": "MEL-DAD-one_stop", "originCity": "MEL", "destinationCity": "DAD", "publicFareAud": 864 },
+    { "routeId": "PER-HAN-one_stop", "originCity": "PER", "destinationCity": "HAN", "publicFareAud": 909 },
+    { "routeId": "PER-SGN-direct", "originCity": "PER", "destinationCity": "SGN", "publicFareAud": 717 },
+    { "routeId": "PER-DAD-one_stop", "originCity": "PER", "destinationCity": "DAD", "publicFareAud": 754 }
+  ]
+}
