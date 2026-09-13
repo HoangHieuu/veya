@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { OriginCity, RankedCard, TravelStyle } from "@shared/types";
 import { ApiClientError, recommend } from "../api/client";
 import { AgentChat } from "../components/agent/AgentChat";
@@ -66,10 +66,6 @@ function localityFromTrip(trip: TripSummary): LocalityResolution | undefined {
   };
 }
 
-function summaryFromDraft(draft: TripDraft, profile: MemberDemoProfile): TripSummary {
-  return { ...emptyTripSummary(profile), ...draft };
-}
-
 function draftFromSummary(trip: TripSummary): TripDraft {
   return {
     origin: trip.origin,
@@ -119,6 +115,12 @@ export function AgentScreen({
   const stage = deriveStage(trip, bookingReady);
   const locality = localityFromTrip(trip);
 
+  // Guards against an infinite retry loop: if a brief just failed, the effect
+  // below would otherwise re-fire on every render (status flips back to
+  // "idle" with the same trip still satisfying hasEnoughForBooking), pushing
+  // a new error message and re-scrolling the chat each time.
+  const failedBriefRef = useRef<string | null>(null);
+
   const loadCanvas = useCallback(
     async (brief: string) => {
       setStatus("typing");
@@ -130,6 +132,7 @@ export function AgentScreen({
           originCity: trip.origin ?? "SYD",
         });
         setRawResponse(response);
+        failedBriefRef.current = null;
         setMessages((m) => [
           ...m,
           agentMsg(
@@ -139,6 +142,7 @@ export function AgentScreen({
         setStatus("ready");
       } catch (err) {
         const raw = err instanceof ApiClientError ? err.message : "Something went wrong.";
+        failedBriefRef.current = brief;
         setRawResponse(undefined);
         setLastBrief("");
         setStatus("idle");
@@ -151,7 +155,9 @@ export function AgentScreen({
   useEffect(() => {
     if (!hasEnoughForBooking(trip) || canvas || status === "typing") return;
     if (stage === "hotels" && !trip.hotelInterest) return;
-    void loadCanvas(tripToBrief(trip));
+    const brief = tripToBrief(trip);
+    if (failedBriefRef.current === brief) return;
+    void loadCanvas(brief);
   }, [trip, canvas, status, stage, loadCanvas]);
 
   const applyDraft = useCallback((nextDraft: TripDraft) => {
@@ -192,8 +198,13 @@ export function AgentScreen({
       const merged = mergeTextIntoDraft(trimmed, tripDraft);
       applyDraft(merged);
 
-      if (hasEnoughForCanvas(merged, trimmed) || hasEnoughForBooking(summaryFromDraft(merged, memberProfile))) {
-        const brief = trimmed.length >= 28 ? trimmed : tripToBrief(summaryFromDraft(merged, memberProfile));
+      // TripDraft has no destinationTitle/gateway field, so summaryFromDraft(merged, ...)
+      // would silently forget a destination already confirmed via a discovery-canvas
+      // card. Merge onto the real trip instead, so tripToBrief still names it.
+      const mergedSummary: TripSummary = { ...trip, ...merged };
+
+      if (hasEnoughForCanvas(merged, trimmed) || hasEnoughForBooking(mergedSummary)) {
+        const brief = trimmed.length >= 28 ? trimmed : tripToBrief(mergedSummary);
         setMessages((m) => [...m, agentMsg("Got it — building your route…")]);
         await loadCanvas(brief);
         return;
@@ -202,7 +213,7 @@ export function AgentScreen({
       const { reply, widget } = whatToAsk(merged, trimmed);
       setMessages((m) => [...m, agentMsg(reply, widget)]);
     },
-    [tripDraft, memberProfile, applyDraft, loadCanvas],
+    [trip, tripDraft, applyDraft, loadCanvas],
   );
 
   const pickOrigin = useCallback(
