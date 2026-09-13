@@ -20,6 +20,12 @@ import {
   type DateFlexibility,
 } from "./dateWindow.js";
 import {
+  hasVisitLocationContext,
+  inferGatewayFromLocalities,
+  loadLocalityGateway,
+} from "../dataset/localityGateway.js";
+import { inferGatewayFromText, loadNeedPlaceMap } from "../dataset/needPlaceMap.js";
+import {
   BUDGET_LEXICON,
   DESTINATION_LEXICON,
   DIRECT_ONLY_PATTERN,
@@ -56,7 +62,13 @@ function extractOrigin(text: string): OriginCity | undefined {
 }
 
 function extractDestination(text: string): DestinationCity | undefined {
-  // Place aliases stay in C lexicon until B/D ships need-place-map (PLAN 19–20).
+  const localities = loadLocalityGateway();
+  const fromLocality = inferGatewayFromLocalities(text, localities);
+  if (fromLocality) return fromLocality;
+
+  const fromPlaces = inferGatewayFromText(text, loadNeedPlaceMap());
+  if (fromPlaces) return fromPlaces;
+
   for (const entry of DESTINATION_LEXICON) {
     if (!entry.pattern.test(text)) continue;
     const match = text.match(entry.pattern);
@@ -242,9 +254,16 @@ export function parseBriefHeuristic(
 
   const preferredDestination = extractDestination(text);
   const destinationHit = preferredDestination !== undefined;
+  const localities = loadLocalityGateway();
+  const visitContext =
+    travelStyles.includes("vfr") || hasVisitLocationContext(text, localities);
   const goal: TripIntent["goal"] = destinationHit
     ? "choose_route"
     : "discover_destination";
+
+  if (visitContext && !destinationHit) {
+    missingFields.push("preferredDestination");
+  }
 
   if (
     /\bPhu\s*Quoc\b|\bNha\s*Trang\b|\bHue\b/i.test(text) &&

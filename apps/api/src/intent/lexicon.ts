@@ -54,7 +54,8 @@ export const STYLE_LEXICON: ReadonlyArray<{
   },
   { pattern: /\bfamily\b|\bkids?\b|\bchildren\b/i, style: "family" },
   {
-    pattern: /\bVFR\b|\bvisit(?:ing)?\s+family\b|\brelatives?\b/i,
+    pattern:
+      /\bVFR\b|\bvisit(?:ing)?\s+(?:famil(?:y|ies)|relatives)\b|\brelatives?\b|\bfamil(?:y|ies)\s+visit\b/i,
     style: "vfr",
   },
   { pattern: /\bmixed\b|\bbit\s+of\s+everything\b/i, style: "mixed" },
