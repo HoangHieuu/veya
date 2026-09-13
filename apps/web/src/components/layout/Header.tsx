@@ -1,7 +1,7 @@
 import { VeyaLogo } from "../VeyaLogo";
 import { StepIndicator, type FlowStep } from "./StepIndicator";
 
-export type AppStep = "home" | FlowStep;
+export type AppStep = "home" | "agent_pick" | "agent" | FlowStep;
 
 export function Header({
   step,

@@ -32,8 +32,8 @@ Dev server proxies `/api` → `http://localhost:3001`.
 
 ## Screens
 
-1. **Trip brief / Quick quiz** → submit
-2. **Results** — 3 cards, priority preset re-rank (`cachedIntent`), judge score toggle, save toast
-3. **Handoff** — pre-filled params + open mock search URL
+1. **Trip brief / Quick quiz** → submit  
+2. **Results** — 3 cards, priority preset re-rank (`cachedIntent`), judge score toggle, save toast  
+3. **Handoff** — pre-filled params + open mock search URL  
 
 Shared types: `../../shared/types.ts` (alias `@shared/*`).

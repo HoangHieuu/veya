@@ -92,8 +92,8 @@ export function GlobeTuningPanel() {
               <SliderRow
                 label="θ manual"
                 value={tuning.manualTheta}
-                min={-0.5}
-                max={1.5}
+                min={-1.5}
+                max={2}
                 step={0.01}
                 onChange={(manualTheta) => setTuning({ manualTheta })}
               />
@@ -111,8 +111,8 @@ export function GlobeTuningPanel() {
               <SliderRow
                 label="AU_BASE θ"
                 value={tuning.auTheta}
-                min={-0.5}
-                max={1.5}
+                min={-1.5}
+                max={2}
                 step={0.01}
                 onChange={(auTheta) => setTuning({ auTheta })}
               />
@@ -156,24 +156,24 @@ export function GlobeTuningPanel() {
           <SliderRow
             label="scale"
             value={tuning.scale}
-            min={0.5}
-            max={2}
+            min={0.25}
+            max={3.5}
             step={0.01}
             onChange={(scale) => setTuning({ scale })}
           />
           <SliderRow
             label="offset X"
             value={tuning.offsetX}
-            min={-40}
-            max={40}
+            min={-200}
+            max={200}
             step={0.5}
             onChange={(offsetX) => setTuning({ offsetX })}
           />
           <SliderRow
             label="offset Y"
             value={tuning.offsetY}
-            min={-40}
-            max={40}
+            min={-200}
+            max={200}
             step={0.5}
             onChange={(offsetY) => setTuning({ offsetY })}
           />
