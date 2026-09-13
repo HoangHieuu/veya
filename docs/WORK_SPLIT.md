@@ -2,6 +2,8 @@
 
 **Mục tiêu:** Mỗi người làm module riêng, mock được độc lập. Khi ráp: chỉ nối theo contract dưới đây, không đụng logic nội bộ của người khác.
 
+**Docs liên quan:** [TDD.md](./TDD.md) · [STRUCTURE.md](./STRUCTURE.md) · [VNA_ALIGNMENT_PLAN.md](./VNA_ALIGNMENT_PLAN.md) · [TDD-v2.md](./TDD-v2.md)
+
 **Stack đề xuất (thống nhất trước khi code):**
 - Monorepo hoặc 1 repo: `apps/web` (React + Tailwind) + `apps/api` (Node/Express hoặc Next.js API routes)
 - Shared types: `packages/shared` hoặc `src/shared/types.ts` — **source of truth duy nhất**
@@ -9,8 +11,6 @@
 - LLM: 1 provider (OpenAI / Gemini) — **chỉ Person C** giữ API key và gọi model (D chỉ gọi `parseTripIntent`, không gọi LLM trực tiếp)
 
 **Owner UI:** bạn (Person A). Ba người còn lại nhận B / C / D.
-
-**Review status:** OK để chia việc song song sau khi áp các chốt ở §12 (budget band trên route, RAG MVP, known-destination, return date, sửa union type).
 
 ---
 
@@ -259,12 +259,12 @@ Base URL local: `http://localhost:3001` (hoặc cùng origin `/api` nếu Next).
 
 ### 3.1 `POST /api/recommend`
 
-**Caller:** A (UI)
-**Implement:** D
+**Caller:** A (UI)  
+**Implement:** D  
 **Internal:** D → C.parse() → B.loadRoutes() → D.rank() → response
 
-Request body: `RecommendRequest`
-Response `200`: `RankedResponse`
+Request body: `RecommendRequest`  
+Response `200`: `RankedResponse`  
 Errors:
 
 | HTTP | body |
@@ -284,8 +284,8 @@ Errors:
 
 ### 3.2 `POST /api/intent/parse` (internal / optional debug)
 
-**Caller:** D (và C tự test)
-**Implement:** C
+**Caller:** D (và C tự test)  
+**Implement:** C  
 
 Request:
 ```ts
@@ -297,26 +297,26 @@ A **không** gọi endpoint này trực tiếp ở MVP (tránh double-parse). Ch
 
 ### 3.3 `GET /api/routes?origin=SYD`
 
-**Caller:** D (runtime) và B (self-test)
-**Implement:** **D đọc file JSON của B** (B không host server riêng). B chỉ ship `data/**` + helper `loadDataset` nếu dùng TypeScript shared.
+**Caller:** D (runtime) và B (self-test)  
+**Implement:** **D đọc file JSON của B** (B không host server riêng). B chỉ ship `data/**` + helper `loadDataset` nếu dùng TypeScript shared.  
 Response: `{ version: string; routes: RouteRecord[] }`
 
 ### 3.4 `POST /api/handoff/preview`
 
-**Caller:** A (khi user bấm CTA trên card; có thể bỏ nếu card đã có `handoff`)
-**Implement:** D
+**Caller:** A (khi user bấm CTA trên card; có thể bỏ nếu card đã có `handoff`)  
+**Implement:** D  
 
-Request: `{ routeId: string; intent: TripIntent }`
+Request: `{ routeId: string; intent: TripIntent }`  
 Response: `HandOffParams`
 
 MVP: field `handoff` đã nằm trong mỗi `RankedCard` → A có thể **không cần** gọi 3.4; giữ endpoint cho demo “rebuild link”.
 
 ### 3.5 `POST /api/trips/save`
 
-**Caller:** A
+**Caller:** A  
 **Implement:** D (in-memory / JSON file; không cần DB thật)
 
-Request: `SaveTripRequest`
+Request: `SaveTripRequest`  
 Response: `SaveTripResponse`
 
 Reminder thật (email) **out of MVP** — chỉ trả `remindAfterHours` + log console là đủ.
@@ -336,8 +336,8 @@ Preset → trọng số (tổng = 1.0). **Ẩn trên UI traveller**; hiện ở 
 | loyaltyValue | 0.05 | 0.05 | 0.35 | 0.05 |
 | promotionBoost | 0.05 | 0.15 | 0.10 | 0.25 |
 
-**Rule thiếu data:** field null (promo / lotusmiles) → score factor = 0, không throw.
-**Rule dataset:** chỉ rank route có trong curated set; không hallucinate destination.
+**Rule thiếu data:** field null (promo / lotusmiles) → score factor = 0, không throw.  
+**Rule dataset:** chỉ rank route có trong curated set; không hallucinate destination.  
 **Illustrative:** vẫn rank được nhưng `dataConfidence` và `meta.usedIllustrativeData` phải đúng; UI hiện Badge + Alert.
 
 **Cardinality:** `cards.length === min(3, candidateCount)`. Nếu `< 3`, `meta.disclaimer` phải nói rõ (không được im lặng). Không yêu cầu “luôn đúng 3” khi dataset origin đó thiếu route.
@@ -374,7 +374,7 @@ data/
   assets/meta.json      # map archetype → image path + license
 ```
 
-Mỗi file route = 1 `RouteRecord`.
+Mỗi file route = 1 `RouteRecord`.  
 **Bắt buộc đủ 9 routes** cho MVP (SYD/MEL/PER × HAN/SGN/DAD).
 
 ### 5.2 Nội dung tối thiểu mỗi route
@@ -482,8 +482,8 @@ interface UIState {
 
 ### 7.4 Mock song song (A không bị block)
 
-A tạo `mocks/rankedResponse.olivia.json` theo `RankedResponse`.
-Feature flag `VITE_USE_MOCK=true` → bỏ qua API.
+A tạo `mocks/rankedResponse.olivia.json` theo `RankedResponse`.  
+Feature flag `VITE_USE_MOCK=true` → bỏ qua API.  
 Khi D sẵn `/api/recommend`, tắt flag là ráp xong.
 
 ---
@@ -516,22 +516,22 @@ Khi D sẵn `/api/recommend`, tắt flag là ráp xong.
 
 ### Ráp cuối (1–2h cả team)
 
-1. A tắt mock → trỏ API D
-2. Chạy 3 scenario: leisure (Olivia), VFR, student
+1. A tắt mock → trỏ API D  
+2. Chạy 3 scenario: leisure (Olivia), VFR, student  
 3. Checklist validation metrics (proposal §Validation metrics)
 
 ---
 
 ## 9. Checklist “ráp vào là chạy”
 
-- [ ] `shared/types.ts` identical trên mọi máy
-- [ ] B: `datasetVersion` khớp `RankedResponse.meta.datasetVersion`
-- [ ] C: mọi success path trả đủ field required của `TripIntent`
-- [ ] D: `cards.length === min(3, n)` và nếu `< 3` thì có `meta.disclaimer`
-- [ ] A: không đọc field ngoài type; không parse LLM ở client
-- [ ] Mọi illustrative route có Badge + không claim giá live
-- [ ] Handoff URL chỉ pre-fill origin/destination/dates/adults — không fake payment
-- [ ] `returnDate` luôn có mặt và = f(dateWindow.start, tripDurationDays)
+- [ ] `shared/types.ts` identical trên mọi máy  
+- [ ] B: `datasetVersion` khớp `RankedResponse.meta.datasetVersion`  
+- [ ] C: mọi success path trả đủ field required của `TripIntent`  
+- [ ] D: `cards.length === min(3, n)` và nếu `< 3` thì có `meta.disclaimer`  
+- [ ] A: không đọc field ngoài type; không parse LLM ở client  
+- [ ] Mọi illustrative route có Badge + không claim giá live  
+- [ ] Handoff URL chỉ pre-fill origin/destination/dates/adults — không fake payment  
+- [ ] `returnDate` luôn có mặt và = f(dateWindow.start, tripDurationDays)  
 - [ ] Đổi preset trên UI dùng `cachedIntent` (không double-bill LLM)
 
 ---
@@ -551,9 +551,9 @@ Khi D sẵn `/api/recommend`, tắt flag là ráp xong.
 
 ## 11. Định nghĩa “xong” từng người (Definition of Done)
 
-**A:** Demo click-through Brief → 3 cards → mở handoff URL; mock và live mode đều chạy.
-**B:** 9 routes review được (đủ `indicativeFareBand` + `bestMonths`); mỗi claim trên card map được về 1 field trong JSON.
-**C:** 5–8 briefs test ≥90% parse; quiz path không cần LLM vẫn ra intent; có case `goal=choose_route`.
+**A:** Demo click-through Brief → 3 cards → mở handoff URL; mock và live mode đều chạy.  
+**B:** 9 routes review được (đủ `indicativeFareBand` + `bestMonths`); mỗi claim trên card map được về 1 field trong JSON.  
+**C:** 5–8 briefs test ≥90% parse; quiz path không cần LLM vẫn ra intent; có case `goal=choose_route`.  
 **D:** Một lệnh `curl` ra `RankedResponse` hợp lệ; README ghi env + cách nối UI; reasons grounded (RAG-lite).
 
 ---

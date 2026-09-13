@@ -6,6 +6,8 @@ When assisting on this repo, **read first:**
 2. **[docs/STRUCTURE.md](./docs/STRUCTURE.md)** — folder ownership
 3. **[docs/WORK_SPLIT.md](./docs/WORK_SPLIT.md)** — API & type contracts
 
+**Also useful:** [docs/VNA_ALIGNMENT_PLAN.md](./docs/VNA_ALIGNMENT_PLAN.md) (pitch map), [docs/TDD-v2.md](./docs/TDD-v2.md) + [docs/TDD-v2-3panel.md](./docs/TDD-v2-3panel.md) (agent canvas Round 2).
+
 ## Hard rules
 
 - Edit **only** the folder for the developer's role (see TDD §0).
