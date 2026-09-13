@@ -22,7 +22,7 @@ The server listens on `http://localhost:3001` by default. `index.ts` only starts
 | `ENABLE_DEV_SCORING=true` | Explicitly enable `/dev/scoring` in production |
 | `OPENAI_API_KEY` | Server-only. Used by Person C intent gap-fill; also by opt-in `POST /api/policy/ask` |
 | `INTENT_LLM_ENABLED` | Must be `"true"` for brief LLM gap-fill (default off unless set) |
-| `POLICY_RAG_ENABLED` | Must be `"true"` for `/api/policy/ask` (default off — prevents open CORS from burning the key) |
+| `POLICY_RAG_ENABLED` | Policy ask on by default; set `"false"` to disable `/api/policy/ask` |
 | `OPENAI_MODEL` | Chat model for gap-fill / policy synthesize (default `gpt-4.1-nano`) |
 
 The API starts even when B's dataset is absent. `/health` remains available with `status: degraded`; data-dependent endpoints return `503 DATASET_UNAVAILABLE` until at least one valid versioned route is available. Partial valid data is retained so missing coverage is visible in health and recommendation disclaimers.
@@ -35,7 +35,7 @@ The API starts even when B's dataset is absent. `/health` remains available with
 - `POST /api/handoff/preview` — rebuild a mock handoff from `{ routeId, intent }`.
 - `POST /api/trips/save` — bounded in-memory save; no database, email, or reminder delivery.
 - `POST /api/agent/turn` — agent canvas turn handler.
-- `POST /api/policy/ask` — opt-in semantic search over `data/policy-corpus/` (`POLICY_RAG_ENABLED=true` + `OPENAI_API_KEY`).
+- `POST /api/policy/ask` — semantic search over `data/policy-corpus/` (needs `OPENAI_API_KEY`; disable with `POLICY_RAG_ENABLED=false`).
 
 Malformed JSON and schema failures return `400`; bodies over the 64 KiB JSON limit return `413 PAYLOAD_TOO_LARGE`; route mismatches/not-found return `400`/`404`; parser `LLM_ERROR` and unavailable datasets return `503`. Dataset diagnostics exposed by `/health` are stable codes without filesystem paths, while detailed loader context is kept in the injectable server logger.
 

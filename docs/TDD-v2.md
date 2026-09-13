@@ -344,7 +344,7 @@ Path: `apps/api/**`, `shared/**` (contract PR)
 - **Full chatbot replacing wizard** (agent canvas ≠ unlimited chat)
 - Cart abandonment product build (slide only)
 - MCP server build (slide only)
-- Vector DB / streaming SSE to UI (exception: checked-in `data/policy-corpus/` + opt-in `POST /api/policy/ask` — see `TDD.md` §2)
+- Vector DB / streaming SSE to UI (exception: checked-in `data/policy-corpus/` + `POST /api/policy/ask` — see `TDD.md` §2)
 - Multi-language UI (EN only)
 
 ---

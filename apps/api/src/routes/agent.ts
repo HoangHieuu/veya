@@ -28,7 +28,7 @@ export function registerAgentRoutes(
   });
 
   // Offline policy corpus + optional OpenAI embed/synthesize.
-  // Opt-in like INTENT_LLM_ENABLED — prevents open CORS from burning the key.
+  // Enabled by default; set POLICY_RAG_ENABLED=false to disable.
   app.post("/api/policy/ask", async (request, response) => {
     const parsed = policyAskRequestSchema.safeParse(request.body);
     if (!parsed.success) {
@@ -39,12 +39,12 @@ export function registerAgentRoutes(
       );
     }
 
-    if (process.env.POLICY_RAG_ENABLED !== "true") {
+    if (process.env.POLICY_RAG_ENABLED === "false") {
       response.status(503).json({
         answered: false,
         errorCode: "POLICY_RAG_DISABLED",
         message:
-          "Policy semantic search is disabled. Set POLICY_RAG_ENABLED=true (and OPENAI_API_KEY) to enable.",
+          "Policy semantic search is disabled (POLICY_RAG_ENABLED=false).",
       });
       return;
     }

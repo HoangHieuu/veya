@@ -54,8 +54,8 @@ just the leaf sentence. `vectors.json` stores `{version, model, dims, capturedAt
    number/fee/rule not literally present in an excerpt. Falls back to the raw excerpt text if
    synthesis fails or citations are missing (still grounded, just unpolished).
 
-**Enablement:** `POLICY_RAG_ENABLED=true` **and** `OPENAI_API_KEY` (same opt-in pattern as
-`INTENT_LLM_ENABLED`). Without the flag the route returns `503 POLICY_RAG_DISABLED`.
+**Enablement:** on by default when `OPENAI_API_KEY` is set. Set `POLICY_RAG_ENABLED=false`
+to disable (returns `503 POLICY_RAG_DISABLED`).
 
 Outcome codes:
 
@@ -65,7 +65,7 @@ Outcome codes:
 | no corpus match | 200 | `POLICY_NO_MATCH` |
 | missing/failed OpenAI | 503 | `OPENAI_UNAVAILABLE` |
 | corpus load/search broken | 503 | `CORPUS_UNAVAILABLE` |
-| feature off | 503 | `POLICY_RAG_DISABLED` |
+| feature off (`=false`) | 503 | `POLICY_RAG_DISABLED` |
 
 Verified end-to-end against the live OpenAI API: correctly answered checked-baggage-weight,
 prohibited-carry-on-items and refund-eligibility questions with citations, and correctly declined
