@@ -144,6 +144,17 @@ export interface HandOffParams {
   searchUrl: string;
 }
 
+/** Curated place reachable from a VNA gateway (not a separate IATA). */
+export interface ExperienceHighlight {
+  id: string;
+  title: string;
+  subtitle: string;
+  transferNote: string;
+  imageUrl: string;
+  tags: ("food" | "beach" | "quiet" | "family" | "culture" | "city")[];
+  featured?: boolean;
+}
+
 export interface RankedCard {
   rank: 1 | 2 | 3;
   routeId: string;
@@ -151,6 +162,8 @@ export interface RankedCard {
   score: ScoreBreakdown;
   tripOutline: string;
   handoff: HandOffParams;
+  /** Places to explore after flying into this gateway (from data/experiences). */
+  experienceHighlights?: ExperienceHighlight[];
 }
 
 export interface RankedResponse {
